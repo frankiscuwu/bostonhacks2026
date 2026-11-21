@@ -16,8 +16,6 @@ export type Restaurant = {
     walkInFriendly: boolean;
     vibe: string;
     accent: string;
-    // Yes votes for this restaurant in the current room (from /results/).
-    votes: number;
     // Local-only personal shortlist.
     inQueue: boolean;
     coords: { x: number; y: number };
@@ -27,25 +25,13 @@ export type Restaurant = {
     image: string;
 };
 
+// One participant's filters as edited in the UI. Saved to Django per participant;
+// the room's random pick only uses restaurants matching everyone's filters.
 export type FilterState = {
+    // Miles from Boston Common; MAX_DISTANCE_MILES means "any distance".
     maxDistance: number;
-    minRating: number;
     cuisines: string[];
-    prices: string[];
     openNow: boolean;
-    tablesTonight: boolean;
-    walkInFriendly: boolean;
 };
 
-export const CUISINE_CATEGORIES = [
-    "All",
-    "Italian",
-    "Seafood",
-    "Ramen & Asian",
-    "New American",
-    "Tacos & Latin",
-    "Bakery & Cafe",
-    "Steakhouse",
-];
-
-export const PRICE_TIERS = ["$", "$$", "$$$", "$$$$"];
+export const MAX_DISTANCE_MILES = 10;

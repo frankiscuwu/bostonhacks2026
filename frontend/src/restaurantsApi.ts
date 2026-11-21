@@ -5,6 +5,8 @@ export type ApiRestaurant = {
     name: string;
     address: string;
     cuisine: string | null;
+    // Display label computed by Django; filters match on this value.
+    cuisine_label?: string;
     price_level: number | null;
     rating: number | string | null;
     latitude: number | string;
@@ -100,7 +102,7 @@ export function mapApiRestaurant(row: ApiRestaurant): Restaurant {
         row.price_level === null
             ? null
             : Math.max(1, Math.min(4, Number(row.price_level) || 1));
-    const cuisine = formatCuisine(row.cuisine);
+    const cuisine = row.cuisine_label ?? formatCuisine(row.cuisine);
     const hours =
         row.open_time && row.close_time
             ? `${row.open_time}–${row.close_time}`
@@ -124,7 +126,6 @@ export function mapApiRestaurant(row: ApiRestaurant): Restaurant {
         walkInFriendly: false,
         vibe: row.description || cuisine,
         accent,
-        votes: 0,
         inQueue: false,
         coords: projectCoordinates(latitude, longitude),
         latitude,

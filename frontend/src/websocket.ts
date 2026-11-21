@@ -1,6 +1,6 @@
 // Supabase Realtime is used only as a lightweight notification bus.
 // Django is the source of truth: on "room-updated" clients refetch room state
-// from the API. No room state, votes or credentials are broadcast here.
+// from the API. No room state, filters or credentials are broadcast here.
 import { createClient } from "@supabase/supabase-js";
 import type { RealtimeChannel } from "@supabase/supabase-js";
 
@@ -8,21 +8,14 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabasePublishableKey =
     import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
-export type RoomPreferences = {
-    cuisines: string[];
-    prices: string[];
-};
-
-// Presence carries only display metadata keyed by Django participant id.
+// Presence only says who is online, keyed by Django participant id.
 export type PresenceProfile = {
     participantId: number;
-    preferences: RoomPreferences;
 };
 
 export type RoomChannelCallbacks = {
     onRoomUpdated?: () => void;
-    onPresence?: (profiles: Map<number, PresenceProfile>) => void;
-    onReady?: () => void;
+    onPresence?: (onlineIds: Set<number>) => void;
 };
 
 const supabase:
@@ -58,44 +51,36 @@ export function subscribeToRoom(
             string,
             Array<{ profile?: PresenceProfile }>
         >;
-        const profiles = new Map<number, PresenceProfile>();
+        const online = new Set<number>();
         for (const entries of Object.values(state)) {
             for (const entry of entries) {
-                if (entry.profile && typeof entry.profile.participantId === "number") {
-                    profiles.set(entry.profile.participantId, entry.profile);
+                if (typeof entry.profile?.participantId === "number") {
+                    online.add(entry.profile.participantId);
                 }
             }
         }
-        callbacks.onPresence?.(profiles);
+        callbacks.onPresence?.(online);
     });
 
     channel.subscribe(async (status) => {
         if (status === "SUBSCRIBED") {
-            await channel.track({ profile });
-            callbacks.onReady?.();
+            try {
+                await channel.track({ profile });
+            } catch {
+                // Presence is cosmetic; ignore failures.
+            }
         }
     });
 
     return channel;
 }
 
-// Tell other clients to refetch from Django. Payload is intentionally minimal.
-export async function notifyRoomUpdated(
-    channel: RealtimeChannel | null,
-    round: number,
-) {
+// Tell other clients to refetch from Django. Payload is intentionally empty.
+export async function notifyRoomUpdated(channel: RealtimeChannel | null) {
     if (!channel) return;
-    await channel.send({
-        type: "broadcast",
-        event: "room-updated",
-        payload: { round },
-    });
-}
-
-export async function updatePresence(
-    channel: RealtimeChannel | null,
-    profile: PresenceProfile,
-) {
-    if (!channel) return;
-    await channel.track({ profile });
+    try {
+        await channel.send({ type: "broadcast", event: "room-updated", payload: {} });
+    } catch {
+        // Polling covers missed notifications.
+    }
 }

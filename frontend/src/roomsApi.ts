@@ -1,6 +1,7 @@
-// Client for the Django room/voting API (see backend/API.md).
-// Django is the source of truth for rooms, participants, votes and the
-// current restaurant. Never put participant tokens in URLs or Realtime payloads.
+// Client for the Django room API (see backend/API.md).
+// Django is the source of truth for rooms, participants, their filters and
+// the room's randomly picked restaurant. Never put participant tokens in URLs
+// or Realtime payloads.
 import { API_BASE_URL } from "./restaurantsApi.ts";
 import type { ApiRestaurant } from "./restaurantsApi.ts";
 
@@ -10,39 +11,37 @@ export function normalizeRoomCode(code: string) {
     return code.trim().toUpperCase().replace(/[^A-Z0-9]/g, "");
 }
 
+export type ApiFilters = {
+    cuisines: string[];
+    max_distance_miles: number | null;
+    open_now: boolean;
+};
+
 export type ApiParticipant = {
     id: number;
     display_name: string;
+    filters: ApiFilters;
     joined_at: string;
     is_active: boolean;
 };
 
 export type RoomState = {
     code: string;
-    current_restaurant: ApiRestaurant | null;
-    current_round: number;
+    // Randomly picked from restaurants matching every participant's filters.
+    selected_restaurant: ApiRestaurant | null;
+    selected_at: string | null;
+    selected_by: number | null;
     is_active: boolean;
     created_at: string;
     participants: ApiParticipant[];
-    voting_progress: {
-        required_count: number;
-        voted_count: number;
-        voted_participant_ids: number[];
-    };
+    // Server-side count of restaurants matching everyone's saved filters.
+    matching_count: number;
 };
 
 export type RoomMembership = {
     room: RoomState;
     participant: ApiParticipant;
     participant_token: string;
-};
-
-export type ResultRow = {
-    restaurant: ApiRestaurant;
-    yes_count: number;
-    no_count: number;
-    total_votes: number;
-    approval_rate: number;
 };
 
 export class ApiError extends Error {
@@ -97,34 +96,21 @@ export function getRoom(code: string) {
     return request<RoomState>(`/api/rooms/${code}/`);
 }
 
-export function submitVote(
-    code: string,
-    token: string,
-    vote: { round_number: number; restaurant_id: number; vote: boolean },
-) {
-    return request<RoomState>(`/api/rooms/${code}/vote/`, {
-        method: "POST",
+export function updateFilters(code: string, token: string, filters: ApiFilters) {
+    return request<RoomState>(`/api/rooms/${code}/filters/`, {
+        method: "PUT",
         token,
-        body: JSON.stringify(vote),
+        body: JSON.stringify(filters),
     });
 }
 
-export function getResults(code: string) {
-    return request<ResultRow[]>(`/api/rooms/${code}/results/`);
-}
-
-// Room state only moves forward: rounds increase, and within a round
-// participants and votes only accumulate. Used to drop stale responses that
-// arrive out of order.
-export function isSameOrNewerRoomState(next: RoomState, current: RoomState | null) {
-    if (!current || next.code !== current.code) return true;
-    if (next.current_round !== current.current_round) {
-        return next.current_round > current.current_round;
-    }
-    return (
-        next.participants.length + next.voting_progress.voted_count >=
-        current.participants.length + current.voting_progress.voted_count
-    );
+// Django randomly picks one restaurant matching every participant's filters.
+export function pickRestaurant(code: string, token: string) {
+    return request<RoomState>(`/api/rooms/${code}/pick/`, {
+        method: "POST",
+        token,
+        body: "{}",
+    });
 }
 
 // ---------------------------------------------------------------------------

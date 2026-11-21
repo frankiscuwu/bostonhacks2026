@@ -20,6 +20,6 @@ urlpatterns = [
     path("api/rooms/", room_views.create_room),
     path("api/rooms/<str:code>/join/", room_views.join_room),
     path("api/rooms/<str:code>/", room_views.room_detail),
-    path("api/rooms/<str:code>/vote/", room_views.vote),
-    path("api/rooms/<str:code>/results/", room_views.results),
+    path("api/rooms/<str:code>/filters/", room_views.filters),
+    path("api/rooms/<str:code>/pick/", room_views.pick),
 ]

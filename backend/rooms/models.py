@@ -2,7 +2,7 @@ import secrets
 import string
 import uuid
 
-from django.core.validators import MinValueValidator, RegexValidator
+from django.core.validators import RegexValidator
 from django.db import IntegrityError, models, router, transaction
 
 
@@ -10,24 +10,27 @@ def generate_room_code():
     return "".join(secrets.choice(string.ascii_uppercase + string.digits) for _ in range(6))
 
 
+def default_filters():
+    return {"cuisines": [], "max_distance_miles": None, "open_now": False}
+
+
 class Room(models.Model):
     code = models.CharField(
         max_length=6, unique=True, default=generate_room_code,
         validators=[RegexValidator(r"\A[A-Z0-9]{6}\Z", "Use six uppercase letters or digits.")],
     )
+    # Randomly picked from restaurants matching every participant's filters.
     # The restaurants table is owned outside Django, so no database FK constraint.
-    current_restaurant = models.ForeignKey(
-        "restaurants.Restaurant", on_delete=models.PROTECT, db_constraint=False,
-        null=True, blank=True, related_name="current_rooms",
+    selected_restaurant = models.ForeignKey(
+        "restaurants.Restaurant", on_delete=models.SET_NULL, db_constraint=False,
+        null=True, blank=True, related_name="selected_in_rooms",
     )
-    current_round = models.PositiveIntegerField(default=1, validators=[MinValueValidator(1)])
+    selected_at = models.DateTimeField(null=True, blank=True)
+    selected_by = models.ForeignKey(
+        "Participant", on_delete=models.SET_NULL, null=True, blank=True, related_name="+",
+    )
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        constraints = [
-            models.CheckConstraint(condition=models.Q(current_round__gte=1), name="room_round_positive"),
-        ]
 
     def save(self, *args, **kwargs):
         if not self._state.adding:
@@ -52,27 +55,10 @@ class Participant(models.Model):
     display_name = models.CharField(max_length=100)
     # Treat as a credential. Public serializers must explicitly exclude this field.
     identity_token = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+    # See restaurants.matching for the shape.
+    filters = models.JSONField(default=default_filters)
     joined_at = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return f"{self.display_name} ({self.room.code})"
-
-
-class Vote(models.Model):
-    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name="votes")
-    participant = models.ForeignKey(Participant, on_delete=models.CASCADE, related_name="votes")
-    restaurant = models.ForeignKey("restaurants.Restaurant", on_delete=models.PROTECT,
-                                   db_constraint=False, related_name="votes")
-    round_number = models.PositiveIntegerField(validators=[MinValueValidator(1)])
-    vote = models.BooleanField()
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(fields=["participant", "round_number"], name="unique_participant_round_vote"),
-            models.CheckConstraint(condition=models.Q(round_number__gte=1), name="vote_round_positive"),
-        ]
-
-    def __str__(self):
-        return f"{self.participant.display_name}: {self.vote} (round {self.round_number})"
