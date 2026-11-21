@@ -43,6 +43,7 @@ class VideoUrlTests(TestCase):
         self.assertEqual(urls, [TIKTOK])
         self.assertEqual(name_hint_from(text, urls), "Neptune Oyster!")
         self.assertEqual(name_hint_from(f"Neptune Oyster - {TIKTOK}", [TIKTOK]), "Neptune Oyster")
+        self.assertEqual(name_hint_from(f"[3:45 PM]sam: {TIKTOK} Neptune Oyster", [TIKTOK]), "Neptune Oyster")
 
 
 class MatchingTests(TestCase):
@@ -169,6 +170,25 @@ class CommandTests(TestCase):
         self.assertIn("unknown restaurant_id", err.getvalue())
         self.assertIn("unsupported video link", err.getvalue())
         self.assertFalse(RestaurantVideo.objects.exists())
+
+    def test_pasted_discord_chat(self):
+        # Copied from the Discord desktop app: cozy mode (header lines), compact
+        # mode (timestamp + name on the same line), and an embed that repeats the link.
+        chat = self.tmp / "chat.txt"
+        chat.write_text(
+            "frank — Today at 3:41 PM\n"
+            f"{TIKTOK} Neptune Oyster\n"
+            "TikTok\n"
+            f"{TIKTOK}\n"
+            "[3:45 PM]sam: https://youtube.com/shorts/dQw4w9WgXcQ Neptune Oyster\n"
+        )
+        output = self.tmp / "chat.csv"
+        with patch("restaurants.management.commands.collect_videos.fetch_video_metadata", self.fake_metadata):
+            call_command("collect_videos", input=str(chat), output=str(output), no_llm=True, stdout=StringIO())
+        rows = list(csv.DictReader(output.open()))
+        self.assertEqual([(r["platform"], r["name_hint"], r["restaurant_id"]) for r in rows],
+                         [("tiktok", "Neptune Oyster", str(self.neptune.id)),
+                          ("youtube", "Neptune Oyster", str(self.neptune.id))])
 
     def test_sheet_csv_input(self):
         sheet = self.tmp / "sheet.csv"

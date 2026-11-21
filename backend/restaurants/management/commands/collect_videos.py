@@ -33,12 +33,27 @@ OUTPUT_FIELDS = [
 ]
 
 
-def name_hint_from(text, urls):
-    for url in urls:
-        text = text.replace(url, " ")
+def _clean_hint(text):
     text = re.sub(r"<[@#!&]?\d+>", " ", text)  # Discord mentions
-    text = re.sub(r"^[\s\-–—:|,>]+|[\s\-–—:|,]+$", "", re.sub(r"\s+", " ", text))
-    return text.strip()
+    return re.sub(r"^[\s\-–—:|,>]+|[\s\-–—:|,]+$", "", re.sub(r"\s+", " ", text)).strip()
+
+
+def name_hint_from(text, urls):
+    """The restaurant name in a "<link> <name>" submission.
+
+    Prefers the text after the last link, so prefixes from a pasted chat log
+    ("[3:45 PM] frank: <link> Neptune Oyster") are ignored. Falls back to the
+    text before the first link for "<name> <link>" submissions.
+    """
+    if not urls:
+        return _clean_hint(text)
+    positions = [(text.find(url), url) for url in urls if url in text]
+    if not positions:
+        return _clean_hint(text)
+    first_start = min(p for p, _ in positions)
+    last_start, last_url = max(positions)
+    after = _clean_hint(text[last_start + len(last_url):])
+    return after or _clean_hint(text[:first_start])
 
 
 def read_discord(channel_id, limit):

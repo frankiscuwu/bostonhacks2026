@@ -190,3 +190,13 @@ class RoomAPITests(TestCase):
             response = getattr(self.client, method)('/api/rooms/ZZZZZZ/' + path, data,
                                                     format='json', HTTP_X_PARTICIPANT_TOKEN=self.token)
             self.assertEqual(response.status_code, 404)
+
+    def test_unknown_metadata_in_selected_restaurant(self):
+        response = self.pick(self.token)
+        self.assertEqual(response.status_code, 200)
+        selected = response.json()['selected_restaurant']
+        self.assertIsNone(selected['price_level'])
+        self.assertIsNone(selected['rating'])
+        self.assertEqual(selected['creator_video_url'], '')
+        self.assertEqual(selected['image_url'], '')
+        self.assertEqual(self.client.get(self.base).json()['selected_restaurant'], selected)

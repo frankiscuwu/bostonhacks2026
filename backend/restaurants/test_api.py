@@ -40,3 +40,29 @@ class RestaurantAPITests(TestCase):
                       {'latitude': 42, 'longitude': -71}):
             with self.subTest(query=query):
                 self.assertEqual(self.client.get('/api/restaurants/', query).status_code, 400)
+
+    def test_unknown_metadata_is_not_invented(self):
+        row = self.client.get('/api/restaurants/').json()[0]
+        self.assertIsNone(row['price_level'])
+        self.assertIsNone(row['rating'])
+        self.assertEqual(row['creator_video_url'], '')
+        self.assertEqual(row['image_url'], '')
+
+    def test_unavailable_numeric_filters_are_not_silently_ignored(self):
+        for query in ({'max_price': 2}, {'min_rating': 4},
+                      {'max_price': 4, 'min_rating': 0}, {'max_price': ''}):
+            with self.subTest(query=query):
+                response = self.client.get('/api/restaurants/', query)
+                self.assertEqual(response.status_code, 400)
+                for key in query:
+                    self.assertIn(key, response.json())
+
+    def test_vote_header_cors_preflight(self):
+        response = self.client.options(
+            '/api/rooms/ABC123/vote/', HTTP_ORIGIN='http://localhost:5173',
+            HTTP_ACCESS_CONTROL_REQUEST_METHOD='POST',
+            HTTP_ACCESS_CONTROL_REQUEST_HEADERS='content-type,x-participant-token',
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Access-Control-Allow-Origin'], 'http://localhost:5173')
+        self.assertIn('x-participant-token', response['Access-Control-Allow-Headers'])

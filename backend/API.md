@@ -21,6 +21,8 @@ See `VIDEOS.md` for how videos are collected.
 Optional query parameters:
 
 - `cuisine`: case-insensitive substring match.
+- `max_price` / `min_rating`: unsupported; return HTTP 400 because the shared
+  catalog has no corresponding metadata. They are not silently ignored.
 - `latitude`, `longitude`, `max_distance_km`: all three required together. Distance is
   straight-line Haversine distance in kilometers, not transit or driving distance.
 
@@ -110,10 +112,35 @@ The existing dotenv loader preserves the explicit environment override. SQLite t
 verify service behavior but cannot exercise PostgreSQL row locks; a separate disposable
 PostgreSQL database is needed for a concurrent transaction integration test.
 
-Django reads restaurants from the shared `restaurants` table and writes only to
-`rooms_*`. The room's restaurant FK has no database constraint because the
+The discovery/group-selection API reads restaurants from the shared `restaurants`
+table and writes room state only to `rooms_*`. The selected-restaurant FK has no database constraint because the
 restaurants table is owned outside Django. Migration `restaurants.0002` only creates
 `restaurants` when missing (fresh SQLite databases); on Supabase it is a no-op.
-`rooms.0002` drops the old FK constraints, and `rooms.0003` removes voting
-(drops `rooms_vote` and the round columns) and adds participant filters and the pick. The legacy `restaurants_restaurant` table is
-no longer used but was not dropped. `BostonFoodLiscences` is not used.
+`rooms.0002` drops the old restaurant FK constraints. Migration
+`restaurants.0003_drop_legacy_restaurant_table` then drops the legacy
+`restaurants_restaurant` table without CASCADE, after depending on both apps' 0002
+migrations. `rooms.0003` removes voting and adds participant filters and random selection;
+`rooms.0004` adds participant location. `BostonFoodLiscences` is not used.
+
+`managed=False` is a schema-management setting, not an ORM write prohibition.
+Do not save/update/delete source rows. See [IMPORTING.md](IMPORTING.md) for the
+retired importer, preserved stash, migration reconciliation, and proposed separate
+enrichment table. The old `0002_restaurant_optional_metadata` must not be restored.
+
+## Creator videos
+
+`GET /api/restaurants/{id}/videos/` returns approved creator-video records in ID
+order, or `[]` for a restaurant without approved videos. Unknown restaurants return
+404. Public submissions and approval writes are not supported (405).
+
+The separate Django-managed `RestaurantVideo` model references shared restaurant
+IDs without modifying source rows. New entries default to pending and are manually
+reviewed in Admin. See [VIDEOS.md](VIDEOS.md) for the exact TypeScript response,
+URL allowlist, review workflow, and YouTube/TikTok/Instagram official embed guidance.
+Existing restaurant response fields remain unchanged.
+
+Migration `restaurants.0004_restaurant_video` creates the video table only. It was
+applied to shared Supabase on November 21, 2026, with no video records inserted.
+See [VIDEOS.md](VIDEOS.md) for the remaining staff permission setup.
+Video administration writes to the new table;
+the discovery endpoint continues reading the shared restaurant table without writes.

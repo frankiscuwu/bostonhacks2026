@@ -62,6 +62,12 @@ class RestaurantFilterSerializer(serializers.Serializer):
     max_distance_km = serializers.FloatField(required=False, min_value=0, max_value=20050)
 
     def validate(self, attrs):
+        unsupported = {"max_price", "min_rating"} & set(self.initial_data)
+        if unsupported:
+            raise serializers.ValidationError({
+                name: "Unavailable: the shared catalog has no price or rating metadata."
+                for name in sorted(unsupported)
+            })
         import math
         for value in attrs.values():
             if isinstance(value, float) and not math.isfinite(value):
@@ -70,3 +76,13 @@ class RestaurantFilterSerializer(serializers.Serializer):
         if any(key in attrs for key in coordinates) and not all(key in attrs for key in coordinates):
             raise serializers.ValidationError("Distance filtering requires latitude, longitude, and max_distance_km.")
         return attrs
+
+
+class RestaurantVideoSerializer(serializers.ModelSerializer):
+    restaurant_id = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = RestaurantVideo
+        fields = ("id", "restaurant_id", "platform", "canonical_url", "platform_video_id",
+                  "creator_name", "creator_handle", "verification_status", "created_at", "updated_at")
+        read_only_fields = fields
