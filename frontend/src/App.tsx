@@ -27,7 +27,6 @@ import {
 import {
     CUISINE_CATEGORIES,
     INITIAL_BOSTON_RESTAURANTS,
-    JAM_PARTICIPANTS,
     PRICE_TIERS,
 } from "./data.ts";
 import type { FilterState, Restaurant } from "./data.ts";
@@ -37,6 +36,11 @@ import {
     joinRoom,
     requestRoomState,
     sendRoomState,
+    updateRoomProfile,
+} from "./websocket.ts";
+import type {
+    RoomParticipant,
+    RoomPreferences,
 } from "./websocket.ts";
 import "./App.css"
 
@@ -565,6 +569,7 @@ function JamHeader({
     onPickWinner,
     roomCode,
     presenceCount,
+    participants,
 }: {
     queueCount: number;
     onCopyInvite: () => void;
@@ -572,6 +577,7 @@ function JamHeader({
     onPickWinner: () => void;
     roomCode: string;
     presenceCount: number;
+    participants: RoomParticipant[];
 }) {
     return (
         <header className="sticky top-0 z-20 bg-[#121212]/90 backdrop-blur-xl border-b border-white/10 px-5 sm:px-8 py-4">
@@ -612,16 +618,19 @@ function JamHeader({
                 <div className="flex items-center gap-2.5 sm:gap-3">
                     {/* Friend Avatars */}
                     <div
-                        className="hidden xl:flex items-center -space-x-2"
-                        title="In Jam: You, Maya, Liam, Chloe, Sam"
+                        className="hidden xl:flex participant-avatars"
+                        title={participants
+                            .map((participant) => participant.name)
+                            .join(", ")}
                     >
-                        {JAM_PARTICIPANTS.map((friend) => (
+                        {participants.slice(0, 6).map((participant) => (
                             <div
-                                key={friend.id}
-                                className={`w-8 h-8 rounded-full ${friend.color} border-2 border-[#121212] flex items-center justify-center text-[11px] font-extrabold shadow relative`}
+                                key={participant.id}
+                                className="participant-avatar"
+                                title={`${participant.name}: ${participant.preferences.cuisines.join(", ") || "Any cuisine"} • ${participant.preferences.prices.join(", ") || "Any price"}`}
                             >
-                                {friend.short}
-                                <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-[#1DB954] ring-2 ring-[#121212]" />
+                                {participant.name.slice(0, 2).toUpperCase()}
+                                <span className="participant-online" />
                             </div>
                         ))}
                     </div>
@@ -648,6 +657,25 @@ function JamHeader({
                     </button>
                 </div>
             </div>
+            {participants.length > 0 && (
+                <div className="participant-list">
+                    {participants.map((participant) => (
+                        <div className="participant-chip" key={participant.id}>
+                            <span className="participant-chip-name">
+                                {participant.name}
+                            </span>
+                            <span>
+                                {participant.preferences.cuisines.join(", ") ||
+                                    "Any cuisine"}
+                            </span>
+                            <span>
+                                {participant.preferences.prices.join(", ") ||
+                                    "Any price"}
+                            </span>
+                        </div>
+                    ))}
+                </div>
+            )}
         </header>
     );
 }
@@ -1533,6 +1561,34 @@ export default function App() {
     );
     const [roomCodeInput, setRoomCodeInput] = useState("");
     const [roomPresenceCount, setRoomPresenceCount] = useState(1);
+    const [roomParticipants, setRoomParticipants] = useState<RoomParticipant[]>([]);
+    const [profileName, setProfileName] = useState(() =>
+        window.localStorage.getItem("boston-jam-name") ?? "",
+    );
+    const [profileCuisines, setProfileCuisines] = useState<string[]>(() => {
+        try {
+            return JSON.parse(
+                window.localStorage.getItem("boston-jam-cuisines") ?? "[]",
+            ) as string[];
+        } catch {
+            return [];
+        }
+    });
+    const [profilePrices, setProfilePrices] = useState<string[]>(() => {
+        try {
+            return JSON.parse(
+                window.localStorage.getItem("boston-jam-prices") ?? "[]",
+            ) as string[];
+        } catch {
+            return [];
+        }
+    });
+    const [profileComplete, setProfileComplete] = useState(
+        () =>
+            Boolean(
+                window.localStorage.getItem("boston-jam-name")?.trim(),
+            ),
+    );
     const roomChannelRef = useRef<RealtimeChannel | null>(null);
     const userIdRef = useRef<string | null>(null);
 
@@ -1581,7 +1637,40 @@ export default function App() {
         setRoomCode(normalizedCode);
     }, []);
 
+    const saveProfile = useCallback(() => {
+        const normalizedName = profileName.trim();
+        if (!normalizedName) return false;
+        window.localStorage.setItem("boston-jam-name", normalizedName);
+        window.localStorage.setItem(
+            "boston-jam-cuisines",
+            JSON.stringify(profileCuisines),
+        );
+        window.localStorage.setItem(
+            "boston-jam-prices",
+            JSON.stringify(profilePrices),
+        );
+        setProfileComplete(true);
+        return true;
+    }, [profileName, profileCuisines, profilePrices]);
+
+    const toggleProfileCuisine = (cuisine: string) => {
+        setProfileCuisines((current) =>
+            current.includes(cuisine)
+                ? current.filter((item) => item !== cuisine)
+                : [...current, cuisine],
+        );
+    };
+
+    const toggleProfilePrice = (price: string) => {
+        setProfilePrices((current) =>
+            current.includes(price)
+                ? current.filter((item) => item !== price)
+                : [...current, price],
+        );
+    };
+
     const createRoom = useCallback(() => {
+        if (!saveProfile()) return;
         const bytes = crypto.getRandomValues(new Uint8Array(4));
         const code = Array.from(bytes, (byte) =>
             byte.toString(16).padStart(2, "0"),
@@ -1590,7 +1679,7 @@ export default function App() {
             .slice(0, 8)
             .toUpperCase();
         enterRoom(code);
-    }, [enterRoom]);
+    }, [enterRoom, saveProfile]);
 
     useEffect(() => {
         const handlePopState = () => setRoomCode(getRoomCodeFromUrl());
@@ -1604,10 +1693,19 @@ export default function App() {
             return;
         }
         userIdRef.current ??= crypto.randomUUID();
+        const preferences: RoomPreferences = {
+            cuisines: profileCuisines,
+            prices: profilePrices,
+        };
+        const participant: RoomParticipant = {
+            id: userIdRef.current,
+            name: profileName.trim() || "Guest",
+            preferences,
+        };
 
         const channel = joinRoom(
             roomCode,
-            { id: userIdRef.current, username: "You" },
+            { id: userIdRef.current, profile: participant },
             {
                 onState: (state) => {
                     setRestaurants(state.restaurants);
@@ -1615,6 +1713,7 @@ export default function App() {
                     setActiveRestaurantId(state.activeRestaurantId);
                 },
                 onPresenceChange: setRoomPresenceCount,
+                onParticipants: setRoomParticipants,
                 onReady: () => {
                     void requestRoomState(roomChannelRef.current);
                 },
@@ -1631,7 +1730,20 @@ export default function App() {
             }
             roomChannelRef.current = null;
         };
-    }, [roomCode]);
+    }, [roomCode, profileName, profileCuisines, profilePrices]);
+
+    useEffect(() => {
+        if (!profileComplete) return;
+        const participant: RoomParticipant = {
+            id: userIdRef.current ?? "local",
+            name: profileName.trim() || "Guest",
+            preferences: {
+                cuisines: profileCuisines,
+                prices: profilePrices,
+            },
+        };
+        void updateRoomProfile(roomChannelRef.current, participant);
+    }, [profileComplete, profileName, profileCuisines, profilePrices]);
 
     useEffect(() => {
         if (!roomCode) return;
@@ -1785,7 +1897,7 @@ export default function App() {
         [restaurants],
     );
 
-    if (!roomCode) {
+    if (!roomCode && profileComplete) {
         return (
             <main className="room-entry">
                 <div className="room-entry-card">
@@ -1794,10 +1906,7 @@ export default function App() {
                         <span>Boston Food Jam</span>
                     </div>
                     <h1>Choose a room</h1>
-                    <p>
-                        Create a new Jam or enter a room code to join your group.
-                    </p>
-
+                    <p>Welcome, {profileName}. Create or join a Jam.</p>
                     <button
                         type="button"
                         onClick={createRoom}
@@ -1805,11 +1914,9 @@ export default function App() {
                     >
                         New room
                     </button>
-
                     <div className="room-entry-divider">
                         <span>or join existing</span>
                     </div>
-
                     <form
                         className="room-entry-form"
                         onSubmit={(event) => {
@@ -1822,16 +1929,168 @@ export default function App() {
                             id="room-code"
                             value={roomCodeInput}
                             onChange={(event) =>
-                                setRoomCodeInput(event.target.value.toUpperCase())
+                                setRoomCodeInput(
+                                    event.target.value.toUpperCase(),
+                                )
                             }
                             placeholder="e.g. A1B2C3"
                             autoComplete="off"
                             maxLength={32}
                         />
-                        <button type="submit" className="room-entry-secondary">
+                        <button
+                            type="submit"
+                            className="room-entry-secondary"
+                        >
                             Enter room
                         </button>
                     </form>
+                </div>
+            </main>
+        );
+    }
+
+    if (!roomCode || !profileComplete) {
+        return (
+            <main className="room-entry">
+                <div className="room-entry-card">
+                    <div className="room-entry-brand">
+                        <Sparkles className="room-entry-brand-icon" />
+                        <span>Boston Food Jam</span>
+                    </div>
+                    <h1>
+                        {roomCode
+                            ? `Join room ${roomCode}`
+                            : "Choose a room"}
+                    </h1>
+                    <p>
+                        Add your name and food preferences, then create or join a Jam.
+                    </p>
+
+                    <form
+                        className="room-profile-form"
+                        onSubmit={(event) => {
+                            event.preventDefault();
+                            if (!saveProfile()) return;
+                            if (roomCode) {
+                                setProfileComplete(true);
+                            }
+                        }}
+                    >
+                        <label htmlFor="profile-name">Your name</label>
+                        <input
+                            id="profile-name"
+                            value={profileName}
+                            onChange={(event) =>
+                                setProfileName(event.target.value)
+                            }
+                            placeholder="What should everyone call you?"
+                            autoComplete="name"
+                            maxLength={40}
+                            required
+                        />
+
+                        <fieldset>
+                            <legend>Preferred cuisines</legend>
+                            <div className="room-choice-grid">
+                                {CUISINE_CATEGORIES.filter(
+                                    (category) => category !== "All",
+                                ).map((cuisine) => (
+                                    <button
+                                        type="button"
+                                        key={cuisine}
+                                        className={
+                                            profileCuisines.includes(cuisine)
+                                                ? "room-choice selected"
+                                                : "room-choice"
+                                        }
+                                        onClick={() =>
+                                            toggleProfileCuisine(cuisine)
+                                        }
+                                    >
+                                        {cuisine}
+                                    </button>
+                                ))}
+                            </div>
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>Price preferences</legend>
+                            <div className="room-choice-grid room-choice-prices">
+                                {PRICE_TIERS.map((price) => (
+                                    <button
+                                        type="button"
+                                        key={price}
+                                        className={
+                                            profilePrices.includes(price)
+                                                ? "room-choice selected"
+                                                : "room-choice"
+                                        }
+                                        onClick={() =>
+                                            toggleProfilePrice(price)
+                                        }
+                                    >
+                                        {price}
+                                    </button>
+                                ))}
+                            </div>
+                        </fieldset>
+
+                        {roomCode ? (
+                            <button
+                                type="submit"
+                                className="room-entry-primary"
+                            >
+                                Join {roomCode}
+                            </button>
+                        ) : null}
+                    </form>
+
+                    {!roomCode && (
+                        <>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    if (saveProfile()) createRoom();
+                                }}
+                                className="room-entry-primary room-entry-room-button"
+                            >
+                                New room
+                            </button>
+
+                            <div className="room-entry-divider">
+                                <span>or join existing</span>
+                            </div>
+
+                            <form
+                                className="room-entry-form"
+                                onSubmit={(event) => {
+                                    event.preventDefault();
+                                    if (!saveProfile()) return;
+                                    enterRoom(roomCodeInput);
+                                }}
+                            >
+                                <label htmlFor="room-code">Room code</label>
+                                <input
+                                    id="room-code"
+                                    value={roomCodeInput}
+                                    onChange={(event) =>
+                                        setRoomCodeInput(
+                                            event.target.value.toUpperCase(),
+                                        )
+                                    }
+                                    placeholder="e.g. A1B2C3"
+                                    autoComplete="off"
+                                    maxLength={32}
+                                />
+                                <button
+                                    type="submit"
+                                    className="room-entry-secondary"
+                                >
+                                    Enter room
+                                </button>
+                            </form>
+                        </>
+                    )}
 
                     {!isRealtimeConfigured() && (
                         <p className="room-entry-warning">
@@ -1887,6 +2146,7 @@ export default function App() {
                         onPickWinner={handlePickWinner}
                         roomCode={roomCode}
                         presenceCount={roomPresenceCount}
+                        participants={roomParticipants}
                     />
 
                     <FilterPanel

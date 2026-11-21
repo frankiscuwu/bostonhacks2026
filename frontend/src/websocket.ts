@@ -12,9 +12,26 @@ export type RoomState = {
     activeRestaurantId: string;
 };
 
+export type RoomPreferences = {
+    cuisines: string[];
+    prices: string[];
+};
+
+export type RoomParticipant = {
+    id: string;
+    name: string;
+    preferences: RoomPreferences;
+};
+
+export type RoomUser = {
+    id: string;
+    profile: RoomParticipant;
+};
+
 export type RoomChannelCallbacks = {
     onState?: (state: RoomState) => void;
     onPresenceChange?: (count: number) => void;
+    onParticipants?: (participants: RoomParticipant[]) => void;
     onReady?: () => void;
     onStateRequest?: () => void;
 };
@@ -31,7 +48,7 @@ export function isRealtimeConfigured() {
 
 export function joinRoom(
     roomId: string,
-    user: { id: string; username: string },
+    user: RoomUser,
     callbacks: RoomChannelCallbacks = {},
 ) {
     if (!supabase) return null;
@@ -61,25 +78,51 @@ export function joinRoom(
 
     room
         .on("presence", { event: "sync" }, () => {
-            callbacks.onPresenceChange?.(
-                Object.keys(room.presenceState()).length,
+            const presence = room.presenceState() as Record<
+                string,
+                Array<{ profile?: RoomParticipant }>
+            >;
+            const participants = Object.entries(presence).flatMap(
+                ([id, states]) =>
+                    states
+                        .map((state) => state.profile)
+                        .filter((profile): profile is RoomParticipant =>
+                            Boolean(profile),
+                        )
+                        .map((profile) => ({ ...profile, id })),
             );
+            const uniqueParticipants = Array.from(
+                new Map(
+                    participants.map((participant) => [
+                        participant.id,
+                        participant,
+                    ]),
+                ).values(),
+            );
+            callbacks.onPresenceChange?.(uniqueParticipants.length);
+            callbacks.onParticipants?.(uniqueParticipants);
         })
         .on("presence", { event: "join" }, () => {
-            callbacks.onPresenceChange?.(
-                Object.keys(room.presenceState()).length,
-            );
+            const presence = room.presenceState() as Record<
+                string,
+                Array<{ profile?: RoomParticipant }>
+            >;
+            const count = Object.keys(presence).length;
+            callbacks.onPresenceChange?.(count);
         })
         .on("presence", { event: "leave" }, () => {
-            callbacks.onPresenceChange?.(
-                Object.keys(room.presenceState()).length,
-            );
+            const presence = room.presenceState() as Record<
+                string,
+                Array<{ profile?: RoomParticipant }>
+            >;
+            const count = Object.keys(presence).length;
+            callbacks.onPresenceChange?.(count);
         });
 
     room.subscribe(async (status) => {
         if (status === "SUBSCRIBED") {
             await room.track({
-                username: user.username,
+                profile: user.profile,
                 online_at: new Date().toISOString(),
             });
             callbacks.onReady?.();
@@ -107,5 +150,16 @@ export async function requestRoomState(room: RealtimeChannel | null) {
         type: "broadcast",
         event: "room-state-request",
         payload: {},
+    });
+}
+
+export async function updateRoomProfile(
+    room: RealtimeChannel | null,
+    profile: RoomParticipant,
+) {
+    if (!room) return;
+    await room.track({
+        profile,
+        online_at: new Date().toISOString(),
     });
 }
