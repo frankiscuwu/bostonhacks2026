@@ -1572,6 +1572,21 @@ const DEFAULT_FILTERS: FilterState = {
 
 // Only the active card loads a player; photo cards fetch their image when near view.
 const FEED_WINDOW = 100;
+
+// Random feed position per restaurant, fixed for this page load so the feed
+// doesn't reshuffle every time the room updates.
+const feedRank = new Map<number, number>();
+function randomFeedOrder<T extends { id: number }>(items: T[]) {
+    const rank = (id: number) => {
+        let r = feedRank.get(id);
+        if (r === undefined) {
+            r = Math.random();
+            feedRank.set(id, r);
+        }
+        return r;
+    };
+    return [...items].sort((a, b) => rank(a.id) - rank(b.id));
+}
 const FILTER_SAVE_DELAY_MS = 400;
 
 function errorMessage(error: unknown) {
@@ -2028,10 +2043,12 @@ export default function App() {
     );
 
     // The feed shows spots matching your own filters, or (when synced) spots
-    // matching everyone. Spots with a creator video come first; the rest follow
-    // with a photo looked up online. A pick only opens the popup.
+    // matching everyone, in a random order. Spots with a creator video come
+    // first; the rest follow with a photo looked up online. A pick only opens the popup.
     const feedRestaurants = useMemo(() => {
-        const source = syncWithGroup ? groupMatches : myMatches;
+        const source = randomFeedOrder(
+            syncWithGroup ? groupMatches : myMatches,
+        );
         return [
             ...source.filter((r) => r.video),
             ...source.filter((r) => !r.video),
