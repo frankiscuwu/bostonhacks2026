@@ -44,9 +44,24 @@ function isOpenAt(openTime: string | null | undefined, closeTime: string | null 
         : current >= open || current < close;
 }
 
+// Django API origin. Vite inlines VITE_API_URL at *build* time, so production
+// hosts (e.g. Vercel) must set it in their environment and rebuild. The
+// localhost fallback is for `npm run dev` only: in a deployed build it would
+// point at each visitor's own machine.
+const configuredApiUrl = (
+    import.meta.env.VITE_API_URL as string | undefined
+)?.replace(/\/$/, "");
+
+if (!configuredApiUrl && import.meta.env.PROD) {
+    console.error(
+        "VITE_API_URL is not set for this production build; API requests will fail. " +
+            "Set it to the deployed Django URL (https://…) and redeploy.",
+    );
+}
+
 export const API_BASE_URL =
-    (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, "") ||
-    "http://127.0.0.1:8000";
+    configuredApiUrl ||
+    (import.meta.env.PROD ? "/api-not-configured" : "http://127.0.0.1:8000");
 
 export type LatLng = { latitude: number; longitude: number };
 
