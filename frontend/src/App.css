@@ -132,7 +132,7 @@ input[type="range"].jam-slider::-webkit-slider-thumb:hover {
     }
 }
 .reel-progress-active {
-    animation: reelProgress 9s linear infinite;
+    animation: reelProgress var(--reel-duration, 9s) linear forwards;
 }
 
 @keyframes confettiDrop {

@@ -50,6 +50,8 @@ function searchableName(name: string) {
 
 const cuisineCache = new Map<string, Promise<string[]>>();
 const imageCache = new Map<number, Promise<string | null>>();
+// Settled lookups, so remounted cards show their photo immediately.
+const resolvedImages = new Map<number, string | null>();
 
 function cuisinePhotos(cuisine: string) {
     const key = cuisine.toLowerCase();
@@ -78,7 +80,12 @@ async function lookUpImage(restaurant: Restaurant): Promise<string | null> {
 export function findOnlineImage(restaurant: Restaurant) {
     let image = imageCache.get(restaurant.id);
     if (!image) {
-        image = lookUpImage(restaurant).catch(() => null);
+        image = lookUpImage(restaurant)
+            .catch(() => null)
+            .then((url) => {
+                resolvedImages.set(restaurant.id, url);
+                return url;
+            });
         imageCache.set(restaurant.id, image);
     }
     return image;
@@ -86,16 +93,18 @@ export function findOnlineImage(restaurant: Restaurant) {
 
 // The restaurant's own photo (video thumbnail) when it has one; otherwise an
 // online photo, looked up once the element scrolls near the viewport.
+// `src` is undefined until a real photo is known (never a text placeholder).
 export function useRestaurantImage<T extends Element>(restaurant: Restaurant) {
     const ref = useRef<T | null>(null);
     const [online, setOnline] = useState<{ id: number; url: string } | null>(
         null,
     );
     const needsLookup = !restaurant.hasPhoto;
+    const cached = resolvedImages.get(restaurant.id);
 
     useEffect(() => {
         const element = ref.current;
-        if (!needsLookup || !element) return;
+        if (!needsLookup || !element || resolvedImages.has(restaurant.id)) return;
         let cancelled = false;
         const observer = new IntersectionObserver(
             (entries) => {
@@ -114,7 +123,10 @@ export function useRestaurantImage<T extends Element>(restaurant: Restaurant) {
         };
     }, [needsLookup, restaurant]);
 
-    const src =
-        needsLookup && online?.id === restaurant.id ? online.url : restaurant.image;
+    const src = !needsLookup
+        ? restaurant.image
+        : online?.id === restaurant.id
+          ? online.url
+          : (cached ?? undefined);
     return { ref, src };
 }

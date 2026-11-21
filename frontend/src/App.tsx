@@ -203,21 +203,21 @@ function ReelCard({
                         referrerPolicy="strict-origin-when-cross-origin"
                     />
                 ) : (
-                    <img
-                        src={imageSrc}
-                        alt={restaurant.name}
-                        loading="lazy"
-                        onError={(e) => {
-                            e.currentTarget.src = `https://placehold.co/600x900/181818/1DB954?text=${encodeURIComponent(
-                                restaurant.name,
-                            )}`;
-                        }}
-                        className={`w-full h-full object-cover opacity-90 transition-transform duration-700 ${
-                            isActive && !isPaused
-                                ? "animate-ken-burns"
-                                : "scale-105"
-                        }`}
-                    />
+                    imageSrc && (
+                        <img
+                            src={imageSrc}
+                            alt={restaurant.name}
+                            loading="lazy"
+                            onError={(e) => {
+                                e.currentTarget.style.visibility = "hidden";
+                            }}
+                            className={`w-full h-full object-cover opacity-90 transition-transform duration-700 ${
+                                isActive && !isPaused
+                                    ? "animate-ken-burns"
+                                    : "scale-105"
+                            }`}
+                        />
+                    )
                 )}
 
                 {/* Readability gradient. Over a playing video it covers only the
@@ -405,7 +405,12 @@ function RestaurantThumb({
 }) {
     const { ref, src } = useRestaurantImage<HTMLImageElement>(restaurant);
     return (
-        <img ref={ref} src={src} alt={restaurant.name} className={className} />
+        <img
+            ref={ref}
+            src={src}
+            alt={src ? restaurant.name : ""}
+            className={`${className} bg-white/5`}
+        />
     );
 }
 
@@ -525,7 +530,20 @@ function VideoScroller({
                                         <div className="h-full w-full bg-white/90" />
                                     )}
                                     {i === activeIndex && (
-                                        <div className="h-full bg-[#1DB954] reel-progress-active" />
+                                        <div
+                                            className="h-full bg-[#1DB954] reel-progress-active"
+                                            style={
+                                                {
+                                                    // Creator videos get longer before auto-advancing.
+                                                    "--reel-duration": r.video
+                                                        ? "30s"
+                                                        : "9s",
+                                                } as React.CSSProperties
+                                            }
+                                            onAnimationEnd={() =>
+                                                navigateReel(1)
+                                            }
+                                        />
                                     )}
                                 </div>
                             ))}
