@@ -162,6 +162,7 @@ export function mapApiRestaurant(row: ApiRestaurant): Restaurant {
         latitude,
         longitude,
         dishHighlight: [row.description, row.address].filter(Boolean).join(" • ") || cuisine,
+        hasPhoto: Boolean(row.image_url),
         image:
             row.image_url ||
             `https://placehold.co/600x900/181818/1DB954?text=${encodeURIComponent(row.name)}`,

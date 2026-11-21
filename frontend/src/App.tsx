@@ -35,6 +35,7 @@ import {
 } from "lucide-react";
 
 import { MAX_DISTANCE_MILES } from "./data.ts";
+import { useRestaurantImage } from "./onlineImages.ts";
 import type { FilterState, Restaurant, RestaurantVideo } from "./data.ts";
 import type { RealtimeChannel } from "@supabase/supabase-js";
 import {
@@ -173,6 +174,8 @@ function ReelCard({
     );
     const video = restaurant.video;
     const showPlayer = Boolean(video && isActive && isPlaying);
+    const { ref: cardRef, src: imageSrc } =
+        useRestaurantImage<HTMLElement>(restaurant);
 
     const handleSurfaceTap = () => {
         if (video) {
@@ -186,6 +189,7 @@ function ReelCard({
 
     return (
         <article
+            ref={cardRef}
             data-id={restaurant.id}
             onClick={handleSurfaceTap}
             className="reel-card w-full h-full snap-start relative overflow-hidden flex flex-col justify-end cursor-pointer select-none"
@@ -203,7 +207,7 @@ function ReelCard({
                     />
                 ) : (
                     <img
-                        src={restaurant.image}
+                        src={imageSrc}
                         alt={restaurant.name}
                         loading="lazy"
                         onError={(e) => {
@@ -223,10 +227,10 @@ function ReelCard({
                     lower part and starts fully transparent, so the video fades
                     into the details instead of ending at a hard dark edge. */}
                 <div
-                    className={`absolute inset-0 pointer-events-none ${showPlayer ? "z-10 top-[40%]" : ""}`}
+                    className={`absolute inset-0 pointer-events-none ${showPlayer ? "z-10 top-[58%]" : ""}`}
                     style={{
                         background: showPlayer
-                            ? "linear-gradient(180deg, rgba(12,12,12,0) 0%, rgba(12,12,12,0.35) 30%, rgba(12,12,12,0.82) 65%, rgba(12,12,12,0.97) 100%)"
+                            ? "linear-gradient(180deg, rgba(12,12,12,0) 0%, rgba(12,12,12,0.18) 35%, rgba(12,12,12,0.55) 75%, rgba(12,12,12,0.8) 100%)"
                             : "linear-gradient(180deg, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0.08) 38%, rgba(12,12,12,0.92) 78%, rgba(12,12,12,0.99) 100%)",
                     }}
                 />
@@ -274,7 +278,7 @@ function ReelCard({
             {/* Bottom Restaurant Overlay Details & Jam Voting Controls */}
             <div
                 onClick={(e) => e.stopPropagation()}
-                className="relative z-20 p-5 sm:p-6 pt-12 space-y-3.5 cursor-default"
+                className="relative z-20 p-5 sm:p-6 pt-12 space-y-3.5 cursor-default [text-shadow:0_1px_4px_rgba(0,0,0,0.85)]"
             >
                 {/* Top Metadata Pills */}
                 <div className="flex flex-wrap items-center gap-1.5">
@@ -398,6 +402,20 @@ function ReelCard({
                 </div>
             </div>
         </article>
+    );
+}
+
+// Small restaurant photo (own thumbnail, or one looked up online).
+function RestaurantThumb({
+    restaurant,
+    className,
+}: {
+    restaurant: Restaurant;
+    className: string;
+}) {
+    const { ref, src } = useRestaurantImage<HTMLImageElement>(restaurant);
+    return (
+        <img ref={ref} src={src} alt={restaurant.name} className={className} />
     );
 }
 
@@ -653,73 +671,40 @@ function JamHeader({
     participants: RoomParticipantView[];
     roomStatus: string;
 }) {
+    const [showFilters, setShowFilters] = useState(false);
+    const showOnline = isRealtimeConfigured();
     const onlineCount = participants.filter((p) => p.online).length;
     return (
-        <header className="sticky top-0 z-20 bg-[#121212]/90 backdrop-blur-xl border-b border-white/10 px-5 sm:px-8 py-4">
-            <div className="flex flex-wrap items-center justify-between gap-3.5">
-                {/* Brand Identity & Room Code */}
-                <div className="flex items-center gap-3.5">
-                    <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#1DB954] to-[#0f7a34] flex items-center justify-center shadow-[0_0_24px_rgba(29,185,84,0.4)] shrink-0">
-                        <Sparkles className="w-6 h-6 text-black" />
+        <header className="sticky top-0 z-20 bg-[#121212]/90 backdrop-blur-xl border-b border-white/10 px-5 sm:px-8 py-4 space-y-3">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+                {/* Brand, room code & match status */}
+                <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#1DB954] to-[#0f7a34] flex items-center justify-center shadow-[0_0_20px_rgba(29,185,84,0.35)] shrink-0">
+                        <Sparkles className="w-5 h-5 text-black" />
                     </div>
-                    <div>
-                        <div className="flex items-center gap-2 flex-wrap">
-                            <h1 className="font-display font-extrabold text-lg sm:text-xl tracking-tight text-white">
-                                Boston Food Jam
-                            </h1>
+                    <div className="min-w-0">
+                        <h1 className="font-display font-extrabold text-lg sm:text-xl leading-tight tracking-tight text-white">
+                            Boston Food Jam
+                        </h1>
+                        <div className="mt-0.5 flex items-center gap-2 text-xs min-w-0">
                             <button
                                 onClick={onCopyInvite}
-                                title="Copy Jam Invite Link"
-                                className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#1DB954]/15 text-[#1DB954] border border-[#1DB954]/30 hover:bg-[#1DB954]/25 transition active:scale-95"
+                                title="Copy invite link"
+                                className="inline-flex items-center gap-1 font-bold text-[#1DB954] hover:text-[#1ed760] transition shrink-0"
                             >
-                                <span>ROOM: {roomCode}</span>
+                                <span>Room {roomCode}</span>
                                 <Copy className="w-3 h-3" />
                             </button>
-                        </div>
-
-                        <p className="text-xs text-white/65 mt-0.5 flex items-center gap-1.5">
-                            <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#1DB954] animate-ping" />
-                            <span>
-                                <strong className="text-white/90">
-                                    {participants.length}{" "}
-                                    {participants.length === 1
-                                        ? "person"
-                                        : "people"}
-                                </strong>{" "}
-                                in this room
-                                {isRealtimeConfigured() &&
-                                    ` • ${onlineCount} online`}
+                            <span className="text-white/25">•</span>
+                            <span className="text-white/60 truncate" title={roomStatus}>
+                                {roomStatus}
                             </span>
-                        </p>
-                        <p className="text-xs text-[#1DB954] font-semibold mt-0.5">
-                            {roomStatus}
-                        </p>
+                        </div>
                     </div>
                 </div>
 
-                {/* Active Participants, Jam Queue Drawer Trigger & Winner CTA */}
-                <div className="flex items-center gap-2.5 sm:gap-3">
-                    {/* Friend Avatars */}
-                    <div
-                        className="hidden xl:flex participant-avatars"
-                        title={participants
-                            .map((participant) => participant.name)
-                            .join(", ")}
-                    >
-                        {participants.slice(0, 6).map((participant) => (
-                            <div
-                                key={participant.id}
-                                className="participant-avatar"
-                                title={`${participant.name}: ${describeFilters(participant.filters, participant.hasLocation).join(" • ")}`}
-                            >
-                                {participant.name.slice(0, 2).toUpperCase()}
-                                {participant.online && (
-                                    <span className="participant-online" />
-                                )}
-                            </div>
-                        ))}
-                    </div>
-
+                {/* Likes & group pick */}
+                <div className="flex items-center gap-2.5 shrink-0">
                     {/* Likes Pill Button */}
                     <button
                         onClick={onOpenQueue}
@@ -749,21 +734,64 @@ function JamHeader({
                 </div>
             </div>
             {participants.length > 0 && (
-                <div className="participant-list">
-                    {participants.map((participant) => (
-                        <div className="participant-chip" key={participant.id}>
-                            <span className="participant-chip-name">
-                                {participant.name}
-                                {participant.isYou && " (you)"}
-                            </span>
-                            {describeFilters(
+                <div>
+                    <div className="flex items-center justify-between gap-3 mb-2">
+                        <span className="text-[11px] font-bold uppercase tracking-wider text-white/45">
+                            {participants.length}{" "}
+                            {participants.length === 1 ? "person" : "people"}
+                            {showOnline && ` • ${onlineCount} online`}
+                        </span>
+                        <button
+                            onClick={() => setShowFilters((prev) => !prev)}
+                            className="text-[11px] font-semibold text-white/55 hover:text-white flex items-center gap-0.5 transition"
+                        >
+                            {showFilters ? "Hide filters" : "Show filters"}
+                            {showFilters ? (
+                                <ChevronUp className="w-3.5 h-3.5" />
+                            ) : (
+                                <ChevronDown className="w-3.5 h-3.5" />
+                            )}
+                        </button>
+                    </div>
+                    <div className="participant-list">
+                        {participants.map((participant) => {
+                            const filterParts = describeFilters(
                                 participant.filters,
                                 participant.hasLocation,
-                            ).map((part) => (
-                                <span key={part}>{part}</span>
-                            ))}
-                        </div>
-                    ))}
+                            );
+                            return (
+                                <div
+                                    key={participant.id}
+                                    className={`participant-chip ${showFilters ? "is-expanded" : ""}`}
+                                    title={
+                                        showFilters
+                                            ? undefined
+                                            : `${participant.name}: ${filterParts.join(" • ")}`
+                                    }
+                                >
+                                    <div className="participant-avatar">
+                                        {participant.name.slice(0, 2).toUpperCase()}
+                                        {showOnline && participant.online && (
+                                            <span className="participant-online" />
+                                        )}
+                                    </div>
+                                    <div className="min-w-0">
+                                        <div className="participant-chip-name">
+                                            {participant.name}
+                                            {participant.isYou && (
+                                                <span className="participant-you"> (you)</span>
+                                            )}
+                                        </div>
+                                        {showFilters && (
+                                            <div className="participant-chip-filters">
+                                                {filterParts.join(" • ")}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
                 </div>
             )}
         </header>
@@ -1269,11 +1297,7 @@ function JamQueueModal({
                                     <span className="text-xs font-extrabold text-white/40 w-4">
                                         #{idx + 1}
                                     </span>
-                                    <img
-                                        src={spot.image}
-                                        alt={spot.name}
-                                        className="w-12 h-12 rounded-xl object-cover shrink-0"
-                                    />
+                                    <RestaurantThumb restaurant={spot} className="w-12 h-12 rounded-xl object-cover shrink-0" />
                                     <div className="min-w-0">
                                         <p className="text-sm font-bold text-white truncate">
                                             {spot.name}
@@ -1352,11 +1376,7 @@ function WinnerModal({
                 </div>
 
                 <div className="w-24 h-24 mx-auto rounded-2xl overflow-hidden border-2 border-[#1DB954] shadow-xl mb-4">
-                    <img
-                        src={winner.image}
-                        alt={winner.name}
-                        className="w-full h-full object-cover"
-                    />
+                    <RestaurantThumb restaurant={winner} className="w-full h-full object-cover" />
                 </div>
 
                 <h3 className="font-display font-extrabold text-2xl text-white">
@@ -1417,7 +1437,7 @@ const DEFAULT_FILTERS: FilterState = {
     openNow: false,
 };
 
-// Only the active card loads a player, so the reel can hold every video spot.
+// Only the active card loads a player; photo cards fetch their image when near view.
 const FEED_WINDOW = 100;
 const FILTER_SAVE_DELAY_MS = 400;
 
@@ -1868,14 +1888,16 @@ export default function App() {
     );
 
     // The feed previews restaurants matching everyone, with the pick pinned first.
-    // The reel is built from the videos table: spots with a creator video that
-    // match everyone's filters. If none match, fall back to plain restaurant
-    // cards so the reel is never empty. The group's pick is always pinned first.
+    // Spots with a creator video come first; matching spots without one follow
+    // with a photo looked up online. The group's pick is always pinned first.
     const feedRestaurants = useMemo(() => {
         const picked = restaurants.find((r) => r.id === pickedId);
         const others = groupMatches.filter((r) => r.id !== pickedId);
-        const withVideos = others.filter((r) => r.video);
-        const rest = withVideos.length > 0 ? withVideos : others;
+        // Video spots first, then the remaining matches (shown with online photos).
+        const rest = [
+            ...others.filter((r) => r.video),
+            ...others.filter((r) => !r.video),
+        ];
         return (picked ? [picked, ...rest] : rest).slice(0, FEED_WINDOW);
     }, [restaurants, groupMatches, pickedId]);
 

@@ -1,11 +1,13 @@
 import math
 
+from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from .models import Restaurant
 from .serializers import RestaurantFilterSerializer, RestaurantSerializer
+from .yelp import yelp_photo_url
 
 
 def distance_km(latitude, longitude, restaurant):
@@ -30,3 +32,13 @@ def restaurant_list(request):
     if "max_distance_km" in values:
         restaurants = [r for r in restaurants if distance_km(values["latitude"], values["longitude"], r) <= values["max_distance_km"]]
     return Response(RestaurantSerializer(restaurants, many=True).data)
+
+
+@api_view(["GET"])
+@authentication_classes([])
+@permission_classes([AllowAny])
+def restaurant_photo(request, restaurant_id):
+    """``{"image_url": str | null, "source": "yelp" | null}`` for cards without a video."""
+    restaurant = get_object_or_404(Restaurant.objects.active(), id=restaurant_id)
+    url = yelp_photo_url(restaurant)
+    return Response({"image_url": url, "source": "yelp" if url else None})

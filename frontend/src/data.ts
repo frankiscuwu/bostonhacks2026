@@ -34,6 +34,8 @@ export type Restaurant = {
     longitude: number;
     dishHighlight: string;
     image: string;
+    // False when `image` is a placeholder (no creator video thumbnail).
+    hasPhoto: boolean;
     // First attached TikTok / Instagram / YouTube video, if any.
     video: RestaurantVideo | null;
     videoCount: number;

@@ -183,6 +183,9 @@ input {
 button {
     border: 0;
     cursor: pointer;
+    /* No browser-default grey box: buttons are styled by their classes. */
+    background: transparent;
+    color: inherit;
 }
 
 img,
@@ -520,9 +523,9 @@ svg {
 [class~="fill-black"] { fill: #000; }
 [class~="fill-white"] { fill: #fff; }
 
-[class~="hover:bg-[#1DB954"]:hover { background-color: #1db954; }
+[class~="hover:bg-[#1DB954]"]:hover { background-color: #1db954; }
 [class~="hover:bg-[#1DB954]/25"]:hover { background-color: rgba(29, 185, 84, 0.25); }
-[class~="hover:bg-[#1ed760"]:hover { background-color: #1ed760; }
+[class~="hover:bg-[#1ed760]"]:hover { background-color: #1ed760; }
 [class~="hover:bg-rose-500/20"]:hover { background-color: rgba(244, 63, 94, 0.20); }
 [class~="hover:bg-white/10"]:hover { background-color: rgba(255, 255, 255, 0.10); }
 [class~="hover:bg-white/15"]:hover { background-color: rgba(255, 255, 255, 0.15); }
@@ -717,51 +720,61 @@ svg {
 
 .participant-list {
     display: flex;
-    gap: 8px;
-    margin-top: 12px;
-    overflow-x: auto;
+    flex-wrap: wrap;
+    gap: 6px;
 }
 
 .participant-chip {
-    display: grid;
-    gap: 2px;
-    min-width: 150px;
-    padding: 8px 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    max-width: 100%;
+    padding: 4px 12px 4px 4px;
     border: 1px solid rgba(255, 255, 255, 0.10);
-    border-radius: 10px;
+    border-radius: 999px;
     background: rgba(255, 255, 255, 0.04);
-    color: rgba(255, 255, 255, 0.60);
-    font-size: 10px;
+}
+
+.participant-chip.is-expanded {
+    align-items: flex-start;
+    padding: 6px 12px 6px 6px;
+    border-radius: 14px;
 }
 
 .participant-chip-name {
     color: #fff;
     font-size: 12px;
-    font-weight: 800;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.participant-avatars {
-    align-items: center;
+.participant-you {
+    color: rgba(255, 255, 255, 0.45);
+    font-weight: 600;
+}
+
+.participant-chip-filters {
+    margin-top: 1px;
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 11px;
+    line-height: 1.35;
 }
 
 .participant-avatar {
     position: relative;
-    width: 32px;
-    height: 32px;
-    margin-left: -8px;
-    border: 2px solid #121212;
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
     background: #1db954;
     color: #000;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 800;
-}
-
-.participant-avatar:first-child {
-    margin-left: 0;
 }
 
 .participant-online {
@@ -970,3 +983,19 @@ svg {
     [class~="xl:w-[42%]"] { width: 42%; }
     [class~="xl:w-[58%]"] { width: 58%; }
 }
+
+/* Utilities used by the header, reel card overlay and Likes modal. */
+[class~="space-y-3"] > * + * { margin-top: 0.75rem; }
+[class~="gap-0.5"] { gap: 0.125rem; }
+[class~="mb-2"] { margin-bottom: 0.5rem; }
+[class~="items-start"] { align-items: flex-start; }
+[class~="top-[58%]"] { top: 58%; }
+[class~="fill-current"] { fill: currentColor; }
+[class~="text-white/25"] { color: rgba(255, 255, 255, 0.25); }
+[class~="text-amber-200"] { color: #fde68a; }
+[class~="bg-amber-400/10"] { background-color: rgba(251, 191, 36, 0.10); }
+[class~="border-amber-400/30"] { border-color: rgba(251, 191, 36, 0.30); }
+[class~="bg-[#121212]/90"] { background-color: rgba(18, 18, 18, 0.90); }
+[class~="shadow-[0_0_20px_rgba(29,185,84,0.35)]"] { box-shadow: 0 0 20px rgba(29, 185, 84, 0.35); }
+[class~="[text-shadow:0_1px_4px_rgba(0,0,0,0.85)]"] { text-shadow: 0 1px 4px rgba(0, 0, 0, 0.85); }
+[class~="hover:text-[#1ed760]"]:hover { color: #1ed760; }
