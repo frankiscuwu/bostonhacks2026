@@ -17,6 +17,8 @@ import {
     Star,
     ChevronUp,
     ChevronDown,
+    ChevronLeft,
+    ChevronRight,
     Maximize2,
     Minimize2,
     Copy,
@@ -83,6 +85,9 @@ type RoomParticipantView = {
 type ReelCardProps = {
     restaurant: Restaurant;
     isActive: boolean;
+    // Which of the restaurant's videos is shown (only the active card changes it).
+    mediaIndex: number;
+    onChangeMedia: (direction: 1 | -1) => void;
     onToggleQueue: ToggleRestaurantHandler;
 };
 
@@ -161,6 +166,8 @@ function videoPlayerUrl(video: RestaurantVideo) {
 function ReelCard({
     restaurant,
     isActive,
+    mediaIndex,
+    onChangeMedia,
     onToggleQueue,
 }: ReelCardProps) {
     const [isPaused, setIsPaused] = useState(false);
@@ -169,7 +176,10 @@ function ReelCard({
     const [isPlaying, setIsPlaying] = useState(
         () => isActive && Boolean(restaurant.video),
     );
-    const video = restaurant.video;
+    const videos = restaurant.videos;
+    const video = videos[mediaIndex] ?? restaurant.video;
+    const hasMultiple = isActive && videos.length > 1;
+    const touchStart = useRef<{ x: number; y: number } | null>(null);
     const showPlayer = Boolean(video && isActive && isPlaying);
     const { ref: cardRef, src: imageSrc } =
         useRestaurantImage<HTMLElement>(restaurant);
@@ -189,12 +199,29 @@ function ReelCard({
             ref={cardRef}
             data-id={restaurant.id}
             onClick={handleSurfaceTap}
+            onTouchStart={(e) => {
+                const t = e.touches[0];
+                touchStart.current = { x: t.clientX, y: t.clientY };
+            }}
+            onTouchEnd={(e) => {
+                const start = touchStart.current;
+                touchStart.current = null;
+                if (!start || !hasMultiple) return;
+                const t = e.changedTouches[0];
+                const dx = t.clientX - start.x;
+                const dy = t.clientY - start.y;
+                // Horizontal swipe flips between this spot's videos.
+                if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+                    onChangeMedia(dx < 0 ? 1 : -1);
+                }
+            }}
             className="reel-card w-full h-full snap-start relative overflow-hidden flex flex-col justify-end cursor-pointer select-none"
         >
             {/* Creator video (after tap) or image backdrop with Ken Burns motion */}
             <div className="absolute inset-0 overflow-hidden bg-[#101010]">
                 {showPlayer && video ? (
                     <iframe
+                        key={video.embedUrl}
                         src={videoPlayerUrl(video)}
                         title={`${restaurant.name} on ${PLATFORM_LABELS[video.platform]}`}
                         className={`reel-player reel-player--${video.platform}`}
@@ -241,6 +268,50 @@ function ReelCard({
                     </>
                 )}
             </div>
+
+            {/* Left / right between this spot's videos */}
+            {hasMultiple && (
+                <>
+                    <div className="absolute top-[86px] inset-x-0 z-20 flex justify-center gap-1.5 pointer-events-none">
+                        {videos.map((v, i) => (
+                            <span
+                                key={`${v.embedUrl}-${i}`}
+                                className={`h-1.5 rounded-full transition-all ${
+                                    i === mediaIndex
+                                        ? "w-4 bg-white"
+                                        : "w-1.5 bg-white/45"
+                                }`}
+                            />
+                        ))}
+                    </div>
+                    {mediaIndex > 0 && (
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onChangeMedia(-1);
+                            }}
+                            title="Previous video (Left Arrow)"
+                            aria-label="Previous video"
+                            className="absolute left-3 top-1/3 -translate-y-1/2 z-30 w-9 h-9 rounded-full bg-black/65 hover:bg-[#1DB954] text-white hover:text-black backdrop-blur-md border border-white/15 flex items-center justify-center transition-all shadow-lg active:scale-90"
+                        >
+                            <ChevronLeft className="w-5 h-5" />
+                        </button>
+                    )}
+                    {mediaIndex < videos.length - 1 && (
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onChangeMedia(1);
+                            }}
+                            title="Next video (Right Arrow)"
+                            aria-label="Next video"
+                            className="absolute right-3 top-1/3 -translate-y-1/2 z-30 w-9 h-9 rounded-full bg-black/65 hover:bg-[#1DB954] text-white hover:text-black backdrop-blur-md border border-white/15 flex items-center justify-center transition-all shadow-lg active:scale-90"
+                        >
+                            <ChevronRight className="w-5 h-5" />
+                        </button>
+                    )}
+                </>
+            )}
 
             {/* Tap-to-play for cards with a real creator video */}
             {video && isActive && !isPlaying && (
@@ -364,8 +435,8 @@ function ReelCard({
                                 ? `@${video.author.replace(/^@/, "")}`
                                 : "Original post"}{" "}
                             on {PLATFORM_LABELS[video.platform]}
-                            {restaurant.videoCount > 1 &&
-                                ` (+${restaurant.videoCount - 1} more)`}
+                            {videos.length > 1 &&
+                                ` (${mediaIndex + 1}/${videos.length})`}
                         </a>
                     )}
                 </div>
@@ -434,6 +505,20 @@ function VideoScroller({
 
     const activeSpot = restaurants[activeIndex] || null;
 
+    // Video shown within the active spot; resets when the active spot changes.
+    const [media, setMedia] = useState({ id: activeSpot?.id, index: 0 });
+    const mediaIndex = media.id === activeSpot?.id ? media.index : 0;
+    const changeMedia = useCallback(
+        (direction: 1 | -1) => {
+            if (!activeSpot) return;
+            const count = activeSpot.videos.length;
+            const next = mediaIndex + direction;
+            if (next < 0 || next >= count) return;
+            setMedia({ id: activeSpot.id, index: next });
+        },
+        [activeSpot, mediaIndex],
+    );
+
     const handleScroll = () => {
         if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
         scrollTimeoutRef.current = setTimeout(() => {
@@ -494,11 +579,17 @@ function VideoScroller({
             } else if (e.key === "ArrowUp") {
                 e.preventDefault();
                 navigateReel(-1);
+            } else if (e.key === "ArrowRight") {
+                e.preventDefault();
+                changeMedia(1);
+            } else if (e.key === "ArrowLeft") {
+                e.preventDefault();
+                changeMedia(-1);
             }
         };
         window.addEventListener("keydown", handleKeyDown);
         return () => window.removeEventListener("keydown", handleKeyDown);
-    }, [navigateReel]);
+    }, [navigateReel, changeMedia]);
 
     return (
         <section
@@ -531,6 +622,7 @@ function VideoScroller({
                                     )}
                                     {i === activeIndex && (
                                         <div
+                                            key={mediaIndex}
                                             className="h-full bg-[#1DB954] reel-progress-active"
                                             style={
                                                 {
@@ -540,9 +632,15 @@ function VideoScroller({
                                                         : "9s",
                                                 } as React.CSSProperties
                                             }
-                                            onAnimationEnd={() =>
-                                                navigateReel(1)
-                                            }
+                                            onAnimationEnd={() => {
+                                                // Play through this spot's videos, then move on.
+                                                if (
+                                                    mediaIndex <
+                                                    r.videos.length - 1
+                                                )
+                                                    changeMedia(1);
+                                                else navigateReel(1);
+                                            }}
                                         />
                                     )}
                                 </div>
@@ -561,19 +659,6 @@ function VideoScroller({
                             </span>
                         </div>
 
-                        {activeSpot && (
-                            <div className="flex items-center gap-2 bg-black/60 backdrop-blur-md border border-white/15 px-3 py-1.5 rounded-full">
-                                <div className="flex items-end gap-[2px] h-3.5">
-                                    <span className="w-[2.5px] bg-[#1DB954] rounded-full eq-bar-1" />
-                                    <span className="w-[2.5px] bg-[#1DB954] rounded-full eq-bar-2" />
-                                    <span className="w-[2.5px] bg-[#1DB954] rounded-full eq-bar-3" />
-                                    <span className="w-[2.5px] bg-[#1DB954] rounded-full eq-bar-4" />
-                                </div>
-                                <span className="text-[11px] font-medium text-white/90 truncate max-w-[130px]">
-                                    {activeSpot.vibe}
-                                </span>
-                            </div>
-                        )}
                     </div>
                 </div>
 
@@ -609,6 +694,12 @@ function VideoScroller({
                                 key={`${restaurant.id}-${restaurant.id === activeSpot?.id}`}
                                 restaurant={restaurant}
                                 isActive={restaurant.id === activeSpot?.id}
+                                mediaIndex={
+                                    restaurant.id === activeSpot?.id
+                                        ? mediaIndex
+                                        : 0
+                                }
+                                onChangeMedia={changeMedia}
                                 onToggleQueue={onToggleQueue}
                             />
                         ))

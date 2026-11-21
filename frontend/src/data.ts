@@ -38,7 +38,8 @@ export type Restaurant = {
     hasPhoto: boolean;
     // First attached TikTok / Instagram / YouTube video, if any.
     video: RestaurantVideo | null;
-    videoCount: number;
+    // Every attached video, in order (video === videos[0]).
+    videos: RestaurantVideo[];
 };
 
 // One participant's filters as edited in the UI. Saved to Django per participant;

@@ -140,6 +140,14 @@ export function mapApiRestaurant(row: ApiRestaurant): Restaurant {
             : null;
     const accentColors = ["#1DB954", "#FF5E3A", "#38bdf8", "#f59e0b", "#a855f7"];
     const accent = accentColors[row.id % accentColors.length];
+    const videos: RestaurantVideo[] = (row.videos ?? []).map((v) => ({
+        platform: v.platform,
+        url: v.url,
+        embedId: v.embed_id,
+        embedUrl: v.embed_url,
+        author: v.author,
+        caption: v.caption,
+    }));
 
     return {
         id: row.id,
@@ -166,17 +174,8 @@ export function mapApiRestaurant(row: ApiRestaurant): Restaurant {
         image:
             row.image_url ||
             `https://placehold.co/600x900/181818/1DB954?text=${encodeURIComponent(row.name)}`,
-        video: row.videos?.[0]
-            ? {
-                  platform: row.videos[0].platform,
-                  url: row.videos[0].url,
-                  embedId: row.videos[0].embed_id,
-                  embedUrl: row.videos[0].embed_url,
-                  author: row.videos[0].author,
-                  caption: row.videos[0].caption,
-              }
-            : null,
-        videoCount: row.videos?.length ?? 0,
+        video: videos[0] ?? null,
+        videos,
     };
 }
 
