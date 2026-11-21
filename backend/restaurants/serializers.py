@@ -1,12 +1,20 @@
 from rest_framework import serializers
 
 from .matching import cuisine_label
-from .models import Restaurant
+from .models import Restaurant, RestaurantVideo
+
+
+class RestaurantVideoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RestaurantVideo
+        fields = ("id", "platform", "url", "embed_id", "embed_url", "thumbnail_url", "author", "caption")
 
 
 class RestaurantSerializer(serializers.ModelSerializer):
-    """Public restaurant shape. The source table has no price, rating or media,
-    so those keys are always null/empty; they are kept for client compatibility."""
+    """Public restaurant shape. The source table has no price or rating, so those
+    are always null. ``creator_video_url`` / ``image_url`` come from the first
+    attached video (empty when there is none); ``videos`` lists all of them.
+    Prefetch ``videos`` when serializing many restaurants."""
     name = serializers.CharField(read_only=True)
     address = serializers.CharField(source="full_address", read_only=True)
     description = serializers.CharField(source="descript", read_only=True, allow_null=True)
@@ -16,12 +24,13 @@ class RestaurantSerializer(serializers.ModelSerializer):
     creator_video_url = serializers.SerializerMethodField()
     image_url = serializers.SerializerMethodField()
     cuisine_label = serializers.SerializerMethodField()
+    videos = RestaurantVideoSerializer(many=True, read_only=True)
 
     class Meta:
         model = Restaurant
         fields = ("id", "name", "address", "cuisine", "cuisine_label", "price_level", "rating",
                   "latitude", "longitude", "creator_video_url", "image_url", "description",
-                  "open_time", "close_time", "license_category")
+                  "open_time", "close_time", "license_category", "videos")
 
     def get_price_level(self, obj):
         return None
@@ -29,11 +38,18 @@ class RestaurantSerializer(serializers.ModelSerializer):
     def get_rating(self, obj):
         return None
 
+    @staticmethod
+    def _first_video(obj):
+        videos = list(obj.videos.all())  # uses the prefetch cache when present
+        return videos[0] if videos else None
+
     def get_creator_video_url(self, obj):
-        return ""
+        video = self._first_video(obj)
+        return video.url if video else ""
 
     def get_image_url(self, obj):
-        return ""
+        video = self._first_video(obj)
+        return video.thumbnail_url if video else ""
 
     def get_cuisine_label(self, obj):
         return cuisine_label(obj.cuisine)

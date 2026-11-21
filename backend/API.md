@@ -11,10 +11,13 @@ A restaurant is *active* when `licstatus = 'Active'` and it has latitude and lon
 
 `GET /api/restaurants/` returns an array of active restaurants in ascending ID order.
 `name` is `dbaname`, falling back to `businessname`; `address` joins street, city, state
-and ZIP. The source has no price, rating or media, so `price_level` and `rating` are
-always `null` and `creator_video_url`/`image_url` are empty strings. `cuisine` is the
+and ZIP. The source has no price or rating, so `price_level` and `rating` are
+always `null`. `cuisine` is the
 raw source value (often `null`, sometimes a list like `donut;coffee_shop`), and
-`open_time`/`close_time` are `HH:MM` strings or `null`.
+`open_time`/`close_time` are `HH:MM` strings or `null`. `videos` lists attached TikTok /
+Instagram / YouTube videos (`platform`, `url`, `embed_id`, `embed_url`, `thumbnail_url`,
+`author`, `caption`); `creator_video_url` and `image_url` come from the first one, or are empty.
+See `VIDEOS.md` for how videos are collected.
 Optional query parameters:
 
 - `cuisine`: case-insensitive substring match.

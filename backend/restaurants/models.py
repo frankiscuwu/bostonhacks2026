@@ -51,3 +51,39 @@ class Restaurant(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class RestaurantVideo(models.Model):
+    """A TikTok / Instagram / YouTube video about a restaurant (Django-managed).
+
+    Kept in its own table instead of a column on the shared ``restaurants`` table,
+    which Django only reads. See restaurants/videos.py for URL parsing.
+    """
+
+    class Platform(models.TextChoices):
+        TIKTOK = "tiktok", "TikTok"
+        INSTAGRAM = "instagram", "Instagram"
+        YOUTUBE = "youtube", "YouTube"
+
+    # The restaurants table is owned outside Django, so no database FK constraint.
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, db_constraint=False,
+                                   related_name="videos")
+    platform = models.CharField(max_length=20, choices=Platform.choices)
+    url = models.URLField(max_length=500, help_text="Canonical link to the post.")
+    embed_id = models.CharField(max_length=100, help_text="Platform video id / shortcode.")
+    embed_url = models.URLField(max_length=500, help_text="URL to load in an iframe.")
+    thumbnail_url = models.URLField(max_length=2048, blank=True)
+    author = models.CharField(max_length=200, blank=True)
+    caption = models.TextField(blank=True)
+    added_by = models.CharField(max_length=100, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ("created_at", "id")
+        constraints = [
+            models.UniqueConstraint(fields=["restaurant", "platform", "embed_id"],
+                                    name="unique_restaurant_video"),
+        ]
+
+    def __str__(self):
+        return f"{self.get_platform_display()} {self.embed_id} → restaurant {self.restaurant_id}"

@@ -8,3 +8,4 @@ psycopg-binary==3.3.9
 python-dotenv==1.2.4
 sqlparse==0.6.1
 gunicorn
+openai==3.57.0

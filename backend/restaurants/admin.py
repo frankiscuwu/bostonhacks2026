@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Restaurant
+from .models import Restaurant, RestaurantVideo
 
 
 @admin.register(Restaurant)
@@ -18,3 +18,11 @@ class RestaurantAdmin(admin.ModelAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return False
+
+
+@admin.register(RestaurantVideo)
+class RestaurantVideoAdmin(admin.ModelAdmin):
+    list_display = ("restaurant_id", "platform", "author", "url", "added_by", "created_at")
+    list_filter = ("platform",)
+    search_fields = ("url", "author", "caption", "restaurant__dbaname", "restaurant__businessname")
+    raw_id_fields = ("restaurant",)

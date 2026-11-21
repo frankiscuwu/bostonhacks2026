@@ -23,7 +23,7 @@ def restaurant_list(request):
     filters = RestaurantFilterSerializer(data=request.query_params)
     filters.is_valid(raise_exception=True)
     values = filters.validated_data
-    restaurants = Restaurant.objects.active().order_by("id")
+    restaurants = Restaurant.objects.active().order_by("id").prefetch_related("videos")
     if "cuisine" in values:
         # Source values can be semicolon lists such as "donut;coffee_shop".
         restaurants = restaurants.filter(cuisine__icontains=values["cuisine"])
