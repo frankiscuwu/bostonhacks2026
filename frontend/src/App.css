@@ -278,6 +278,7 @@ svg {
 [class~="w-16"] { width: 4rem; }
 [class~="w-24"] { width: 6rem; }
 [class~="w-[280px]"] { width: 280px; }
+[class~="w-[92vw]"] { width: 92vw; }
 [class~="w-[2.5px]"] { width: 2.5px; }
 [class~="h-full"] { height: 100%; }
 [class~="h-auto"] { height: auto; }
@@ -297,6 +298,7 @@ svg {
 [class~="h-16"] { height: 4rem; }
 [class~="h-24"] { height: 6rem; }
 [class~="h-[192px]"] { height: 192px; }
+[class~="h-[400px]"] { height: 400px; }
 [class~="h-[80vh]"] { height: 80vh; }
 [class~="min-h-screen"] { min-height: 100vh; }
 [class~="max-h-[830px]"] { max-height: 830px; }
@@ -948,6 +950,8 @@ svg {
 }
 
 @media (min-width: 640px) {
+    [class~="sm:w-[520px]"] { width: 520px; }
+    [class~="sm:h-[430px]"] { height: 430px; }
     [class~="sm:grid-cols-2"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     [class~="sm:grid-cols-3"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     [class~="sm:p-5"] { padding: 1.25rem; }
@@ -999,3 +1003,26 @@ svg {
 [class~="shadow-[0_0_20px_rgba(29,185,84,0.35)]"] { box-shadow: 0 0 20px rgba(29, 185, 84, 0.35); }
 [class~="[text-shadow:0_1px_4px_rgba(0,0,0,0.85)]"] { text-shadow: 0 1px 4px rgba(0, 0, 0, 0.85); }
 [class~="hover:text-[#1ed760]"]:hover { color: #1ed760; }
+
+/* Creator video player. Slightly oversized so the embed's own page background
+   never shows as a hairline at the card edges. */
+.reel-player {
+    position: absolute;
+    z-index: 10;
+    inset: -2px;
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+    border: 0;
+    background: #000;
+    color-scheme: dark;
+}
+
+/* Instagram only offers a post-card embed (white header, video, likes footer).
+   Shift the header out of view and scale so the 9:16 video fills the card. */
+.reel-player--instagram {
+    --ig-header: 56px;
+    top: calc(var(--ig-header) * -1.12);
+    height: calc((100% + var(--ig-header) + 200px));
+    transform: scale(1.12);
+    transform-origin: top center;
+}

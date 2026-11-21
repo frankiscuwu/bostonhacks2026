@@ -83,7 +83,6 @@ type RoomParticipantView = {
 type ReelCardProps = {
     restaurant: Restaurant;
     isActive: boolean;
-    isPicked: boolean;
     onToggleQueue: ToggleRestaurantHandler;
 };
 
@@ -91,7 +90,6 @@ type VideoScrollerProps = {
     restaurants: Restaurant[];
     activeId: number | null;
     onSelectActive: (id: number) => void;
-    pickedId: number | null;
     onToggleQueue: ToggleRestaurantHandler;
     onResetFilters: () => void;
     feedRef: RefObject<HTMLDivElement | null>;
@@ -163,7 +161,6 @@ function videoPlayerUrl(video: RestaurantVideo) {
 function ReelCard({
     restaurant,
     isActive,
-    isPicked,
     onToggleQueue,
 }: ReelCardProps) {
     const [isPaused, setIsPaused] = useState(false);
@@ -200,7 +197,7 @@ function ReelCard({
                     <iframe
                         src={videoPlayerUrl(video)}
                         title={`${restaurant.name} on ${PLATFORM_LABELS[video.platform]}`}
-                        className="absolute inset-0 w-full h-full border-0 z-10"
+                        className={`reel-player reel-player--${video.platform}`}
                         allow="autoplay; encrypted-media; fullscreen; picture-in-picture; clipboard-write"
                         allowFullScreen
                         referrerPolicy="strict-origin-when-cross-origin"
@@ -375,16 +372,9 @@ function ReelCard({
 
                 {/* Group Match Status & Like */}
                 <div className="pt-2.5 border-t border-white/15 flex items-center justify-between gap-2">
-                    {isPicked ? (
-                        <span className="px-3 py-1.5 rounded-full text-xs font-extrabold bg-[#FF5E3A] text-white flex items-center gap-1.5">
-                            <Trophy className="w-3.5 h-3.5" />
-                            <span>The group's pick</span>
-                        </span>
-                    ) : (
-                        <span className="text-xs font-semibold text-white/70 truncate">
-                            Matches everyone's filters
-                        </span>
-                    )}
+                    <span className="text-xs font-semibold text-white/70 truncate">
+                        Matches everyone's filters
+                    </span>
 
                     <button
                         onClick={() => onToggleQueue(restaurant.id)}
@@ -426,7 +416,6 @@ function VideoScroller({
     restaurants,
     activeId,
     onSelectActive,
-    pickedId,
     onToggleQueue,
     onResetFilters,
     feedRef,
@@ -602,7 +591,6 @@ function VideoScroller({
                                 key={`${restaurant.id}-${restaurant.id === activeSpot?.id}`}
                                 restaurant={restaurant}
                                 isActive={restaurant.id === activeSpot?.id}
-                                isPicked={restaurant.id === pickedId}
                                 onToggleQueue={onToggleQueue}
                             />
                         ))
@@ -1419,8 +1407,8 @@ function WinnerModal({
                         onClick={onClose}
                         className="flex-1 py-3 rounded-xl bg-[#1DB954] hover:bg-[#1ed760] text-sm font-extrabold text-black transition shadow-lg flex items-center justify-center gap-1.5"
                     >
-                        <Navigation className="w-4 h-4" />
-                        <span>Let's go</span>
+                        <X className="w-4 h-4" />
+                        <span>Close</span>
                     </button>
                 </div>
             </div>
@@ -1887,19 +1875,15 @@ export default function App() {
         [restaurants, myApiFilters],
     );
 
-    // The feed previews restaurants matching everyone, with the pick pinned first.
-    // Spots with a creator video come first; matching spots without one follow
-    // with a photo looked up online. The group's pick is always pinned first.
+    // The feed previews restaurants matching everyone. Spots with a creator video
+    // come first; matching spots without one follow with a photo looked up online.
+    // A pick only opens the popup; it doesn't change the feed.
     const feedRestaurants = useMemo(() => {
-        const picked = restaurants.find((r) => r.id === pickedId);
-        const others = groupMatches.filter((r) => r.id !== pickedId);
-        // Video spots first, then the remaining matches (shown with online photos).
-        const rest = [
-            ...others.filter((r) => r.video),
-            ...others.filter((r) => !r.video),
-        ];
-        return (picked ? [picked, ...rest] : rest).slice(0, FEED_WINDOW);
-    }, [restaurants, groupMatches, pickedId]);
+        return [
+            ...groupMatches.filter((r) => r.video),
+            ...groupMatches.filter((r) => !r.video),
+        ].slice(0, FEED_WINDOW);
+    }, [groupMatches]);
 
     const scrollToRestaurant = useCallback((id: number) => {
         setTimeout(() => {
@@ -1922,12 +1906,8 @@ export default function App() {
         }
         if (!selectedAt || selectedAt === seenSelectionRef.current) return;
         seenSelectionRef.current = selectedAt;
-        setTimeout(() => {
-            setShowPick(true);
-            if (pickedId !== null) setActiveRestaurantId(pickedId);
-        }, 0);
-        if (pickedId !== null) scrollToRestaurant(pickedId);
-    }, [room, pickedId, scrollToRestaurant]);
+        setTimeout(() => setShowPick(true), 0);
+    }, [room]);
 
     // Keep activeRestaurantId synchronized when the feed changes
     useEffect(() => {
@@ -2065,11 +2045,7 @@ export default function App() {
         ? "Connecting to room…"
         : groupMatches.length === 0
           ? "No spot matches everyone's filters yet"
-          : `${groupMatches.length} ${groupMatches.length === 1 ? "spot matches" : "spots match"} everyone${
-                pickedRestaurant
-                    ? ` • Current pick: ${pickedRestaurant.name}`
-                    : ""
-            }${!session ? " • viewing only" : ""}`;
+          : `${groupMatches.length} ${groupMatches.length === 1 ? "spot matches" : "spots match"} everyone${!session ? " • viewing only" : ""}`;
 
     if (!roomCode && profileComplete) {
         return (
@@ -2303,7 +2279,6 @@ export default function App() {
                     restaurants={feedRestaurants}
                     activeId={activeRestaurantId}
                     onSelectActive={setActiveRestaurantId}
-                    pickedId={pickedId}
                     onToggleQueue={handleToggleQueue}
                     onResetFilters={handleResetFilters}
                     feedRef={feedRef}
