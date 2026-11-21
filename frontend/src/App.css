@@ -80,23 +80,6 @@
     animation: floatUpParticle 3.8s ease-out infinite 2.5s;
 }
 
-@keyframes heartBurstAnim {
-    0% {
-        transform: scale(0.4);
-        opacity: 0;
-    }
-    40% {
-        transform: scale(1.25);
-        opacity: 1;
-    }
-    100% {
-        transform: scale(1.55);
-        opacity: 0;
-    }
-}
-.animate-heart-burst {
-    animation: heartBurstAnim 0.8s ease-out forwards;
-}
 
 input[type="range"].jam-slider {
     -webkit-appearance: none;

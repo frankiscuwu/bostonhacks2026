@@ -12,10 +12,9 @@ import type { LatLngExpression } from "leaflet";
 import L from "leaflet";
 import {
     Heart,
+    AlertTriangle,
     MapPin,
     Star,
-    Plus,
-    Check,
     ChevronUp,
     ChevronDown,
     Maximize2,
@@ -25,7 +24,6 @@ import {
     RotateCcw,
     Sparkles,
     Pause,
-    ListMusic,
     X,
     Navigation,
     Calendar,
@@ -168,43 +166,22 @@ function ReelCard({
     onToggleQueue,
 }: ReelCardProps) {
     const [isPaused, setIsPaused] = useState(false);
-    const [showHeartBurst, setShowHeartBurst] = useState(false);
-    // Real video player, loaded on tap. Cards remount when they become
-    // active/inactive, so this resets (and the iframe unloads) on scroll.
     // The active card loads its creator video right away (cards remount when they
     // become active/inactive, so only one player is ever loaded at a time).
     const [isPlaying, setIsPlaying] = useState(
         () => isActive && Boolean(restaurant.video),
     );
-    const lastTapRef = useRef<number>(0);
     const video = restaurant.video;
     const showPlayer = Boolean(video && isActive && isPlaying);
 
     const handleSurfaceTap = () => {
-        const now = Date.now();
-        if (
-            video &&
-            isActive &&
-            !isPlaying &&
-            now - lastTapRef.current >= 280
-        ) {
-            // A single tap on a card with a real video starts it.
-            setIsPlaying(true);
-            lastTapRef.current = now;
-            return;
-        }
-        if (now - lastTapRef.current < 280) {
-            // Double-tap triggers heart burst + adds to your shortlist
-            setShowHeartBurst(true);
-            if (!restaurant.inQueue) {
-                onToggleQueue(restaurant.id);
-            }
-            setTimeout(() => setShowHeartBurst(false), 850);
+        if (video) {
+            // A tap on a card with a real video starts it.
+            if (isActive && !isPlaying) setIsPlaying(true);
         } else {
-            // Single tap toggles simulated video playback pause/play
+            // A tap on an image card pauses/resumes the Ken Burns motion.
             setIsPaused((prev) => !prev);
         }
-        lastTapRef.current = now;
     };
 
     return (
@@ -242,12 +219,15 @@ function ReelCard({
                     />
                 )}
 
-                {/* Deep Readability Gradient & Accent Vignette */}
+                {/* Readability gradient. Over a playing video it covers only the
+                    lower part and starts fully transparent, so the video fades
+                    into the details instead of ending at a hard dark edge. */}
                 <div
-                    className={`absolute inset-0 pointer-events-none ${showPlayer ? "z-10 top-1/2" : ""}`}
+                    className={`absolute inset-0 pointer-events-none ${showPlayer ? "z-10 top-[40%]" : ""}`}
                     style={{
-                        background:
-                            "linear-gradient(180deg, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0.08) 38%, rgba(12,12,12,0.92) 78%, rgba(12,12,12,0.99) 100%)",
+                        background: showPlayer
+                            ? "linear-gradient(180deg, rgba(12,12,12,0) 0%, rgba(12,12,12,0.35) 30%, rgba(12,12,12,0.82) 65%, rgba(12,12,12,0.97) 100%)"
+                            : "linear-gradient(180deg, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0.08) 38%, rgba(12,12,12,0.92) 78%, rgba(12,12,12,0.99) 100%)",
                     }}
                 />
 
@@ -261,17 +241,8 @@ function ReelCard({
                 )}
             </div>
 
-            {/* Center Play/Pause Indicator or Double-Tap Heart Burst */}
-            {showHeartBurst && (
-                <div className="absolute inset-0 z-30 flex items-center justify-center pointer-events-none">
-                    <div className="animate-heart-burst p-5 rounded-full bg-[#FF5E3A]/25 backdrop-blur-md border border-[#FF5E3A]/50 shadow-[0_0_40px_rgba(255,94,58,0.7)]">
-                        <Heart className="w-16 h-16 text-[#FF5E3A] fill-[#FF5E3A]" />
-                    </div>
-                </div>
-            )}
-
             {/* Tap-to-play for cards with a real creator video */}
-            {video && isActive && !isPlaying && !showHeartBurst && (
+            {video && isActive && !isPlaying && (
                 <button
                     onClick={(e) => {
                         e.stopPropagation();
@@ -291,7 +262,7 @@ function ReelCard({
                 </button>
             )}
 
-            {isPaused && !showHeartBurst && !video && (
+            {isPaused && !video && (
                 <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none">
                     <div className="px-4 py-2.5 rounded-full bg-black/65 backdrop-blur-md border border-white/20 flex items-center gap-2 text-xs font-bold text-white shadow-xl">
                         <Pause className="w-4 h-4 text-[#1DB954]" />
@@ -396,12 +367,9 @@ function ReelCard({
                                 ` (+${restaurant.videoCount - 1} more)`}
                         </a>
                     )}
-                    <span className="px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-white/55">
-                        Double-tap to save to your queue
-                    </span>
                 </div>
 
-                {/* Group Match Status & Queue */}
+                {/* Group Match Status & Like */}
                 <div className="pt-2.5 border-t border-white/15 flex items-center justify-between gap-2">
                     {isPicked ? (
                         <span className="px-3 py-1.5 rounded-full text-xs font-extrabold bg-[#FF5E3A] text-white flex items-center gap-1.5">
@@ -422,17 +390,10 @@ function ReelCard({
                                 : "bg-black/60 hover:bg-white/15 text-white border-white/20"
                         }`}
                     >
-                        {restaurant.inQueue ? (
-                            <>
-                                <Check className="w-3.5 h-3.5" />
-                                <span>Queued</span>
-                            </>
-                        ) : (
-                            <>
-                                <Plus className="w-3.5 h-3.5" />
-                                <span>Jam Queue</span>
-                            </>
-                        )}
+                        <Heart
+                            className={`w-3.5 h-3.5 ${restaurant.inQueue ? "fill-current" : ""}`}
+                        />
+                        <span>{restaurant.inQueue ? "Liked" : "Like"}</span>
                     </button>
                 </div>
             </div>
@@ -759,13 +720,13 @@ function JamHeader({
                         ))}
                     </div>
 
-                    {/* Jam Queue Pill Button */}
+                    {/* Likes Pill Button */}
                     <button
                         onClick={onOpenQueue}
                         className="px-3.5 py-2.5 rounded-full bg-white/10 hover:bg-white/15 border border-white/15 text-white font-bold text-xs transition flex items-center gap-1.5 active:scale-95"
                     >
-                        <ListMusic className="w-3.5 h-3.5 text-[#1DB954]" />
-                        <span>Queue</span>
+                        <Heart className="w-3.5 h-3.5 text-[#1DB954]" />
+                        <span>Likes</span>
                         <span className="px-1.5 py-0.2 rounded-full bg-[#1DB954] text-black text-[10px] font-extrabold">
                             {queueCount}
                         </span>
@@ -1264,9 +1225,9 @@ function JamQueueModal({
             <div className="w-full max-w-lg rounded-3xl bg-[#181818] border border-white/15 p-6 shadow-2xl">
                 <div className="flex items-center justify-between pb-4 border-b border-white/10">
                     <div className="flex items-center gap-2.5">
-                        <ListMusic className="w-5 h-5 text-[#1DB954]" />
+                        <Heart className="w-5 h-5 text-[#1DB954]" />
                         <h3 className="font-display font-extrabold text-lg text-white">
-                            My Jam Queue ({sortedQueue.length})
+                            My Likes ({sortedQueue.length})
                         </h3>
                     </div>
                     <button
@@ -1277,11 +1238,20 @@ function JamQueueModal({
                     </button>
                 </div>
 
+                <p className="mt-4 px-3 py-2.5 rounded-xl bg-amber-400/10 border border-amber-400/30 text-xs text-amber-200 flex items-start gap-2">
+                    <AlertTriangle className="w-4 h-4 shrink-0 text-amber-300" />
+                    <span>
+                        Likes aren't saved. They only live on this device and
+                        disappear when you refresh or leave the page, and
+                        other people in the room can't see them.
+                    </span>
+                </p>
+
                 <div className="py-4 max-h-[60vh] overflow-y-auto space-y-2.5">
                     {sortedQueue.length === 0 ? (
                         <p className="text-sm text-white/60 text-center py-8">
-                            No restaurants in the Jam Queue yet. Tap "+ Jam
-                            Queue" on any reel to shortlist spots!
+                            No likes yet. Tap "Like" on any reel to shortlist
+                            spots!
                         </p>
                     ) : (
                         sortedQueue.map((spot, idx) => (
@@ -2028,8 +1998,8 @@ export default function App() {
         if (restaurant) {
             addToast(
                 adding
-                    ? `Added ${restaurant.name} to Jam Queue`
-                    : `Removed ${restaurant.name} from Jam Queue`,
+                    ? `Liked ${restaurant.name}`
+                    : `Removed ${restaurant.name} from Likes`,
             );
         }
     };
