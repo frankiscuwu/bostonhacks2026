@@ -136,6 +136,8 @@ reviewed in Admin. See [VIDEOS.md](VIDEOS.md) for the exact TypeScript response,
 URL allowlist, review workflow, and YouTube/TikTok/Instagram official embed guidance.
 Existing restaurant response fields remain unchanged.
 
-Migration `restaurants.0004_restaurant_video` creates the video table only. It has
-not been applied to shared Supabase. Video administration writes to the new table;
+Migration `restaurants.0004_restaurant_video` creates the video table only. It was
+applied to shared Supabase on November 21, 2026, with no video records inserted.
+See [VIDEOS.md](VIDEOS.md) for the remaining staff permission setup.
+Video administration writes to the new table;
 the discovery endpoint continues reading the shared restaurant table without writes.

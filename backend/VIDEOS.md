@@ -8,8 +8,15 @@ one restaurant; the same video may reference multiple restaurants.
 ## Migration and ownership
 
 `restaurants.0004_restaurant_video` depends on the existing restaurant 0003 migration
-and creates only the video table, its index, and uniqueness constraint. It has not
-been applied to shared Supabase. Do not run it there without approval.
+and creates only the video table, its index, and uniqueness constraint. It was
+applied to shared Supabase on November 21, 2026. Verification confirmed zero video
+records and unchanged restaurant, room, and participant data.
+
+The deployment used Django's migration executor without `post_migrate` hooks to
+avoid unrelated writes. The video content type and model permissions have not yet
+been provisioned. Before non-superuser staff can curate videos, an administrator
+must provision and assign the appropriate video model permissions. Existing
+superusers can access the registered video Admin.
 
 The restaurant relation uses `db_constraint=False`, preserving the external table's
 ownership. Model validation and Admin require an existing restaurant when saving;
