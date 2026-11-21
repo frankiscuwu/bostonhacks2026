@@ -672,7 +672,7 @@ function JamHeader({
                     </div>
                     <div className="min-w-0">
                         <h1 className="font-display font-extrabold text-lg sm:text-xl leading-tight tracking-tight text-white">
-                            Boston Food Jam
+                            ReelHungry
                         </h1>
                         <div className="mt-0.5 flex items-center gap-2 text-xs min-w-0">
                             <button
@@ -2053,7 +2053,7 @@ export default function App() {
                 <div className="room-entry-card">
                     <div className="room-entry-brand">
                         <Sparkles className="room-entry-brand-icon" />
-                        <span>Boston Food Jam</span>
+                        <span>ReelHungry</span>
                     </div>
                     <h1>Choose a room</h1>
                     <p>Welcome, {profileName}. Create or join a Jam.</p>
@@ -2108,7 +2108,7 @@ export default function App() {
                 <div className="room-entry-card">
                     <div className="room-entry-brand">
                         <Sparkles className="room-entry-brand-icon" />
-                        <span>Boston Food Jam</span>
+                        <span>ReelHungry</span>
                     </div>
                     <h1>
                         {roomCode ? `Join room ${roomCode}` : "Choose a room"}
@@ -2220,7 +2220,7 @@ export default function App() {
                 <div className="room-entry-card">
                     <div className="room-entry-brand">
                         <Sparkles className="room-entry-brand-icon" />
-                        <span>Boston Food Jam</span>
+                        <span>ReelHungry</span>
                     </div>
                     <h1>Room {roomCode}</h1>
                     <p role="alert">{roomError}</p>
