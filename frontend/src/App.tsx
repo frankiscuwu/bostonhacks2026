@@ -32,6 +32,7 @@ import {
     Clock,
     SlidersHorizontal,
     Shuffle,
+    Users,
     Play,
     ExternalLink,
 } from "lucide-react";
@@ -88,6 +89,8 @@ type ReelCardProps = {
     // Which of the restaurant's videos is shown (only the active card changes it).
     mediaIndex: number;
     onChangeMedia: (direction: 1 | -1) => void;
+    // Whether this spot also matches everyone else's filters.
+    matchesGroup: boolean;
     onToggleQueue: ToggleRestaurantHandler;
 };
 
@@ -98,6 +101,10 @@ type VideoScrollerProps = {
     onToggleQueue: ToggleRestaurantHandler;
     onResetFilters: () => void;
     feedRef: RefObject<HTMLDivElement | null>;
+    // Off: the feed follows only your filters. On: everyone sees the group's matches.
+    syncWithGroup: boolean;
+    onToggleSync: () => void;
+    groupMatchIds: Set<number>;
 };
 
 type FilterPanelProps = {
@@ -168,6 +175,7 @@ function ReelCard({
     isActive,
     mediaIndex,
     onChangeMedia,
+    matchesGroup,
     onToggleQueue,
 }: ReelCardProps) {
     const [isPaused, setIsPaused] = useState(false);
@@ -218,7 +226,7 @@ function ReelCard({
             className="reel-card w-full h-full snap-start relative overflow-hidden flex flex-col justify-end cursor-pointer select-none"
         >
             {/* Creator video (after tap) or image backdrop with Ken Burns motion */}
-            <div className="absolute inset-0 overflow-hidden bg-[#101010]">
+            <div className="reel-media absolute inset-0 overflow-hidden bg-[#101010]">
                 {showPlayer && video ? (
                     <iframe
                         key={video.embedUrl}
@@ -254,7 +262,11 @@ function ReelCard({
                     className={`absolute inset-0 pointer-events-none ${showPlayer ? "z-10 top-[58%]" : ""}`}
                     style={{
                         background: showPlayer
-                            ? "linear-gradient(180deg, rgba(12,12,12,0) 0%, rgba(12,12,12,0.18) 35%, rgba(12,12,12,0.55) 75%, rgba(12,12,12,0.8) 100%)"
+                            ? video?.platform === "instagram"
+                                ? // Solid at the very bottom: backstop for the embed's
+                                  // white caption/likes footer.
+                                  "linear-gradient(180deg, rgba(12,12,12,0) 0%, rgba(12,12,12,0.3) 30%, rgba(12,12,12,0.9) 60%, rgb(12,12,12) 78%)"
+                                : "linear-gradient(180deg, rgba(12,12,12,0) 0%, rgba(12,12,12,0.18) 35%, rgba(12,12,12,0.55) 75%, rgba(12,12,12,0.8) 100%)"
                             : "linear-gradient(180deg, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0.08) 38%, rgba(12,12,12,0.92) 78%, rgba(12,12,12,0.99) 100%)",
                     }}
                 />
@@ -444,7 +456,9 @@ function ReelCard({
                 {/* Group Match Status & Like */}
                 <div className="pt-2.5 border-t border-white/15 flex items-center justify-between gap-2">
                     <span className="text-xs font-semibold text-white/70 truncate">
-                        Matches everyone's filters
+                        {matchesGroup
+                            ? "Matches everyone's filters"
+                            : "Matches your filters"}
                     </span>
 
                     <button
@@ -495,6 +509,9 @@ function VideoScroller({
     onToggleQueue,
     onResetFilters,
     feedRef,
+    syncWithGroup,
+    onToggleSync,
+    groupMatchIds,
 }: VideoScrollerProps) {
     const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -659,6 +676,25 @@ function VideoScroller({
                             </span>
                         </div>
 
+                        <button
+                            onClick={onToggleSync}
+                            aria-pressed={syncWithGroup}
+                            title={
+                                syncWithGroup
+                                    ? "Showing spots that match everyone. Click to go back to your own filters."
+                                    : "Show only spots that match everyone's filters"
+                            }
+                            className={`pointer-events-auto flex items-center gap-1.5 backdrop-blur-md border px-3 py-1.5 rounded-full text-[11px] font-bold transition active:scale-95 ${
+                                syncWithGroup
+                                    ? "bg-[#1DB954] text-black border-[#1DB954]"
+                                    : "bg-black/60 text-white/95 border-white/15 hover:bg-white/15"
+                            }`}
+                        >
+                            <Users className="w-3.5 h-3.5" />
+                            {syncWithGroup
+                                ? "Synced with group"
+                                : "Sync scroller with group"}
+                        </button>
                     </div>
                 </div>
 
@@ -674,12 +710,14 @@ function VideoScroller({
                                 🍽️
                             </div>
                             <h3 className="font-display font-bold text-lg text-white">
-                                No spot matches everyone's filters
+                                {syncWithGroup
+                                    ? "No spot matches everyone's filters"
+                                    : "No spot matches your filters"}
                             </h3>
                             <p className="text-xs text-white/60 mt-1.5 max-w-xs leading-relaxed">
-                                Your group's combined filters are too specific.
-                                Try widening the distance or clearing a cuisine,
-                                or ask a friend to loosen theirs.
+                                {syncWithGroup
+                                    ? "Your group's combined filters are too specific. Try widening the distance or clearing a cuisine, or ask a friend to loosen theirs."
+                                    : "Try widening the distance or clearing a cuisine."}
                             </p>
                             <button
                                 onClick={onResetFilters}
@@ -700,6 +738,7 @@ function VideoScroller({
                                         : 0
                                 }
                                 onChangeMedia={changeMedia}
+                                matchesGroup={groupMatchIds.has(restaurant.id)}
                                 onToggleQueue={onToggleQueue}
                             />
                         ))
@@ -1629,6 +1668,8 @@ export default function App() {
     const [activeRestaurantId, setActiveRestaurantId] = useState<number | null>(
         null,
     );
+    // Off by default: each person scrolls the spots matching their own filters.
+    const [syncWithGroup, setSyncWithGroup] = useState(false);
     const [isQueueOpen, setIsQueueOpen] = useState(false);
     const [showPick, setShowPick] = useState(false);
     const [toasts, setToasts] = useState<Toast[]>([]);
@@ -1979,20 +2020,26 @@ export default function App() {
         );
     }, [restaurants, room, myApiFilters]);
 
-    const myMatchCount = useMemo(
-        () => restaurants.filter((r) => matchesFilters(r, myApiFilters)).length,
+    const myMatches = useMemo(
+        () => restaurants.filter((r) => matchesFilters(r, myApiFilters)),
         [restaurants, myApiFilters],
     );
+    const myMatchCount = myMatches.length;
+    const groupMatchIds = useMemo(
+        () => new Set(groupMatches.map((r) => r.id)),
+        [groupMatches],
+    );
 
-    // The feed previews restaurants matching everyone. Spots with a creator video
-    // come first; matching spots without one follow with a photo looked up online.
-    // A pick only opens the popup; it doesn't change the feed.
+    // The feed shows spots matching your own filters, or (when synced) spots
+    // matching everyone. Spots with a creator video come first; the rest follow
+    // with a photo looked up online. A pick only opens the popup.
     const feedRestaurants = useMemo(() => {
+        const source = syncWithGroup ? groupMatches : myMatches;
         return [
-            ...groupMatches.filter((r) => r.video),
-            ...groupMatches.filter((r) => !r.video),
+            ...source.filter((r) => r.video),
+            ...source.filter((r) => !r.video),
         ].slice(0, FEED_WINDOW);
-    }, [groupMatches]);
+    }, [syncWithGroup, groupMatches, myMatches]);
 
     const scrollToRestaurant = useCallback((id: number) => {
         setTimeout(() => {
@@ -2122,7 +2169,12 @@ export default function App() {
 
     const handleJumpToRestaurant = (id: number) => {
         if (!feedRestaurants.some((r) => r.id === id)) {
-            addToast("That spot doesn't match everyone's filters.", "#94a3b8");
+            addToast(
+                syncWithGroup
+                    ? "That spot doesn't match everyone's filters."
+                    : "That spot doesn't match your filters.",
+                "#94a3b8",
+            );
             return;
         }
         setActiveRestaurantId(id);
@@ -2391,6 +2443,9 @@ export default function App() {
                     onToggleQueue={handleToggleQueue}
                     onResetFilters={handleResetFilters}
                     feedRef={feedRef}
+                    syncWithGroup={syncWithGroup}
+                    onToggleSync={() => setSyncWithGroup((on) => !on)}
+                    groupMatchIds={groupMatchIds}
                 />
 
                 {/* SEGMENT 2: RIGHT JAM HEADER & LIVE FILTER PANEL */}
