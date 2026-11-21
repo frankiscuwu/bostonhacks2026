@@ -41,7 +41,7 @@ def room_state(room):
 
 def create_room(display_name):
     with transaction.atomic():
-        first = Restaurant.objects.filter(is_active=True).order_by("id").first()
+        first = Restaurant.objects.active().order_by("id").first()
         room = Room.objects.create(current_restaurant=first, is_active=first is not None)
         participant = Participant.objects.create(room=room, display_name=display_name)
         result = {"room": room_state(room), "participant": ParticipantSerializer(participant).data,
@@ -89,7 +89,7 @@ def submit_vote(code, token, *, round_number, restaurant_id, vote):
         required = room.participants.filter(is_active=True)
         voted_ids = room.votes.filter(round_number=round_number, restaurant_id=restaurant_id).values("participant_id")
         if not required.exclude(id__in=voted_ids).exists():
-            next_restaurant = Restaurant.objects.filter(is_active=True, id__gt=restaurant_id).order_by("id").first()
+            next_restaurant = Restaurant.objects.active().filter(id__gt=restaurant_id).order_by("id").first()
             room.current_round += 1
             room.current_restaurant = next_restaurant
             room.is_active = next_restaurant is not None

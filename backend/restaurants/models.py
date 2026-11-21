@@ -1,39 +1,53 @@
-from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 
+class RestaurantQuerySet(models.QuerySet):
+    def active(self):
+        """Restaurants that can be shown and voted on: licensed and mappable."""
+        return self.filter(licstatus="Active", latitude__isnull=False, longitude__isnull=False)
+
+
 class Restaurant(models.Model):
-    name = models.CharField(max_length=200)
-    address = models.CharField(max_length=300)
-    cuisine = models.CharField(max_length=100)
-    price_level = models.PositiveSmallIntegerField(
-        validators=[MinValueValidator(1), MaxValueValidator(4)]
-    )
-    rating = models.DecimalField(
-        max_digits=3, decimal_places=2,
-        validators=[MinValueValidator(0), MaxValueValidator(5)],
-    )
-    latitude = models.DecimalField(
-        max_digits=9, decimal_places=6,
-        validators=[MinValueValidator(-90), MaxValueValidator(90)],
-    )
-    longitude = models.DecimalField(
-        max_digits=9, decimal_places=6,
-        validators=[MinValueValidator(-180), MaxValueValidator(180)],
-    )
-    creator_video_url = models.URLField(max_length=2048)
-    image_url = models.URLField(max_length=2048, blank=True)
-    description = models.TextField(blank=True)
-    is_active = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    """Read-only view of the shared Supabase ``restaurants`` table (Boston food licenses).
+
+    The table is owned outside Django (``managed = False``): Django never creates,
+    alters or drops it. Rooms and votes reference rows by ``_id``.
+    """
+
+    id = models.BigAutoField(primary_key=True, db_column="_id")
+    businessname = models.TextField(null=True, blank=True)
+    dbaname = models.TextField(null=True, blank=True)
+    address = models.TextField(null=True, blank=True)
+    city = models.TextField(null=True, blank=True)
+    state = models.TextField(null=True, blank=True)
+    zip = models.BigIntegerField(null=True, blank=True)
+    licstatus = models.TextField(null=True, blank=True)
+    licensecat = models.TextField(null=True, blank=True)
+    descript = models.TextField(null=True, blank=True)
+    latitude = models.FloatField(null=True, blank=True)
+    longitude = models.FloatField(null=True, blank=True)
+    cuisine = models.TextField(null=True, blank=True)
+    open_time = models.TextField(null=True, blank=True)
+    close_time = models.TextField(null=True, blank=True)
+
+    objects = RestaurantQuerySet.as_manager()
 
     class Meta:
-        constraints = [
-            models.CheckConstraint(condition=models.Q(price_level__gte=1, price_level__lte=4), name="restaurant_price_range"),
-            models.CheckConstraint(condition=models.Q(rating__gte=0, rating__lte=5), name="restaurant_rating_range"),
-            models.CheckConstraint(condition=models.Q(latitude__gte=-90, latitude__lte=90), name="restaurant_latitude_range"),
-            models.CheckConstraint(condition=models.Q(longitude__gte=-180, longitude__lte=180), name="restaurant_longitude_range"),
-        ]
+        managed = False
+        db_table = "restaurants"
+
+    @property
+    def name(self):
+        return self.dbaname or self.businessname or f"Restaurant #{self.id}"
+
+    @property
+    def full_address(self):
+        parts = [self.address, self.city, " ".join(p for p in (self.state, f"{self.zip:05d}" if self.zip else None) if p)]
+        return ", ".join(p for p in parts if p)
+
+    @property
+    def is_active(self):
+        return self.licstatus == "Active" and self.latitude is not None and self.longitude is not None
 
     def __str__(self):
         return self.name

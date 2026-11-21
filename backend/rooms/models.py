@@ -15,8 +15,9 @@ class Room(models.Model):
         max_length=6, unique=True, default=generate_room_code,
         validators=[RegexValidator(r"\A[A-Z0-9]{6}\Z", "Use six uppercase letters or digits.")],
     )
+    # The restaurants table is owned outside Django, so no database FK constraint.
     current_restaurant = models.ForeignKey(
-        "restaurants.Restaurant", on_delete=models.PROTECT,
+        "restaurants.Restaurant", on_delete=models.PROTECT, db_constraint=False,
         null=True, blank=True, related_name="current_rooms",
     )
     current_round = models.PositiveIntegerField(default=1, validators=[MinValueValidator(1)])
@@ -61,7 +62,8 @@ class Participant(models.Model):
 class Vote(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name="votes")
     participant = models.ForeignKey(Participant, on_delete=models.CASCADE, related_name="votes")
-    restaurant = models.ForeignKey("restaurants.Restaurant", on_delete=models.PROTECT, related_name="votes")
+    restaurant = models.ForeignKey("restaurants.Restaurant", on_delete=models.PROTECT,
+                                   db_constraint=False, related_name="votes")
     round_number = models.PositiveIntegerField(validators=[MinValueValidator(1)])
     vote = models.BooleanField()
     created_at = models.DateTimeField(auto_now_add=True)

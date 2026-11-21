@@ -23,13 +23,10 @@ def restaurant_list(request):
     filters = RestaurantFilterSerializer(data=request.query_params)
     filters.is_valid(raise_exception=True)
     values = filters.validated_data
-    restaurants = Restaurant.objects.filter(is_active=True).order_by("id")
+    restaurants = Restaurant.objects.active().order_by("id")
     if "cuisine" in values:
-        restaurants = restaurants.filter(cuisine__iexact=values["cuisine"])
-    if "max_price" in values:
-        restaurants = restaurants.filter(price_level__lte=values["max_price"])
-    if "min_rating" in values:
-        restaurants = restaurants.filter(rating__gte=values["min_rating"])
+        # Source values can be semicolon lists such as "donut;coffee_shop".
+        restaurants = restaurants.filter(cuisine__icontains=values["cuisine"])
     if "max_distance_km" in values:
         restaurants = [r for r in restaurants if distance_km(values["latitude"], values["longitude"], r) <= values["max_distance_km"]]
     return Response(RestaurantSerializer(restaurants, many=True).data)

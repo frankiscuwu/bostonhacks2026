@@ -1,39 +1,28 @@
+// Supabase Realtime is used only as a lightweight notification bus.
+// Django is the source of truth: on "room-updated" clients refetch room state
+// from the API. No room state, votes or credentials are broadcast here.
 import { createClient } from "@supabase/supabase-js";
 import type { RealtimeChannel } from "@supabase/supabase-js";
-import type { FilterState, Restaurant } from "./data.ts";
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabasePublishableKey =
     import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
-
-export type RoomState = {
-    restaurants: Restaurant[];
-    filters: FilterState;
-    activeRestaurantId: string;
-};
 
 export type RoomPreferences = {
     cuisines: string[];
     prices: string[];
 };
 
-export type RoomParticipant = {
-    id: string;
-    name: string;
+// Presence carries only display metadata keyed by Django participant id.
+export type PresenceProfile = {
+    participantId: number;
     preferences: RoomPreferences;
 };
 
-export type RoomUser = {
-    id: string;
-    profile: RoomParticipant;
-};
-
 export type RoomChannelCallbacks = {
-    onState?: (state: RoomState) => void;
-    onPresenceChange?: (count: number) => void;
-    onParticipants?: (participants: RoomParticipant[]) => void;
+    onRoomUpdated?: () => void;
+    onPresence?: (profiles: Map<number, PresenceProfile>) => void;
     onReady?: () => void;
-    onStateRequest?: () => void;
 };
 
 const supabase:
@@ -46,120 +35,67 @@ export function isRealtimeConfigured() {
     return supabase !== null;
 }
 
-export function joinRoom(
-    roomId: string,
-    user: RoomUser,
+export function subscribeToRoom(
+    roomCode: string,
+    profile: PresenceProfile,
     callbacks: RoomChannelCallbacks = {},
 ) {
     if (!supabase) return null;
 
-    const room: RealtimeChannel = supabase.channel(`room:${roomId}`, {
+    const channel: RealtimeChannel = supabase.channel(`room:${roomCode}`, {
         config: {
             broadcast: { self: false },
-            presence: { key: user.id },
+            presence: { key: String(profile.participantId) },
         },
     });
 
-    room.on("broadcast", { event: "room-state" }, ({ payload }) => {
-        if (
-            payload &&
-            typeof payload === "object" &&
-            "restaurants" in payload &&
-            "filters" in payload &&
-            "activeRestaurantId" in payload
-        ) {
-            callbacks.onState?.(payload as unknown as RoomState);
+    channel.on("broadcast", { event: "room-updated" }, () => {
+        callbacks.onRoomUpdated?.();
+    });
+
+    channel.on("presence", { event: "sync" }, () => {
+        const state = channel.presenceState() as Record<
+            string,
+            Array<{ profile?: PresenceProfile }>
+        >;
+        const profiles = new Map<number, PresenceProfile>();
+        for (const entries of Object.values(state)) {
+            for (const entry of entries) {
+                if (entry.profile && typeof entry.profile.participantId === "number") {
+                    profiles.set(entry.profile.participantId, entry.profile);
+                }
+            }
         }
+        callbacks.onPresence?.(profiles);
     });
 
-    room.on("broadcast", { event: "room-state-request" }, () => {
-        callbacks.onStateRequest?.();
-    });
-
-    room
-        .on("presence", { event: "sync" }, () => {
-            const presence = room.presenceState() as Record<
-                string,
-                Array<{ profile?: RoomParticipant }>
-            >;
-            const participants = Object.entries(presence).flatMap(
-                ([id, states]) =>
-                    states
-                        .map((state) => state.profile)
-                        .filter((profile): profile is RoomParticipant =>
-                            Boolean(profile),
-                        )
-                        .map((profile) => ({ ...profile, id })),
-            );
-            const uniqueParticipants = Array.from(
-                new Map(
-                    participants.map((participant) => [
-                        participant.id,
-                        participant,
-                    ]),
-                ).values(),
-            );
-            callbacks.onPresenceChange?.(uniqueParticipants.length);
-            callbacks.onParticipants?.(uniqueParticipants);
-        })
-        .on("presence", { event: "join" }, () => {
-            const presence = room.presenceState() as Record<
-                string,
-                Array<{ profile?: RoomParticipant }>
-            >;
-            const count = Object.keys(presence).length;
-            callbacks.onPresenceChange?.(count);
-        })
-        .on("presence", { event: "leave" }, () => {
-            const presence = room.presenceState() as Record<
-                string,
-                Array<{ profile?: RoomParticipant }>
-            >;
-            const count = Object.keys(presence).length;
-            callbacks.onPresenceChange?.(count);
-        });
-
-    room.subscribe(async (status) => {
+    channel.subscribe(async (status) => {
         if (status === "SUBSCRIBED") {
-            await room.track({
-                profile: user.profile,
-                online_at: new Date().toISOString(),
-            });
+            await channel.track({ profile });
             callbacks.onReady?.();
         }
     });
 
-    return room;
+    return channel;
 }
 
-export async function sendRoomState(
-    room: RealtimeChannel | null,
-    state: RoomState,
+// Tell other clients to refetch from Django. Payload is intentionally minimal.
+export async function notifyRoomUpdated(
+    channel: RealtimeChannel | null,
+    round: number,
 ) {
-    if (!room) return;
-    await room.send({
+    if (!channel) return;
+    await channel.send({
         type: "broadcast",
-        event: "room-state",
-        payload: state,
+        event: "room-updated",
+        payload: { round },
     });
 }
 
-export async function requestRoomState(room: RealtimeChannel | null) {
-    if (!room) return;
-    await room.send({
-        type: "broadcast",
-        event: "room-state-request",
-        payload: {},
-    });
-}
-
-export async function updateRoomProfile(
-    room: RealtimeChannel | null,
-    profile: RoomParticipant,
+export async function updatePresence(
+    channel: RealtimeChannel | null,
+    profile: PresenceProfile,
 ) {
-    if (!room) return;
-    await room.track({
-        profile,
-        online_at: new Date().toISOString(),
-    });
+    if (!channel) return;
+    await channel.track({ profile });
 }

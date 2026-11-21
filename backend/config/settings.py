@@ -151,3 +151,9 @@ CORS_ALLOWED_ORIGINS = [
     ).split(",")
     if origin.strip()
 ]
+
+# The vote endpoint authenticates participants with this custom header, so the
+# browser's CORS preflight must be allowed to send it.
+from corsheaders.defaults import default_headers  # noqa: E402
+
+CORS_ALLOW_HEADERS = (*default_headers, "x-participant-token")

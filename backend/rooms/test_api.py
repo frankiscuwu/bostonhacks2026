@@ -4,7 +4,7 @@ from django.test import TestCase
 from rest_framework.test import APIClient
 
 from restaurants.models import Restaurant
-from restaurants.tests import restaurant_data
+from restaurants.tests import inactive_data, restaurant_data
 from .models import Participant, Room, Vote
 
 
@@ -12,8 +12,8 @@ class RoomAPITests(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.first = Restaurant.objects.create(**restaurant_data())
-        self.second = Restaurant.objects.create(**restaurant_data(name="Second"))
-        self.third = Restaurant.objects.create(**restaurant_data(name="Inactive", is_active=False))
+        self.second = Restaurant.objects.create(**restaurant_data(dbaname="Second"))
+        self.third = Restaurant.objects.create(**inactive_data(dbaname="Inactive"))
         response = self.client.post('/api/rooms/', {'display_name': 'Host'}, format='json')
         self.assertEqual(response.status_code, 201)
         self.creation = response.json()
@@ -117,7 +117,7 @@ class RoomAPITests(TestCase):
         self.assertEqual(self.vote(self.token, round_number=3).status_code, 409)
 
     def test_empty_restaurant_list(self):
-        Restaurant.objects.update(is_active=False)
+        Restaurant.objects.update(licstatus="Inactive")
         response = self.client.post('/api/rooms/', {'display_name': 'Empty'}, format='json')
         self.assertEqual(response.status_code, 201)
         self.assertFalse(response.json()['room']['is_active'])

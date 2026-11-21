@@ -792,6 +792,64 @@ svg {
     background: #1db954;
 }
 
+.boston-real-map {
+    width: 100%;
+    height: 100%;
+    background: #0e1116;
+}
+
+.boston-real-map .leaflet-tile-pane {
+    filter: brightness(0.72) contrast(1.08) saturate(0.75) hue-rotate(170deg);
+}
+
+.boston-real-map .leaflet-control-zoom a {
+    border: 0;
+    background: #181818;
+    color: #fff;
+}
+
+.boston-real-map .leaflet-control-attribution {
+    background: rgba(18, 18, 18, 0.82);
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 9px;
+}
+
+.boston-real-map .leaflet-control-attribution a {
+    color: #1db954;
+}
+
+.boston-map-pin-wrap,
+.boston-map-user-wrap {
+    border: 0;
+    background: transparent;
+}
+
+.boston-map-pin {
+    width: 14px;
+    height: 14px;
+    border: 2px solid #fff;
+    border-radius: 50% 50% 50% 0;
+    background: #ff5e3a;
+    transform: rotate(-45deg);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.75);
+}
+
+.boston-map-pin.selected {
+    width: 18px;
+    height: 18px;
+    background: #1db954;
+    box-shadow: 0 0 18px rgba(29, 185, 84, 0.85);
+}
+
+.boston-map-user {
+    width: 14px;
+    height: 14px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    background: #38bdf8;
+    box-shadow: 0 0 14px rgba(56, 189, 248, 0.8);
+}
+
 @media (min-width: 640px) {
     [class~="sm:grid-cols-2"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     [class~="sm:grid-cols-3"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }

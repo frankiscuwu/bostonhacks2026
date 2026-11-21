@@ -5,12 +5,19 @@ Public reads use the room code; there is no user authentication yet.
 
 ## Restaurants
 
+Restaurants come from the shared Supabase `restaurants` table (Boston food licenses).
+Django maps it read-only (`managed = False`, primary key `_id`) and never alters it.
+A restaurant is *active* when `licstatus = 'Active'` and it has latitude and longitude.
+
 `GET /api/restaurants/` returns an array of active restaurants in ascending ID order.
+`name` is `dbaname`, falling back to `businessname`; `address` joins street, city, state
+and ZIP. The source has no price, rating or media, so `price_level` and `rating` are
+always `null` and `creator_video_url`/`image_url` are empty strings. `cuisine` is the
+raw source value (often `null`, sometimes a list like `donut;coffee_shop`), and
+`open_time`/`close_time` are `HH:MM` strings or `null`.
 Optional query parameters:
 
-- `cuisine`: case-insensitive exact match.
-- `max_price`: integer 1–4, inclusive.
-- `min_rating`: number 0–5, inclusive.
+- `cuisine`: case-insensitive substring match.
 - `latitude`, `longitude`, `max_distance_km`: all three required together. Distance is
   straight-line Haversine distance in kilometers, not transit or driving distance.
 
@@ -126,6 +133,9 @@ The existing dotenv loader preserves the explicit environment override. SQLite t
 verify service behavior but cannot exercise PostgreSQL row locks; a separate disposable
 PostgreSQL database is needed for a concurrent transaction integration test.
 
-No schema migrations are needed for this API. The existing teammates' `restaurants`
-and `BostonFoodLiscences` tables are not used or changed. Django uses
-`restaurants_restaurant` and `rooms_*` only for application data.
+Django reads restaurants from the shared `restaurants` table and writes only to
+`rooms_*`. Room and vote restaurant FKs have no database constraint because the
+restaurants table is owned outside Django. Migration `restaurants.0002` only creates
+`restaurants` when missing (fresh SQLite databases); on Supabase it is a no-op.
+`rooms.0002` drops the old FK constraints. The legacy `restaurants_restaurant` table is
+no longer used but was not dropped. `BostonFoodLiscences` is not used.

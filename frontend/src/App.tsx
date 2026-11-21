@@ -1,6 +1,15 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import type { RefObject } from "react";
 import {
+    Circle,
+    MapContainer,
+    Marker,
+    TileLayer,
+    useMap,
+} from "react-leaflet";
+import type { LatLngExpression } from "leaflet";
+import L from "leaflet";
+import {
     Flame,
     Heart,
     MapPin,
@@ -26,39 +35,75 @@ import {
 
 import {
     CUISINE_CATEGORIES,
-    INITIAL_BOSTON_RESTAURANTS,
     PRICE_TIERS,
 } from "./data.ts";
 import type { FilterState, Restaurant } from "./data.ts";
 import type { RealtimeChannel } from "@supabase/supabase-js";
 import {
     isRealtimeConfigured,
-    joinRoom,
-    requestRoomState,
-    sendRoomState,
-    updateRoomProfile,
+    notifyRoomUpdated,
+    subscribeToRoom,
+    updatePresence,
 } from "./websocket.ts";
-import type {
-    RoomParticipant,
-    RoomPreferences,
-} from "./websocket.ts";
+import type { PresenceProfile, RoomPreferences } from "./websocket.ts";
+import { fetchRestaurants, mapApiRestaurant } from "./restaurantsApi.ts";
+import {
+    ApiError,
+    ROOM_CODE_PATTERN,
+    clearSession,
+    createRoom as apiCreateRoom,
+    ensureMembership,
+    getResults,
+    getRoom,
+    isSameOrNewerRoomState,
+    normalizeRoomCode,
+    saveSession,
+    submitVote,
+} from "./roomsApi.ts";
+import type { ResultRow, RoomSession, RoomState } from "./roomsApi.ts";
 import "./App.css"
 
-type ToggleRestaurantHandler = (id: string) => void;
+type ToggleRestaurantHandler = (id: number) => void;
 type Toast = { id: number; message: string; accent: string };
+
+// Per-card view of the Django room for the restaurant shown on that card.
+type RoomVoteInfo = {
+    // "current": being voted on now; "decided": room already moved past it;
+    // "upcoming": room has not reached it yet.
+    status: "current" | "decided" | "upcoming";
+    hasVoted: boolean;
+    submitting: boolean;
+    votedCount: number;
+    requiredCount: number;
+    voterNames: string[];
+    yesCount: number;
+    noCount: number;
+};
+
+type CastVoteHandler = (restaurantId: number, vote: boolean) => void;
+
+type RoomParticipantView = {
+    id: number;
+    name: string;
+    preferences: RoomPreferences | null;
+    online: boolean;
+    isYou: boolean;
+};
 
 type ReelCardProps = {
     restaurant: Restaurant;
     isActive: boolean;
-    onToggleVote: ToggleRestaurantHandler;
+    voteInfo: RoomVoteInfo;
+    onCastVote: CastVoteHandler;
     onToggleQueue: ToggleRestaurantHandler;
 };
 
 type VideoScrollerProps = {
     restaurants: Restaurant[];
-    activeId: string;
-    onSelectActive: (id: string) => void;
-    onToggleVote: ToggleRestaurantHandler;
+    activeId: number | null;
+    onSelectActive: (id: number) => void;
+    getVoteInfo: (restaurantId: number) => RoomVoteInfo;
+    onCastVote: CastVoteHandler;
     onToggleQueue: ToggleRestaurantHandler;
     onResetFilters: () => void;
     feedRef: RefObject<HTMLDivElement | null>;
@@ -70,14 +115,14 @@ type FilterPanelProps = {
     filters: FilterState;
     onUpdateFilters: (filters: FilterState) => void;
     onResetFilters: () => void;
-    onJumpToRestaurant: (id: string) => void;
+    onJumpToRestaurant: (id: number) => void;
 };
 
 type FloatingBostonMapProps = {
     restaurants: Restaurant[];
-    activeId: string;
+    activeId: number | null;
     maxDistance: number;
-    onSelectPin: (id: string) => void;
+    onSelectPin: (id: number) => void;
 };
 
 type JamQueueModalProps = {
@@ -85,7 +130,7 @@ type JamQueueModalProps = {
     onClose: () => void;
     queuedRestaurants: Restaurant[];
     onToggleQueue: ToggleRestaurantHandler;
-    onSelectRestaurant: (id: string) => void;
+    onSelectRestaurant: (id: number) => void;
 };
 
 type WinnerModalProps = {
@@ -100,9 +145,15 @@ type WinnerModalProps = {
 function ReelCard({
     restaurant,
     isActive,
-    onToggleVote,
+    voteInfo,
+    onCastVote,
     onToggleQueue,
 }: ReelCardProps) {
+    const canVote =
+        voteInfo.status === "current" &&
+        !voteInfo.hasVoted &&
+        !voteInfo.submitting;
+
     const [isPaused, setIsPaused] = useState(false);
     const [showHeartBurst, setShowHeartBurst] = useState(false);
     const lastTapRef = useRef<number>(0);
@@ -112,8 +163,8 @@ function ReelCard({
         if (now - lastTapRef.current < 280) {
             // Double-tap triggers heart burst + vote
             setShowHeartBurst(true);
-            if (!restaurant.userVoted) {
-                onToggleVote(restaurant.id);
+            if (canVote) {
+                onCastVote(restaurant.id, true);
             }
             setTimeout(() => setShowHeartBurst(false), 850);
         } else {
@@ -123,16 +174,17 @@ function ReelCard({
         lastTapRef.current = now;
     };
 
-    const getAvatarBadge = (voter: string) => {
-        const map: Record<string, string> = {
-            YOU: "bg-[#1DB954] text-black",
-            Maya: "bg-amber-400 text-black",
-            Liam: "bg-rose-500 text-white",
-            Chloe: "bg-sky-400 text-black",
-            Sam: "bg-purple-400 text-black",
-        };
-        return map[voter] || "bg-white/20 text-white";
-    };
+    const getAvatarBadge = (voter: string) =>
+        voter === "YOU" ? "bg-[#1DB954] text-black" : "bg-white/20 text-white";
+
+    const voteSummary =
+        voteInfo.status === "current"
+            ? `${voteInfo.votedCount}/${voteInfo.requiredCount} voted`
+            : voteInfo.yesCount + voteInfo.noCount > 0
+              ? `${voteInfo.yesCount} yes • ${voteInfo.noCount} no`
+              : voteInfo.status === "upcoming"
+                ? "Up next in room"
+                : "No votes";
 
     return (
         <article
@@ -145,6 +197,7 @@ function ReelCard({
                 <img
                     src={restaurant.image}
                     alt={restaurant.name}
+                    loading="lazy"
                     onError={(e) => {
                         e.currentTarget.src = `https://placehold.co/600x900/181818/1DB954?text=${encodeURIComponent(
                             restaurant.name,
@@ -201,22 +254,29 @@ function ReelCard({
             >
                 {/* Top Metadata Pills */}
                 <div className="flex flex-wrap items-center gap-1.5">
-                    <span
-                        className={`px-2.5 py-1 rounded-full text-[11px] font-bold flex items-center gap-1 ${
-                            restaurant.openNow
-                                ? "bg-[#1DB954]/20 text-[#1DB954] border border-[#1DB954]/40"
-                                : "bg-rose-500/20 text-rose-300 border border-rose-500/40"
-                        }`}
-                    >
+                    {restaurant.openNow !== null && (
                         <span
-                            className={`w-1.5 h-1.5 rounded-full ${
+                            className={`px-2.5 py-1 rounded-full text-[11px] font-bold flex items-center gap-1 ${
                                 restaurant.openNow
-                                    ? "bg-[#1DB954]"
-                                    : "bg-rose-400"
+                                    ? "bg-[#1DB954]/20 text-[#1DB954] border border-[#1DB954]/40"
+                                    : "bg-rose-500/20 text-rose-300 border border-rose-500/40"
                             }`}
-                        />
-                        {restaurant.openNow ? "Open Now" : "Opens 5 PM"}
-                    </span>
+                        >
+                            <span
+                                className={`w-1.5 h-1.5 rounded-full ${
+                                    restaurant.openNow
+                                        ? "bg-[#1DB954]"
+                                        : "bg-rose-400"
+                                }`}
+                            />
+                            {restaurant.openNow ? "Open Now" : "Closed"}
+                            {restaurant.hours && (
+                                <span className="font-normal opacity-75">
+                                    {restaurant.hours}
+                                </span>
+                            )}
+                        </span>
+                    )}
 
                     <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-white/10 backdrop-blur-md text-white/90 flex items-center gap-1">
                         <MapPin className="w-3 h-3 text-[#1DB954]" />
@@ -224,17 +284,18 @@ function ReelCard({
                         {restaurant.distance.toFixed(1)} mi
                     </span>
 
-                    <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-400/20 text-amber-300 flex items-center gap-1">
-                        <Star className="w-3 h-3 fill-amber-300 text-amber-300" />
-                        {restaurant.rating.toFixed(1)}
-                        <span className="text-amber-200/70 font-normal">
-                            ({restaurant.reviews.toLocaleString()})
+                    {restaurant.rating !== null && (
+                        <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-400/20 text-amber-300 flex items-center gap-1">
+                            <Star className="w-3 h-3 fill-amber-300 text-amber-300" />
+                            {restaurant.rating.toFixed(1)}
                         </span>
-                    </span>
+                    )}
 
-                    <span className="px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-white/10 text-white">
-                        {restaurant.price}
-                    </span>
+                    {restaurant.price && (
+                        <span className="px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-white/10 text-white">
+                            {restaurant.price}
+                        </span>
+                    )}
                 </div>
 
                 {/* Name, Cuisine & Signature Dish */}
@@ -267,7 +328,9 @@ function ReelCard({
                         </span>
                     )}
                     <span className="px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-white/55">
-                        Double-tap reel to ♥
+                        {voteInfo.status === "current"
+                            ? "Now voting • Double-tap for yes"
+                            : "Browse only • vote when it's up"}
                     </span>
                 </div>
 
@@ -276,7 +339,7 @@ function ReelCard({
                     {/* Friend Avatars Who Voted */}
                     <div className="flex items-center gap-2 min-w-0">
                         <div className="flex -space-x-1.5 shrink-0">
-                            {restaurant.voters.map((voter) => (
+                            {voteInfo.voterNames.map((voter) => (
                                 <span
                                     key={voter}
                                     title={voter}
@@ -284,13 +347,12 @@ function ReelCard({
                                         voter,
                                     )} border border-black flex items-center justify-center text-[10px] font-extrabold shadow`}
                                 >
-                                    {voter === "YOU" ? "YOU" : voter[0]}
+                                    {voter === "YOU" ? "YOU" : voter[0]?.toUpperCase()}
                                 </span>
                             ))}
                         </div>
                         <span className="text-xs font-semibold text-white/85 truncate">
-                            {restaurant.votes} Jam{" "}
-                            {restaurant.votes === 1 ? "vote" : "votes"}
+                            {voteSummary}
                         </span>
                     </div>
 
@@ -317,25 +379,47 @@ function ReelCard({
                             )}
                         </button>
 
-                        <button
-                            onClick={() => onToggleVote(restaurant.id)}
-                            className={`px-3.5 py-2 rounded-full text-xs font-extrabold transition-all active:scale-90 flex items-center gap-1.5 shadow-lg ${
-                                restaurant.userVoted
-                                    ? "bg-[#FF5E3A] text-white shadow-[#FF5E3A]/40"
-                                    : "bg-[#1DB954] hover:bg-[#1ed760] text-black shadow-[#1DB954]/30"
-                            }`}
-                        >
-                            <Flame
-                                className={`w-3.5 h-3.5 ${
-                                    restaurant.userVoted
-                                        ? "fill-white"
-                                        : "fill-black"
+                        {voteInfo.status === "current" && !voteInfo.hasVoted ? (
+                            <>
+                                <button
+                                    onClick={() => onCastVote(restaurant.id, false)}
+                                    disabled={!canVote}
+                                    className="px-3 py-2 rounded-full text-xs font-bold border bg-black/60 hover:bg-rose-500/20 text-white border-white/20 transition-all active:scale-90 flex items-center gap-1 disabled:opacity-50"
+                                >
+                                    <X className="w-3.5 h-3.5" />
+                                    <span>Pass</span>
+                                </button>
+                                <button
+                                    onClick={() => onCastVote(restaurant.id, true)}
+                                    disabled={!canVote}
+                                    className="px-3.5 py-2 rounded-full text-xs font-extrabold transition-all active:scale-90 flex items-center gap-1.5 shadow-lg bg-[#1DB954] hover:bg-[#1ed760] text-black shadow-[#1DB954]/30 disabled:opacity-50"
+                                >
+                                    <Flame className="w-3.5 h-3.5 fill-black" />
+                                    <span>
+                                        {voteInfo.submitting ? "Voting…" : "Yes"}
+                                    </span>
+                                </button>
+                            </>
+                        ) : (
+                            <span
+                                className={`px-3.5 py-2 rounded-full text-xs font-extrabold flex items-center gap-1.5 ${
+                                    voteInfo.status === "current"
+                                        ? "bg-[#FF5E3A] text-white"
+                                        : "bg-white/10 text-white/60"
                                 }`}
-                            />
-                            <span>
-                                {restaurant.userVoted ? "Voted" : "Vote"}
+                            >
+                                {voteInfo.status === "current" ? (
+                                    <>
+                                        <Check className="w-3.5 h-3.5" />
+                                        <span>Waiting for others</span>
+                                    </>
+                                ) : voteInfo.status === "decided" ? (
+                                    <span>Decided</span>
+                                ) : (
+                                    <span>Not up yet</span>
+                                )}
                             </span>
-                        </button>
+                        )}
                     </div>
                 </div>
             </div>
@@ -350,7 +434,8 @@ function VideoScroller({
     restaurants,
     activeId,
     onSelectActive,
-    onToggleVote,
+    getVoteInfo,
+    onCastVote,
     onToggleQueue,
     onResetFilters,
     feedRef,
@@ -389,8 +474,8 @@ function VideoScroller({
                 }
             });
 
-            const newId = closest.dataset.id;
-            if (newId && newId !== activeId) {
+            const newId = Number(closest.dataset.id);
+            if (Number.isFinite(newId) && newId !== activeId) {
                 onSelectActive(newId);
             }
         }, 60);
@@ -526,7 +611,8 @@ function VideoScroller({
                                 key={`${restaurant.id}-${restaurant.id === activeSpot?.id}`}
                                 restaurant={restaurant}
                                 isActive={restaurant.id === activeSpot?.id}
-                                onToggleVote={onToggleVote}
+                                voteInfo={getVoteInfo(restaurant.id)}
+                                onCastVote={onCastVote}
                                 onToggleQueue={onToggleQueue}
                             />
                         ))
@@ -568,17 +654,18 @@ function JamHeader({
     onOpenQueue,
     onPickWinner,
     roomCode,
-    presenceCount,
     participants,
+    roomStatus,
 }: {
     queueCount: number;
     onCopyInvite: () => void;
     onOpenQueue: () => void;
     onPickWinner: () => void;
     roomCode: string;
-    presenceCount: number;
-    participants: RoomParticipant[];
+    participants: RoomParticipantView[];
+    roomStatus: string;
 }) {
+    const onlineCount = participants.filter((p) => p.online).length;
     return (
         <header className="sticky top-0 z-20 bg-[#121212]/90 backdrop-blur-xl border-b border-white/10 px-5 sm:px-8 py-4">
             <div className="flex flex-wrap items-center justify-between gap-3.5">
@@ -606,10 +693,15 @@ function JamHeader({
                             <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#1DB954] animate-ping" />
                             <span>
                                 <strong className="text-white/90">
-                                    {presenceCount} {presenceCount === 1 ? "person" : "people"}
+                                    {participants.length}{" "}
+                                    {participants.length === 1 ? "person" : "people"}
                                 </strong>{" "}
                                 in this room
+                                {isRealtimeConfigured() && ` • ${onlineCount} online`}
                             </span>
+                        </p>
+                        <p className="text-xs text-[#1DB954] font-semibold mt-0.5">
+                            {roomStatus}
                         </p>
                     </div>
                 </div>
@@ -627,10 +719,12 @@ function JamHeader({
                             <div
                                 key={participant.id}
                                 className="participant-avatar"
-                                title={`${participant.name}: ${participant.preferences.cuisines.join(", ") || "Any cuisine"} • ${participant.preferences.prices.join(", ") || "Any price"}`}
+                                title={`${participant.name}: ${participant.preferences?.cuisines.join(", ") || "Any cuisine"} • ${participant.preferences?.prices.join(", ") || "Any price"}`}
                             >
                                 {participant.name.slice(0, 2).toUpperCase()}
-                                <span className="participant-online" />
+                                {participant.online && (
+                                    <span className="participant-online" />
+                                )}
                             </div>
                         ))}
                     </div>
@@ -653,7 +747,7 @@ function JamHeader({
                         className="px-4 py-2.5 rounded-full bg-[#1DB954] hover:bg-[#1ed760] text-black font-extrabold text-xs sm:text-sm tracking-tight shadow-[0_6px_22px_rgba(29,185,84,0.4)] hover:shadow-[0_8px_28px_rgba(29,185,84,0.6)] transition-all active:scale-95 flex items-center gap-1.5"
                     >
                         <Trophy className="w-4 h-4" />
-                        <span>Pick Jam Winner</span>
+                        <span>Show Results</span>
                     </button>
                 </div>
             </div>
@@ -663,13 +757,14 @@ function JamHeader({
                         <div className="participant-chip" key={participant.id}>
                             <span className="participant-chip-name">
                                 {participant.name}
+                                {participant.isYou && " (you)"}
                             </span>
                             <span>
-                                {participant.preferences.cuisines.join(", ") ||
+                                {participant.preferences?.cuisines.join(", ") ||
                                     "Any cuisine"}
                             </span>
                             <span>
-                                {participant.preferences.prices.join(", ") ||
+                                {participant.preferences?.prices.join(", ") ||
                                     "Any price"}
                             </span>
                         </div>
@@ -691,14 +786,25 @@ function FilterPanel({
     onResetFilters,
     onJumpToRestaurant,
 }: FilterPanelProps) {
+    const cuisineCategories = useMemo(
+        () =>
+            [
+                "All",
+                ...Array.from(
+                    new Set(allRestaurants.map((restaurant) => restaurant.cuisine)),
+                ).sort(),
+            ],
+        [allRestaurants],
+    );
+
     // Compute cuisine counts dynamically
     const cuisineCounts = useMemo(() => {
         const counts: Record<string, number> = { All: allRestaurants.length };
-        CUISINE_CATEGORIES.slice(1).forEach((c) => {
+        cuisineCategories.slice(1).forEach((c) => {
             counts[c] = allRestaurants.filter((r) => r.cuisine === c).length;
         });
         return counts;
-    }, [allRestaurants]);
+    }, [allRestaurants, cuisineCategories]);
 
     const toggleCuisine = (cuisine: string) => {
         if (cuisine === "All") {
@@ -732,9 +838,19 @@ function FilterPanel({
     // Top voted spots across Boston for quick jump
     const topVotedSpots = useMemo(() => {
         return [...allRestaurants]
-            .sort((a, b) => b.votes - a.votes || b.rating - a.rating)
+            .filter((r) => r.votes > 0)
+            .sort((a, b) => b.votes - a.votes || (b.rating ?? 0) - (a.rating ?? 0))
             .slice(0, 4);
     }, [allRestaurants]);
+
+    // Only show controls the restaurant data can actually answer.
+    const hasRatings = allRestaurants.some((r) => r.rating !== null);
+    const hasPrices = allRestaurants.some((r) => r.price !== null);
+    const hasAvailability = {
+        openNow: allRestaurants.some((r) => r.openNow !== null),
+        tablesTonight: allRestaurants.some((r) => r.tablesTonight),
+        walkInFriendly: allRestaurants.some((r) => r.walkInFriendly),
+    };
 
     const distanceLabel =
         filters.maxDistance <= 1.0
@@ -742,7 +858,7 @@ function FilterPanel({
             : filters.maxDistance <= 3.5
               ? "Quick T-Ride / Cambridge & Seaport"
               : "Greater Boston Metro";
-    const availabilityOptions: Array<{
+    const allAvailabilityOptions: Array<{
         key: "openNow" | "tablesTonight" | "walkInFriendly";
         label: string;
     }> = [
@@ -750,6 +866,9 @@ function FilterPanel({
         { key: "tablesTonight", label: "Tables Tonight" },
         { key: "walkInFriendly", label: "Walk-in Friendly" },
     ];
+    const availabilityOptions = allAvailabilityOptions.filter(
+        (opt) => hasAvailability[opt.key],
+    );
 
     return (
         <div className="px-5 sm:px-8 py-6 space-y-6 max-w-4xl">
@@ -820,6 +939,7 @@ function FilterPanel({
                 </div>
 
                 {/* Minimum Rating Slider */}
+                {hasRatings && (
                 <div className="bg-[#181818] border border-white/10 rounded-2xl p-5 flex flex-col justify-between">
                     <div className="flex items-center justify-between mb-3">
                         <label
@@ -856,6 +976,7 @@ function FilterPanel({
                         <span>5.0 ★ Elite</span>
                     </div>
                 </div>
+                )}
             </div>
 
             {/* Cuisine Multi-Select Pills */}
@@ -873,7 +994,7 @@ function FilterPanel({
                 </div>
 
                 <div className="flex flex-wrap gap-2">
-                    {CUISINE_CATEGORIES.map((cuisine) => {
+                    {cuisineCategories.map((cuisine) => {
                         const isSelected =
                             cuisine === "All"
                                 ? filters.cuisines.length === 0
@@ -907,6 +1028,7 @@ function FilterPanel({
             {/* Cost Tier & Availability Toggles */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Price Tiers */}
+                {hasPrices && (
                 <div className="bg-[#181818] border border-white/10 rounded-2xl p-5">
                     <div className="flex items-center justify-between mb-3.5">
                         <h2 className="text-sm font-bold text-white">
@@ -935,8 +1057,10 @@ function FilterPanel({
                         })}
                     </div>
                 </div>
+                )}
 
                 {/* Availability Toggles */}
+                {availabilityOptions.length > 0 && (
                 <div className="bg-[#181818] border border-white/10 rounded-2xl p-5">
                     <div className="flex items-center justify-between mb-3.5">
                         <h2 className="text-sm font-bold text-white">
@@ -974,6 +1098,7 @@ function FilterPanel({
                         })}
                     </div>
                 </div>
+                )}
             </div>
 
             {/* Live Jam Leaderboard Quick Jump */}
@@ -981,7 +1106,7 @@ function FilterPanel({
                 <div className="flex items-center justify-between mb-3.5">
                     <h2 className="text-sm font-bold text-white flex items-center gap-2">
                         <Flame className="w-4 h-4 text-[#FF5E3A] fill-[#FF5E3A]" />
-                        <span>Top Voted in Boston Jam</span>
+                        <span>Most Yes Votes in This Room</span>
                     </h2>
                     <span className="text-xs text-white/50">
                         Click to jump to reel
@@ -1012,8 +1137,14 @@ function FilterPanel({
                                             {spot.name}
                                         </p>
                                         <p className="text-[11px] text-white/55 truncate">
-                                            {spot.neighborhood} • {spot.price} •{" "}
-                                            {spot.rating.toFixed(1)} ★
+                                            {[
+                                                spot.neighborhood,
+                                                spot.cuisine,
+                                                spot.price,
+                                                spot.rating !== null && `${spot.rating.toFixed(1)} ★`,
+                                            ]
+                                                .filter(Boolean)
+                                                .join(" • ")}
                                         </p>
                                     </div>
                                 </div>
@@ -1040,6 +1171,28 @@ function FilterPanel({
 // ============================================================================
 // COMPONENT 5: EXPANDABLE FLOATING BOSTON MAP (Bottom-Right Corner)
 // ============================================================================
+function BostonMapViewport({
+    activeSpot,
+    expanded,
+}: {
+    activeSpot: Restaurant | null;
+    expanded: boolean;
+}) {
+    const map = useMap();
+    useEffect(() => {
+        const timer = window.setTimeout(() => map.invalidateSize(), 50);
+        return () => window.clearTimeout(timer);
+    }, [expanded, map]);
+    useEffect(() => {
+        if (activeSpot) {
+            map.panTo([activeSpot.latitude, activeSpot.longitude], {
+                animate: true,
+            });
+        }
+    }, [activeSpot, map]);
+    return null;
+}
+
 function FloatingBostonMap({
     restaurants,
     activeId,
@@ -1048,14 +1201,23 @@ function FloatingBostonMap({
 }: FloatingBostonMapProps) {
     const [expanded, setExpanded] = useState(false);
 
-    const activeSpot = useMemo(() => {
-        return (
-            restaurants.find((r) => r.id === activeId) || restaurants[0] || null
-        );
-    }, [restaurants, activeId]);
+    const activeSpot = useMemo(
+        () =>
+            restaurants.find((restaurant) => restaurant.id === activeId) ??
+            restaurants[0] ??
+            null,
+        [restaurants, activeId],
+    );
 
-    // Scale radius circle visually based on maxDistance (0.2mi to 10mi -> 22px to 175px)
-    const radiusPx = Math.min(185, Math.max(22, maxDistance * 24));
+    const userPosition: LatLngExpression = [42.3551, -71.0624];
+
+    const pinIcon = (selected: boolean) =>
+        L.divIcon({
+            className: "boston-map-pin-wrap",
+            html: `<div class="boston-map-pin${selected ? " selected" : ""}"></div>`,
+            iconSize: [selected ? 18 : 14, selected ? 18 : 14],
+            iconAnchor: [selected ? 9 : 7, selected ? 9 : 7],
+        });
 
     return (
         <aside
@@ -1090,256 +1252,57 @@ function FloatingBostonMap({
                 </button>
             </div>
 
-            {/* Stylized Dark-Mode Vector Map of Boston */}
+            {/* Real interactive OpenStreetMap/CARTO map */}
             <div className="relative flex-1 w-full h-full bg-[#0e1116] overflow-hidden">
-                <svg
-                    viewBox="0 0 500 380"
-                    preserveAspectRatio="xMidYMid slice"
-                    className="w-full h-full"
+                <MapContainer
+                    center={[42.3551, -71.0624]}
+                    zoom={expanded ? 13 : 12}
+                    scrollWheelZoom={expanded}
+                    zoomControl={expanded}
+                    attributionControl={true}
+                    className="boston-real-map"
                 >
-                    <defs>
-                        <linearGradient
-                            id="bostonWater"
-                            x1="0%"
-                            y1="0%"
-                            x2="100%"
-                            y2="100%"
-                        >
-                            <stop offset="0%" stopColor="#0b1f33" />
-                            <stop offset="100%" stopColor="#081320" />
-                        </linearGradient>
-                        <filter
-                            id="pinNeonGlow"
-                            x="-50%"
-                            y="-50%"
-                            width="200%"
-                            height="200%"
-                        >
-                            <feGaussianBlur
-                                stdDeviation="4"
-                                result="coloredBlur"
-                            />
-                            <feMerge>
-                                <feMergeNode in="coloredBlur" />
-                                <feMergeNode in="SourceGraphic" />
-                            </feMerge>
-                        </filter>
-                    </defs>
-
-                    {/* Base Landmass */}
-                    <rect width="500" height="380" fill="#141820" />
-
-                    {/* Urban Street Grid */}
-                    <g stroke="#1e2430" strokeWidth="1">
-                        <line x1="0" y1="75" x2="500" y2="75" />
-                        <line x1="0" y1="150" x2="500" y2="150" />
-                        <line x1="0" y1="225" x2="500" y2="225" />
-                        <line x1="0" y1="300" x2="500" y2="300" />
-                        <line x1="100" y1="0" x2="100" y2="380" />
-                        <line x1="200" y1="0" x2="200" y2="380" />
-                        <line x1="300" y1="0" x2="300" y2="380" />
-                        <line x1="400" y1="0" x2="400" y2="380" />
-                    </g>
-
-                    {/* Charles River & Boston Harbor */}
-                    <path
-                        d="M 0,145 Q 115,152 195,125 T 315,72 L 355,0 L 500,0 L 500,320 L 420,285 Q 375,230 345,195 Q 320,165 322,125 Q 250,155 180,175 Q 90,192 0,185 Z"
-                        fill="url(#bostonWater)"
-                        stroke="#1a3652"
-                        strokeWidth="1.5"
+                    <TileLayer
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    />
+                    <BostonMapViewport
+                        activeSpot={activeSpot}
+                        expanded={expanded}
                     />
 
-                    {/* Fort Point Channel */}
-                    <path
-                        d="M 332,190 L 352,265 L 366,260 L 348,186 Z"
-                        fill="url(#bostonWater)"
+                    <Circle
+                        center={userPosition}
+                        radius={Math.min(maxDistance, 20) * 1609.344}
+                        pathOptions={{
+                            color: "#1DB954",
+                            fillColor: "#1DB954",
+                            fillOpacity: 0.06,
+                            opacity: 0.35,
+                            dashArray: "5 5",
+                        }}
+                    />
+                    <Marker
+                        position={userPosition}
+                        icon={L.divIcon({
+                            className: "boston-map-user-wrap",
+                            html: '<div class="boston-map-user"></div>',
+                            iconSize: [14, 14],
+                            iconAnchor: [7, 7],
+                        })}
                     />
 
-                    {/* Iconic Boston Bridges */}
-                    <line
-                        x1="155"
-                        y1="143"
-                        x2="172"
-                        y2="176"
-                        stroke="#2f394a"
-                        strokeWidth="3"
-                    />
-                    <line
-                        x1="245"
-                        y1="112"
-                        x2="262"
-                        y2="146"
-                        stroke="#2f394a"
-                        strokeWidth="3"
-                    />
-                    <line
-                        x1="298"
-                        y1="78"
-                        x2="310"
-                        y2="102"
-                        stroke="#2f394a"
-                        strokeWidth="3"
-                    />
-
-                    {/* Boston Common & Public Garden */}
-                    <polygon
-                        points="242,175 282,170 288,205 246,210"
-                        fill="#162e23"
-                        stroke="#1f4734"
-                        strokeWidth="1"
-                    />
-
-                    {/* Distance Radius Circle Synced with Max Distance Slider */}
-                    <circle
-                        cx="265"
-                        cy="190"
-                        r={radiusPx}
-                        fill="#1DB954"
-                        fillOpacity="0.06"
-                        stroke="#1DB954"
-                        strokeOpacity="0.32"
-                        strokeWidth="1.2"
-                        strokeDasharray="4 4"
-                    />
-
-                    {/* Neighborhood Labels */}
-                    <g
-                        fill="#64748b"
-                        fontFamily="Inter, sans-serif"
-                        fontSize="9"
-                        fontWeight="700"
-                        letterSpacing="0.06em"
-                        textAnchor="middle"
-                    >
-                        <text x="145" y="95">
-                            CAMBRIDGE
-                        </text>
-                        <text x="86" y="62">
-                            HARVARD SQ
-                        </text>
-                        <text x="318" y="128">
-                            NORTH END
-                        </text>
-                        <text x="205" y="205">
-                            BACK BAY
-                        </text>
-                        <text x="245" y="148">
-                            BEACON HILL
-                        </text>
-                        <text x="115" y="258">
-                            FENWAY
-                        </text>
-                        <text x="235" y="282">
-                            SOUTH END
-                        </text>
-                        <text x="392" y="232">
-                            SEAPORT
-                        </text>
-                    </g>
-
-                    {/* Dashed Route Line from User (Boston Common) to Active Restaurant */}
-                    {activeSpot && (
-                        <line
-                            x1="265"
-                            y1="190"
-                            x2={activeSpot.coords.x}
-                            y2={activeSpot.coords.y}
-                            stroke="#1DB954"
-                            strokeWidth="2"
-                            strokeDasharray="4 4"
-                            opacity="0.9"
+                    {restaurants.map((spot) => (
+                        <Marker
+                            key={spot.id}
+                            position={[spot.latitude, spot.longitude]}
+                            icon={pinIcon(spot.id === activeSpot?.id)}
+                            eventHandlers={{
+                                click: () => onSelectPin(spot.id),
+                            }}
                         />
-                    )}
-
-                    {/* User Anchor Pin (Boston Common) */}
-                    <g transform="translate(265, 190)">
-                        <circle r="11" fill="#38bdf8" opacity="0.22" />
-                        <circle
-                            r="4.5"
-                            fill="#38bdf8"
-                            stroke="#ffffff"
-                            strokeWidth="1.5"
-                        />
-                        <text
-                            y="-9"
-                            textAnchor="middle"
-                            fill="#bae6fd"
-                            fontSize="8"
-                            fontWeight="800"
-                        >
-                            YOU
-                        </text>
-                    </g>
-
-                    {/* Filtered Restaurant Pins */}
-                    {restaurants.map((spot) => {
-                        const isSelected = spot.id === activeSpot?.id;
-                        return (
-                            <g
-                                key={spot.id}
-                                onClick={() => onSelectPin(spot.id)}
-                                transform={`translate(${spot.coords.x}, ${spot.coords.y})`}
-                                className="cursor-pointer"
-                            >
-                                {isSelected && (
-                                    <circle
-                                        r="14"
-                                        fill="#1DB954"
-                                        className="radar-ring"
-                                    />
-                                )}
-                                <circle
-                                    r={isSelected ? 8 : 5.5}
-                                    fill={isSelected ? "#1DB954" : "#FF5E3A"}
-                                    stroke="#ffffff"
-                                    strokeWidth={isSelected ? 2.2 : 1.4}
-                                    filter={
-                                        isSelected
-                                            ? "url(#pinNeonGlow)"
-                                            : undefined
-                                    }
-                                />
-                                {(isSelected || expanded) && (
-                                    <g
-                                        transform={`translate(0, ${isSelected ? -14 : -11})`}
-                                    >
-                                        <rect
-                                            x="-48"
-                                            y="-11"
-                                            width="96"
-                                            height="14"
-                                            rx="4"
-                                            fill="#0f172a"
-                                            fillOpacity="0.9"
-                                            stroke={
-                                                isSelected
-                                                    ? "#1DB954"
-                                                    : "#334155"
-                                            }
-                                            strokeWidth="0.8"
-                                        />
-                                        <text
-                                            y="-2"
-                                            textAnchor="middle"
-                                            fill={
-                                                isSelected
-                                                    ? "#1DB954"
-                                                    : "#e2e8f0"
-                                            }
-                                            fontFamily="Inter, sans-serif"
-                                            fontSize="8"
-                                            fontWeight="700"
-                                        >
-                                            {spot.name.length > 15
-                                                ? `${spot.name.slice(0, 14)}…`
-                                                : spot.name}
-                                        </text>
-                                    </g>
-                                )}
-                            </g>
-                        );
-                    })}
-                </svg>
+                    ))}
+                </MapContainer>
 
                 {/* Bottom Floating Info Card when Expanded */}
                 {expanded && activeSpot && (
@@ -1438,8 +1401,9 @@ function JamQueueModal({
                                             {spot.name}
                                         </p>
                                         <p className="text-xs text-white/60 truncate">
-                                            {spot.neighborhood} • {spot.cuisine}{" "}
-                                            • {spot.price} • {spot.votes} votes
+                                            {[spot.neighborhood, spot.cuisine, spot.price, `${spot.votes} yes`]
+                                                .filter(Boolean)
+                                                .join(" • ")}
                                         </p>
                                     </div>
                                 </div>
@@ -1509,19 +1473,23 @@ function WinnerModal({ winner, onClose, onLockIn }: WinnerModalProps) {
                     {winner.name}
                 </h3>
                 <p className="text-sm text-white/75 mt-1">
-                    {winner.neighborhood} • {winner.cuisine} • {winner.price} •{" "}
-                    {winner.rating.toFixed(1)} ★
+                    {[
+                        winner.neighborhood,
+                        winner.cuisine,
+                        winner.price,
+                        winner.rating !== null && `${winner.rating.toFixed(1)} ★`,
+                    ]
+                        .filter(Boolean)
+                        .join(" • ")}
                 </p>
 
                 <div className="mt-4 bg-white/5 border border-white/10 rounded-2xl p-3.5 space-y-1">
                     <p className="text-xs text-white/55">
-                        {winner.distance.toFixed(1)} mi from Boston Common •{" "}
-                        {winner.tablesTonight
-                            ? "Tables Available Tonight"
-                            : "Walk-in Line Ready"}
+                        {winner.distance.toFixed(1)} mi from Boston Common
+                        {winner.hours && ` • ${winner.hours}`}
                     </p>
                     <p className="text-sm font-bold text-[#1DB954]">
-                        {winner.votes} Jam Votes • Top Group Consensus
+                        {winner.votes} yes {winner.votes === 1 ? "vote" : "votes"} • Top Group Consensus
                     </p>
                 </div>
 
@@ -1548,20 +1516,36 @@ function WinnerModal({ winner, onClose, onLockIn }: WinnerModalProps) {
 // ============================================================================
 // MAIN ROOT APPLICATION COMPONENT
 // ============================================================================
-export default function App() {
-    const getRoomCodeFromUrl = () => {
-        const match = window.location.pathname.match(
-            /^\/(?:room|join)\/([A-Za-z0-9-]+)\/?$/,
-        );
-        return match?.[1]?.toUpperCase() ?? null;
-    };
+const DEFAULT_FILTERS: FilterState = {
+    maxDistance: 5.0,
+    minRating: 4.0,
+    cuisines: [],
+    prices: [],
+    openNow: false,
+    tablesTonight: false,
+    walkInFriendly: false,
+};
 
+const FEED_WINDOW = 30;
+
+function errorMessage(error: unknown) {
+    return error instanceof Error ? error.message : "Unknown error";
+}
+
+function getRoomCodeFromUrl() {
+    const match = window.location.pathname.match(
+        /^\/(?:room|join)\/([A-Za-z0-9]{6})\/?$/,
+    );
+    return match?.[1]?.toUpperCase() ?? null;
+}
+
+export default function App() {
     const [roomCode, setRoomCode] = useState<string | null>(
         getRoomCodeFromUrl,
     );
     const [roomCodeInput, setRoomCodeInput] = useState("");
-    const [roomPresenceCount, setRoomPresenceCount] = useState(1);
-    const [roomParticipants, setRoomParticipants] = useState<RoomParticipant[]>([]);
+    const [entryError, setEntryError] = useState("");
+    const [creatingRoom, setCreatingRoom] = useState(false);
     const [profileName, setProfileName] = useState(() =>
         window.localStorage.getItem("boston-jam-name") ?? "",
     );
@@ -1590,34 +1574,66 @@ export default function App() {
             ),
     );
     const roomChannelRef = useRef<RealtimeChannel | null>(null);
-    const userIdRef = useRef<string | null>(null);
-
-    const [restaurants, setRestaurants] = useState<Restaurant[]>(
-        INITIAL_BOSTON_RESTAURANTS,
-    );
-    const [filters, setFilters] = useState<FilterState>({
-        maxDistance: 5.0,
-        minRating: 4.0,
-        cuisines: [],
-        prices: [],
-        openNow: false,
-        tablesTonight: false,
-        walkInFriendly: false,
+    const roomCodeRef = useRef<string | null>(roomCode);
+    const profileNameRef = useRef(profileName);
+    const preferencesRef = useRef<RoomPreferences>({
+        cuisines: profileCuisines,
+        prices: profilePrices,
     });
 
-    const [activeRestaurantId, setActiveRestaurantId] = useState(
-        INITIAL_BOSTON_RESTAURANTS[0].id,
+    // Django-backed room state (source of truth).
+    const [session, setSession] = useState<RoomSession | null>(null);
+    const [room, setRoom] = useState<RoomState | null>(null);
+    const [roomError, setRoomError] = useState("");
+    const [results, setResults] = useState<ResultRow[]>([]);
+    const [presence, setPresence] = useState<Map<number, PresenceProfile>>(
+        () => new Map(),
     );
-    const roomStateRef = useRef({
-        restaurants,
-        filters,
-        activeRestaurantId,
-    });
+    const [submittingVote, setSubmittingVote] = useState(false);
+    const lastFollowedRestaurantRef = useRef<number | null>(null);
+    const finishedAnnouncedRef = useRef(false);
+
+    // Restaurant catalog from Django (browse only; the room decides voting order).
+    const [catalog, setCatalog] = useState<Restaurant[]>([]);
+    const [restaurantsLoading, setRestaurantsLoading] = useState(true);
+    const [restaurantsError, setRestaurantsError] = useState("");
+    const [queuedIds, setQueuedIds] = useState<Set<number>>(() => new Set());
+    const [filters, setFilters] = useState<FilterState>(DEFAULT_FILTERS);
+
+    const [activeRestaurantId, setActiveRestaurantId] = useState<number | null>(
+        null,
+    );
     const [isQueueOpen, setIsQueueOpen] = useState(false);
     const [winnerSpot, setWinnerSpot] = useState<Restaurant | null>(null);
     const [toasts, setToasts] = useState<Toast[]>([]);
 
     const feedRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        profileNameRef.current = profileName;
+        preferencesRef.current = {
+            cuisines: profileCuisines,
+            prices: profilePrices,
+        };
+    }, [profileName, profileCuisines, profilePrices]);
+
+    useEffect(() => {
+        let cancelled = false;
+        void fetchRestaurants()
+            .then((rows) => {
+                if (!cancelled) setCatalog(rows);
+            })
+            .catch((error: unknown) => {
+                if (cancelled) return;
+                setRestaurantsError(errorMessage(error));
+            })
+            .finally(() => {
+                if (!cancelled) setRestaurantsLoading(false);
+            });
+        return () => {
+            cancelled = true;
+        };
+    }, []);
 
     const addToast = useCallback((message: string, accent = "#1DB954") => {
         const id = Date.now() + Math.random();
@@ -1627,15 +1643,38 @@ export default function App() {
         }, 2500);
     }, []);
 
-    const enterRoom = useCallback((code: string) => {
-        const normalizedCode = code
-            .trim()
-            .toUpperCase()
-            .replace(/[^A-Z0-9-]/g, "");
-        if (!normalizedCode) return;
-        window.history.pushState({}, "", `/room/${normalizedCode}`);
-        setRoomCode(normalizedCode);
+    // Switch rooms and reset all room-scoped state.
+    const switchRoom = useCallback((code: string | null) => {
+        roomCodeRef.current = code;
+        setRoomCode(code);
+        setSession(null);
+        setRoom(null);
+        setRoomError("");
+        setResults([]);
+        setPresence(new Map());
+        setWinnerSpot(null);
+        lastFollowedRestaurantRef.current = null;
+        finishedAnnouncedRef.current = false;
     }, []);
+
+    const enterRoom = useCallback(
+        (code: string) => {
+            const normalizedCode = normalizeRoomCode(code);
+            if (!ROOM_CODE_PATTERN.test(normalizedCode)) {
+                setEntryError("Room codes are 6 letters or numbers.");
+                return;
+            }
+            setEntryError("");
+            window.history.pushState({}, "", `/room/${normalizedCode}`);
+            switchRoom(normalizedCode);
+        },
+        [switchRoom],
+    );
+
+    const leaveRoom = useCallback(() => {
+        window.history.pushState({}, "", "/");
+        switchRoom(null);
+    }, [switchRoom]);
 
     const saveProfile = useCallback(() => {
         const normalizedName = profileName.trim();
@@ -1669,199 +1708,193 @@ export default function App() {
         );
     };
 
-    const createRoom = useCallback(() => {
-        if (!saveProfile()) return;
-        const bytes = crypto.getRandomValues(new Uint8Array(4));
-        const code = Array.from(bytes, (byte) =>
-            byte.toString(16).padStart(2, "0"),
-        )
-            .join("")
-            .slice(0, 8)
-            .toUpperCase();
-        enterRoom(code);
-    }, [enterRoom, saveProfile]);
+    // Django generates the room code and the host's participant credential.
+    const createRoom = useCallback(async () => {
+        if (creatingRoom || !saveProfile()) return;
+        setCreatingRoom(true);
+        setEntryError("");
+        try {
+            const membership = await apiCreateRoom(profileName.trim());
+            saveSession(membership);
+            enterRoom(membership.room.code);
+        } catch (error) {
+            setEntryError(`Couldn't create a room: ${errorMessage(error)}`);
+        } finally {
+            setCreatingRoom(false);
+        }
+    }, [creatingRoom, saveProfile, profileName, enterRoom]);
 
     useEffect(() => {
-        const handlePopState = () => setRoomCode(getRoomCodeFromUrl());
+        const handlePopState = () => switchRoom(getRoomCodeFromUrl());
         window.addEventListener("popstate", handlePopState);
         return () => window.removeEventListener("popstate", handlePopState);
+    }, [switchRoom]);
+
+    const applyRoomState = useCallback((state: RoomState) => {
+        if (state.code !== roomCodeRef.current) return;
+        setRoom((prev) => (isSameOrNewerRoomState(state, prev) ? state : prev));
     }, []);
 
-    useEffect(() => {
-        if (!roomCode) {
-            roomChannelRef.current = null;
-            return;
+    const refreshRoom = useCallback(async () => {
+        const code = roomCodeRef.current;
+        if (!code) return;
+        try {
+            const [state, rows] = await Promise.all([
+                getRoom(code),
+                getResults(code),
+            ]);
+            if (code !== roomCodeRef.current) return;
+            applyRoomState(state);
+            setResults(rows);
+        } catch (error) {
+            if (code !== roomCodeRef.current) return;
+            if (error instanceof ApiError && error.status === 404) {
+                setRoomError("Room not found. Check the code and try again.");
+            }
         }
-        userIdRef.current ??= crypto.randomUUID();
-        const preferences: RoomPreferences = {
-            cuisines: profileCuisines,
-            prices: profilePrices,
-        };
-        const participant: RoomParticipant = {
-            id: userIdRef.current,
-            name: profileName.trim() || "Guest",
-            preferences,
-        };
+    }, [applyRoomState]);
 
-        const channel = joinRoom(
+    // Join the room once per browser (the token is reused from storage).
+    useEffect(() => {
+        if (!roomCode || !profileComplete) return;
+        let cancelled = false;
+        ensureMembership(roomCode, profileNameRef.current.trim() || "Guest")
+            .then((nextSession) => {
+                if (cancelled) return;
+                setSession(nextSession);
+                void refreshRoom();
+            })
+            .catch((error: unknown) => {
+                if (cancelled) return;
+                if (error instanceof ApiError && error.status === 404) {
+                    setRoomError("Room not found. Check the code and try again.");
+                } else if (error instanceof ApiError && error.status === 409) {
+                    addToast("This room already finished voting. Showing results.", "#f59e0b");
+                } else {
+                    setRoomError(`Couldn't join room: ${errorMessage(error)}`);
+                }
+            });
+        return () => {
+            cancelled = true;
+        };
+    }, [roomCode, profileComplete, refreshRoom, addToast]);
+
+    // Initial fetch plus a polling fallback in case a Realtime ping is missed.
+    useEffect(() => {
+        if (!roomCode || !profileComplete) return;
+        void refreshRoom();
+        const refreshIfVisible = () => {
+            if (document.visibilityState === "visible") void refreshRoom();
+        };
+        const interval = window.setInterval(
+            refreshIfVisible,
+            isRealtimeConfigured() ? 10_000 : 3_000,
+        );
+        document.addEventListener("visibilitychange", refreshIfVisible);
+        return () => {
+            window.clearInterval(interval);
+            document.removeEventListener("visibilitychange", refreshIfVisible);
+        };
+    }, [roomCode, profileComplete, refreshRoom]);
+
+    // Realtime: "room-updated" pings trigger a refetch; presence shares preferences.
+    useEffect(() => {
+        if (!roomCode || !session) return;
+        const channel = subscribeToRoom(
             roomCode,
-            { id: userIdRef.current, profile: participant },
             {
-                onState: (state) => {
-                    setRestaurants(state.restaurants);
-                    setFilters(state.filters);
-                    setActiveRestaurantId(state.activeRestaurantId);
-                },
-                onPresenceChange: setRoomPresenceCount,
-                onParticipants: setRoomParticipants,
-                onReady: () => {
-                    void requestRoomState(roomChannelRef.current);
-                },
-                onStateRequest: () => {
-                    void sendRoomState(roomChannelRef.current, roomStateRef.current);
+                participantId: session.participantId,
+                preferences: preferencesRef.current,
+            },
+            {
+                onRoomUpdated: () => void refreshRoom(),
+                onPresence: (profiles) => {
+                    setPresence(profiles);
+                    // Someone joined or left; their membership is in Django.
+                    void refreshRoom();
                 },
             },
         );
         roomChannelRef.current = channel;
-
         return () => {
-            if (channel) {
-                channel.unsubscribe();
-            }
+            void channel?.unsubscribe();
             roomChannelRef.current = null;
         };
-    }, [roomCode, profileName, profileCuisines, profilePrices]);
+    }, [roomCode, session, refreshRoom]);
 
     useEffect(() => {
-        if (!profileComplete) return;
-        const participant: RoomParticipant = {
-            id: userIdRef.current ?? "local",
-            name: profileName.trim() || "Guest",
-            preferences: {
-                cuisines: profileCuisines,
-                prices: profilePrices,
-            },
-        };
-        void updateRoomProfile(roomChannelRef.current, participant);
-    }, [profileComplete, profileName, profileCuisines, profilePrices]);
+        if (!session) return;
+        void updatePresence(roomChannelRef.current, {
+            participantId: session.participantId,
+            preferences: { cuisines: profileCuisines, prices: profilePrices },
+        });
+    }, [session, profileCuisines, profilePrices]);
 
-    useEffect(() => {
-        if (!roomCode) return;
-        roomStateRef.current = {
-            restaurants,
-            filters,
-            activeRestaurantId,
-        };
-        const timeout = window.setTimeout(() => {
-            void sendRoomState(roomChannelRef.current, {
-                restaurants,
-                filters,
-                activeRestaurantId,
-            });
-        }, 80);
-        return () => window.clearTimeout(timeout);
-    }, [roomCode, restaurants, filters, activeRestaurantId]);
+    const currentRestaurantId =
+        room?.is_active ? (room.current_restaurant?.id ?? null) : null;
 
-    // Filtered Restaurants Memoized
+    const resultsById = useMemo(
+        () => new Map(results.map((row) => [row.restaurant.id, row])),
+        [results],
+    );
+
+    // Catalog decorated with room results; the room's current restaurant is
+    // always included even if the catalog was loaded before it existed.
+    const restaurants = useMemo(() => {
+        let base = catalog;
+        const current = room?.current_restaurant;
+        if (current && !catalog.some((r) => r.id === current.id)) {
+            base = [...catalog, mapApiRestaurant(current)].sort(
+                (a, b) => a.id - b.id,
+            );
+        }
+        return base.map((r) => ({
+            ...r,
+            votes: resultsById.get(r.id)?.yes_count ?? 0,
+            inQueue: queuedIds.has(r.id),
+        }));
+    }, [catalog, room, resultsById, queuedIds]);
+
+    // Filters are local to each viewer and never hide the restaurant being voted on.
     const filteredRestaurants = useMemo(() => {
         return restaurants.filter((r) => {
+            if (r.id === currentRestaurantId) return true;
             if (r.distance > filters.maxDistance) return false;
-            if (r.rating < filters.minRating) return false;
+            if (r.rating !== null && r.rating < filters.minRating) return false;
             if (
                 filters.cuisines.length > 0 &&
                 !filters.cuisines.includes(r.cuisine)
             )
                 return false;
-            if (filters.prices.length > 0 && !filters.prices.includes(r.price))
+            if (
+                filters.prices.length > 0 &&
+                r.price !== null &&
+                !filters.prices.includes(r.price)
+            )
                 return false;
             if (filters.openNow && !r.openNow) return false;
             if (filters.tablesTonight && !r.tablesTonight) return false;
             if (filters.walkInFriendly && !r.walkInFriendly) return false;
             return true;
         });
-    }, [restaurants, filters]);
+    }, [restaurants, filters, currentRestaurantId]);
 
-    // Keep activeRestaurantId synchronized when filters change
-    useEffect(() => {
-        if (
-            filteredRestaurants.length > 0 &&
-            !filteredRestaurants.some((r) => r.id === activeRestaurantId)
-        ) {
-            const nextActiveId = filteredRestaurants[0].id;
-            setTimeout(() => {
-                setActiveRestaurantId(nextActiveId);
-                if (feedRef.current) feedRef.current.scrollTop = 0;
-            }, 0);
-        }
-    }, [filteredRestaurants, activeRestaurantId]);
+    // Rooms vote in ID order through thousands of restaurants, so the feed only
+    // renders the current restaurant and the next few upcoming matches.
+    const feedRestaurants = useMemo(() => {
+        const start =
+            currentRestaurantId === null
+                ? 0
+                : Math.max(
+                      0,
+                      filteredRestaurants.findIndex(
+                          (r) => r.id >= currentRestaurantId,
+                      ),
+                  );
+        return filteredRestaurants.slice(start, start + FEED_WINDOW);
+    }, [filteredRestaurants, currentRestaurantId]);
 
-    const handleToggleVote = (id: string) => {
-        setRestaurants((prev) =>
-            prev.map((r) => {
-                if (r.id !== id) return r;
-                const nextVoted = !r.userVoted;
-                addToast(
-                    nextVoted
-                        ? `🔥 Voted for ${r.name}!`
-                        : `Removed vote for ${r.name}`,
-                    nextVoted ? "#FF5E3A" : "#94a3b8",
-                );
-                return {
-                    ...r,
-                    userVoted: nextVoted,
-                    votes: nextVoted ? r.votes + 1 : Math.max(0, r.votes - 1),
-                    voters: nextVoted
-                        ? ["YOU", ...r.voters.filter((v) => v !== "YOU")]
-                        : r.voters.filter((v) => v !== "YOU"),
-                };
-            }),
-        );
-    };
-
-    const handleToggleQueue = (id: string) => {
-        setRestaurants((prev) =>
-            prev.map((r) => {
-                if (r.id !== id) return r;
-                const nextQueue = !r.inQueue;
-                addToast(
-                    nextQueue
-                        ? `Added ${r.name} to Jam Queue`
-                        : `Removed ${r.name} from Jam Queue`,
-                    "#1DB954",
-                );
-                return { ...r, inQueue: nextQueue };
-            }),
-        );
-    };
-
-    const handleResetFilters = () => {
-        setFilters({
-            maxDistance: 5.0,
-            minRating: 4.0,
-            cuisines: [],
-            prices: [],
-            openNow: false,
-            tablesTonight: false,
-            walkInFriendly: false,
-        });
-        addToast("Reset all Boston filters");
-    };
-
-    const handleJumpToRestaurant = (id: string) => {
-        const isVisible = filteredRestaurants.some((r) => r.id === id);
-        if (!isVisible) {
-            setFilters({
-                maxDistance: 10.0,
-                minRating: 3.5,
-                cuisines: [],
-                prices: [],
-                openNow: false,
-                tablesTonight: false,
-                walkInFriendly: false,
-            });
-            addToast("Expanded filters to show selected spot", "#FF5E3A");
-        }
-        setActiveRestaurantId(id);
+    const scrollToRestaurant = useCallback((id: number) => {
         setTimeout(() => {
             const targetEl = feedRef.current?.querySelector(
                 `[data-id="${id}"]`,
@@ -1870,6 +1903,194 @@ export default function App() {
                 targetEl.scrollIntoView({ behavior: "smooth", block: "start" });
             }
         }, 60);
+    }, []);
+
+    // When Django advances the room, everyone jumps to the new restaurant.
+    useEffect(() => {
+        if (
+            currentRestaurantId === null ||
+            lastFollowedRestaurantRef.current === currentRestaurantId
+        )
+            return;
+        lastFollowedRestaurantRef.current = currentRestaurantId;
+        setTimeout(() => setActiveRestaurantId(currentRestaurantId), 0);
+        scrollToRestaurant(currentRestaurantId);
+    }, [currentRestaurantId, scrollToRestaurant]);
+
+    // Keep activeRestaurantId synchronized when filters change
+    useEffect(() => {
+        if (
+            feedRestaurants.length > 0 &&
+            !feedRestaurants.some((r) => r.id === activeRestaurantId)
+        ) {
+            const nextActiveId = feedRestaurants[0].id;
+            setTimeout(() => {
+                setActiveRestaurantId(nextActiveId);
+                if (feedRef.current) feedRef.current.scrollTop = 0;
+            }, 0);
+        }
+    }, [feedRestaurants, activeRestaurantId]);
+
+    const winnerFromResults = useCallback(() => {
+        const top = results[0];
+        if (!top) return null;
+        const restaurant =
+            restaurants.find((r) => r.id === top.restaurant.id) ??
+            mapApiRestaurant(top.restaurant);
+        return { ...restaurant, votes: top.yes_count };
+    }, [results, restaurants]);
+
+    // Announce the winner once when Django reports the room finished.
+    useEffect(() => {
+        if (!room || room.is_active || finishedAnnouncedRef.current) return;
+        const winner = winnerFromResults();
+        if (!winner) return;
+        finishedAnnouncedRef.current = true;
+        setTimeout(() => setWinnerSpot(winner), 0);
+    }, [room, winnerFromResults]);
+
+    const participantViews = useMemo<RoomParticipantView[]>(
+        () =>
+            (room?.participants ?? [])
+                .filter((p) => p.is_active)
+                .map((p) => ({
+                    id: p.id,
+                    name: p.display_name,
+                    preferences: presence.get(p.id)?.preferences ?? null,
+                    online: presence.has(p.id),
+                    isYou: p.id === session?.participantId,
+                })),
+        [room, presence, session],
+    );
+
+    const hasVotedThisRound = Boolean(
+        session &&
+            room?.voting_progress.voted_participant_ids.includes(
+                session.participantId,
+            ),
+    );
+
+    const getVoteInfo = (restaurantId: number): RoomVoteInfo => {
+        const row = resultsById.get(restaurantId);
+        const base = {
+            hasVoted: false,
+            submitting: false,
+            votedCount: 0,
+            requiredCount: 0,
+            voterNames: [] as string[],
+            yesCount: row?.yes_count ?? 0,
+            noCount: row?.no_count ?? 0,
+        };
+        if (!room) return { ...base, status: "upcoming" };
+        if (restaurantId === currentRestaurantId) {
+            const progress = room.voting_progress;
+            const names = new Map(
+                room.participants.map((p) => [p.id, p.display_name]),
+            );
+            return {
+                ...base,
+                status: "current",
+                hasVoted: hasVotedThisRound,
+                submitting: submittingVote,
+                votedCount: progress.voted_count,
+                requiredCount: progress.required_count,
+                voterNames: progress.voted_participant_ids.map((id) =>
+                    id === session?.participantId ? "YOU" : (names.get(id) ?? "?"),
+                ),
+            };
+        }
+        if (currentRestaurantId === null || restaurantId < currentRestaurantId) {
+            return { ...base, status: "decided" };
+        }
+        return { ...base, status: "upcoming" };
+    };
+
+    // All votes go through Django; the room advances only after every
+    // active participant has voted on the current restaurant.
+    const handleCastVote = async (restaurantId: number, vote: boolean) => {
+        if (!room || !roomCode || submittingVote) return;
+        if (!session) {
+            addToast("You're viewing this room without a seat, so you can't vote.", "#94a3b8");
+            return;
+        }
+        const current = room.current_restaurant;
+        if (!room.is_active || !current || current.id !== restaurantId) {
+            addToast("That restaurant isn't up for a vote right now.", "#94a3b8");
+            return;
+        }
+        setSubmittingVote(true);
+        try {
+            const state = await submitVote(roomCode, session.token, {
+                round_number: room.current_round,
+                restaurant_id: restaurantId,
+                vote,
+            });
+            applyRoomState(state);
+            addToast(
+                vote ? `🔥 Yes to ${current.name}` : `Passed on ${current.name}`,
+                vote ? "#FF5E3A" : "#94a3b8",
+            );
+            void notifyRoomUpdated(roomChannelRef.current, state.current_round);
+            void getResults(roomCode)
+                .then((rows) => {
+                    if (roomCodeRef.current === roomCode) setResults(rows);
+                })
+                .catch(() => undefined);
+        } catch (error) {
+            if (error instanceof ApiError && error.status === 409) {
+                addToast("The room already moved on. Showing the latest round.", "#f59e0b");
+            } else if (error instanceof ApiError && error.status === 403) {
+                clearSession(roomCode);
+                setSession(null);
+                setRoomError("Your seat in this room is no longer valid. Reload the page to rejoin.");
+            } else {
+                addToast(`Vote failed: ${errorMessage(error)}`, "#f43f5e");
+            }
+            void refreshRoom();
+        } finally {
+            setSubmittingVote(false);
+        }
+    };
+
+    const handleToggleQueue = (id: number) => {
+        const restaurant = restaurants.find((r) => r.id === id);
+        const adding = !queuedIds.has(id);
+        setQueuedIds((prev) => {
+            const next = new Set(prev);
+            if (next.has(id)) next.delete(id);
+            else next.add(id);
+            return next;
+        });
+        if (restaurant) {
+            addToast(
+                adding
+                    ? `Added ${restaurant.name} to Jam Queue`
+                    : `Removed ${restaurant.name} from Jam Queue`,
+            );
+        }
+    };
+
+    const handleResetFilters = () => {
+        setFilters(DEFAULT_FILTERS);
+        addToast("Reset all Boston filters");
+    };
+
+    const handleJumpToRestaurant = (id: number) => {
+        if (currentRestaurantId !== null && id < currentRestaurantId) {
+            addToast("The room already voted on that spot.", "#94a3b8");
+            return;
+        }
+        const isVisible = filteredRestaurants.some((r) => r.id === id);
+        if (!isVisible) {
+            setFilters({
+                ...DEFAULT_FILTERS,
+                maxDistance: 10.0,
+                minRating: 0,
+            });
+            addToast("Expanded filters to show selected spot", "#FF5E3A");
+        }
+        setActiveRestaurantId(id);
+        scrollToRestaurant(id);
     };
 
     const handleCopyInvite = () => {
@@ -1884,18 +2105,30 @@ export default function App() {
     };
 
     const handlePickWinner = () => {
-        const pool =
-            filteredRestaurants.length > 0 ? filteredRestaurants : restaurants;
-        const topPick = [...pool].sort(
-            (a, b) => b.votes - a.votes || b.rating - a.rating,
-        )[0];
-        setWinnerSpot(topPick);
+        const winner = winnerFromResults();
+        if (!winner) {
+            addToast("No votes yet. Vote on the current spot first!", "#94a3b8");
+            return;
+        }
+        setWinnerSpot(winner);
     };
 
     const queuedRestaurants = useMemo(
         () => restaurants.filter((r) => r.inQueue),
         [restaurants],
     );
+
+    const roomStatus = !room
+        ? "Connecting to room…"
+        : !room.is_active
+          ? "Voting finished • see the results"
+          : `Round ${room.current_round} • ${room.current_restaurant?.name ?? ""} • ${room.voting_progress.voted_count}/${room.voting_progress.required_count} voted${
+                !session
+                    ? " • viewing only"
+                    : hasVotedThisRound
+                      ? " • waiting for others"
+                      : " • your vote"
+            }`;
 
     if (!roomCode && profileComplete) {
         return (
@@ -1909,10 +2142,11 @@ export default function App() {
                     <p>Welcome, {profileName}. Create or join a Jam.</p>
                     <button
                         type="button"
-                        onClick={createRoom}
+                        onClick={() => void createRoom()}
+                        disabled={creatingRoom}
                         className="room-entry-primary"
                     >
-                        New room
+                        {creatingRoom ? "Creating…" : "New room"}
                     </button>
                     <div className="room-entry-divider">
                         <span>or join existing</span>
@@ -1935,7 +2169,7 @@ export default function App() {
                             }
                             placeholder="e.g. A1B2C3"
                             autoComplete="off"
-                            maxLength={32}
+                            maxLength={6}
                         />
                         <button
                             type="submit"
@@ -1944,6 +2178,11 @@ export default function App() {
                             Enter room
                         </button>
                     </form>
+                    {entryError && (
+                        <p className="room-entry-warning" role="alert">
+                            {entryError}
+                        </p>
+                    )}
                 </div>
             </main>
         );
@@ -2049,12 +2288,11 @@ export default function App() {
                         <>
                             <button
                                 type="button"
-                                onClick={() => {
-                                    if (saveProfile()) createRoom();
-                                }}
+                                onClick={() => void createRoom()}
+                                disabled={creatingRoom}
                                 className="room-entry-primary room-entry-room-button"
                             >
-                                New room
+                                {creatingRoom ? "Creating…" : "New room"}
                             </button>
 
                             <div className="room-entry-divider">
@@ -2080,7 +2318,7 @@ export default function App() {
                                     }
                                     placeholder="e.g. A1B2C3"
                                     autoComplete="off"
-                                    maxLength={32}
+                                    maxLength={6}
                                 />
                                 <button
                                     type="submit"
@@ -2092,10 +2330,16 @@ export default function App() {
                         </>
                     )}
 
+                    {entryError && (
+                        <p className="room-entry-warning" role="alert">
+                            {entryError}
+                        </p>
+                    )}
+
                     {!isRealtimeConfigured() && (
                         <p className="room-entry-warning">
-                            Realtime is not configured. Add Vite Supabase
-                            environment variables to enable shared rooms.
+                            Realtime is not configured, so room updates will
+                            refresh every few seconds instead of instantly.
                         </p>
                     )}
                 </div>
@@ -2103,8 +2347,48 @@ export default function App() {
         );
     }
 
+    if (roomError && !room) {
+        return (
+            <main className="room-entry">
+                <div className="room-entry-card">
+                    <div className="room-entry-brand">
+                        <Sparkles className="room-entry-brand-icon" />
+                        <span>Boston Food Jam</span>
+                    </div>
+                    <h1>Room {roomCode}</h1>
+                    <p role="alert">{roomError}</p>
+                    <button
+                        type="button"
+                        onClick={leaveRoom}
+                        className="room-entry-primary"
+                    >
+                        Back to rooms
+                    </button>
+                </div>
+            </main>
+        );
+    }
+
     return (
         <div className="bg-[#121212] text-white min-h-screen lg:h-screen lg:overflow-hidden flex flex-col font-sans">
+            {roomError && (
+                <div
+                    className="fixed top-4 right-4 z-50 max-w-sm px-4 py-2 rounded-xl border border-rose-500/40 bg-[#181818]/95 text-xs text-rose-200 shadow-xl"
+                    role="alert"
+                >
+                    {roomError}
+                </div>
+            )}
+            {(restaurantsLoading || restaurantsError) && (
+                <div
+                    className="fixed bottom-4 left-4 z-50 px-4 py-2 rounded-xl border border-white/15 bg-[#181818]/95 text-xs shadow-xl"
+                    role="status"
+                >
+                    {restaurantsLoading
+                        ? "Loading restaurants..."
+                        : `Restaurant API error: ${restaurantsError}`}
+                </div>
+            )}
             {/* Non-Blocking Toast Banner Stack */}
             <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 pointer-events-none flex flex-col items-center gap-2">
                 {toasts.map((t) => (
@@ -2125,10 +2409,11 @@ export default function App() {
             <main className="flex-1 flex flex-col lg:flex-row w-full h-full lg:overflow-hidden relative">
                 {/* SEGMENT 1: LEFT VERTICAL VIDEO REELS SCROLLER */}
                 <VideoScroller
-                    restaurants={filteredRestaurants}
+                    restaurants={feedRestaurants}
                     activeId={activeRestaurantId}
                     onSelectActive={setActiveRestaurantId}
-                    onToggleVote={handleToggleVote}
+                    getVoteInfo={getVoteInfo}
+                    onCastVote={(id, vote) => void handleCastVote(id, vote)}
                     onToggleQueue={handleToggleQueue}
                     onResetFilters={handleResetFilters}
                     feedRef={feedRef}
@@ -2145,8 +2430,8 @@ export default function App() {
                         onOpenQueue={() => setIsQueueOpen(true)}
                         onPickWinner={handlePickWinner}
                         roomCode={roomCode}
-                        presenceCount={roomPresenceCount}
-                        participants={roomParticipants}
+                        participants={participantViews}
+                        roomStatus={roomStatus}
                     />
 
                     <FilterPanel
@@ -2162,7 +2447,7 @@ export default function App() {
 
             {/* SEGMENT 3: FLOATING EXPANDABLE BOSTON MAP CORNER */}
             <FloatingBostonMap
-                restaurants={filteredRestaurants}
+                restaurants={feedRestaurants}
                 activeId={activeRestaurantId}
                 maxDistance={filters.maxDistance}
                 onSelectPin={handleJumpToRestaurant}
