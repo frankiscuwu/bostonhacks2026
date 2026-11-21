@@ -48,17 +48,21 @@ export const API_BASE_URL =
     (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, "") ||
     "http://127.0.0.1:8000";
 
-const BOSTON_COMMON = { latitude: 42.3551, longitude: -71.0624 };
+export type LatLng = { latitude: number; longitude: number };
 
-function haversineMiles(
+// Fallback distance origin when the device location is unavailable.
+export const BOSTON_COMMON: LatLng = { latitude: 42.3551, longitude: -71.0624 };
+
+export function haversineMiles(
     latitude: number,
     longitude: number,
+    origin: LatLng = BOSTON_COMMON,
 ): number {
     const toRadians = (degrees: number) => (degrees * Math.PI) / 180;
     const earthRadiusMiles = 3958.8;
-    const latDelta = toRadians(latitude - BOSTON_COMMON.latitude);
-    const lonDelta = toRadians(longitude - BOSTON_COMMON.longitude);
-    const lat1 = toRadians(BOSTON_COMMON.latitude);
+    const latDelta = toRadians(latitude - origin.latitude);
+    const lonDelta = toRadians(longitude - origin.longitude);
+    const lat1 = toRadians(origin.latitude);
     const lat2 = toRadians(latitude);
     const haversine =
         Math.sin(latDelta / 2) ** 2 +

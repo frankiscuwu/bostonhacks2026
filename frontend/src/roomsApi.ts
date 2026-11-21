@@ -21,6 +21,8 @@ export type ApiParticipant = {
     id: number;
     display_name: string;
     filters: ApiFilters;
+    // Whether this participant shared a location; coordinates are never exposed.
+    has_location: boolean;
     joined_at: string;
     is_active: boolean;
 };
@@ -34,8 +36,10 @@ export type RoomState = {
     is_active: boolean;
     created_at: string;
     participants: ApiParticipant[];
-    // Server-side count of restaurants matching everyone's saved filters.
+    // Restaurants matching everyone's saved filters, with each person's distance
+    // measured from their own location (computed by Django).
     matching_count: number;
+    matching_restaurant_ids: number[];
 };
 
 export type RoomMembership = {
@@ -101,6 +105,20 @@ export function updateFilters(code: string, token: string, filters: ApiFilters) 
         method: "PUT",
         token,
         body: JSON.stringify(filters),
+    });
+}
+
+// Your device location (rounded to ~100 m by Django), or nulls to clear it.
+// Stays private: Django never returns it to other clients.
+export function updateLocation(
+    code: string,
+    token: string,
+    location: { latitude: number; longitude: number } | null,
+) {
+    return request<RoomState>(`/api/rooms/${code}/location/`, {
+        method: "PUT",
+        token,
+        body: JSON.stringify(location ?? { latitude: null, longitude: null }),
     });
 }
 

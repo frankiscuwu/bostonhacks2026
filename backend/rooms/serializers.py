@@ -5,9 +5,15 @@ from .models import Participant, Room
 
 
 class ParticipantSerializer(serializers.ModelSerializer):
+    # Only whether a location was shared; coordinates are never exposed.
+    has_location = serializers.SerializerMethodField()
+
     class Meta:
         model = Participant
-        fields = ("id", "display_name", "filters", "joined_at", "is_active")
+        fields = ("id", "display_name", "filters", "has_location", "joined_at", "is_active")
+
+    def get_has_location(self, obj):
+        return obj.origin is not None
 
 
 class RoomSerializer(serializers.ModelSerializer):
@@ -29,6 +35,20 @@ class StrictBooleanField(serializers.BooleanField):
         if type(data) is not bool:
             raise serializers.ValidationError("Expected a JSON boolean.")
         return data
+
+
+class LocationSerializer(serializers.Serializer):
+    """Both null clears the location (distance falls back to Boston Common)."""
+    latitude = serializers.FloatField(min_value=-90, max_value=90, allow_null=True)
+    longitude = serializers.FloatField(min_value=-180, max_value=180, allow_null=True)
+
+    def validate(self, attrs):
+        if (attrs["latitude"] is None) != (attrs["longitude"] is None):
+            raise serializers.ValidationError("Send both latitude and longitude, or both null.")
+        for key in ("latitude", "longitude"):
+            if attrs[key] is not None:
+                attrs[key] = round(attrs[key], 3)
+        return attrs
 
 
 class FiltersSerializer(serializers.Serializer):

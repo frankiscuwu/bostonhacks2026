@@ -57,6 +57,16 @@ class Participant(models.Model):
     identity_token = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     # See restaurants.matching for the shape.
     filters = models.JSONField(default=default_filters)
+    # Device location used as this participant's distance origin. Private: never
+    # serialized publicly. Stored rounded to ~100 m (3 decimal places).
+    latitude = models.FloatField(null=True, blank=True)
+    longitude = models.FloatField(null=True, blank=True)
+
+    @property
+    def origin(self):
+        if self.latitude is None or self.longitude is None:
+            return None
+        return (self.latitude, self.longitude)
     joined_at = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
 

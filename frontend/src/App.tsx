@@ -42,7 +42,15 @@ import {
     notifyRoomUpdated,
     subscribeToRoom,
 } from "./websocket.ts";
-import { fetchRestaurants, mapApiRestaurant } from "./restaurantsApi.ts";
+import {
+    BOSTON_COMMON,
+    fetchRestaurants,
+    haversineMiles,
+    mapApiRestaurant,
+} from "./restaurantsApi.ts";
+import type { LatLng } from "./restaurantsApi.ts";
+import { useGeolocation } from "./useGeolocation.ts";
+import type { GeolocationStatus } from "./useGeolocation.ts";
 import {
     ApiError,
     ROOM_CODE_PATTERN,
@@ -54,6 +62,7 @@ import {
     pickRestaurant,
     saveSession,
     updateFilters,
+    updateLocation,
 } from "./roomsApi.ts";
 import type { ApiFilters, RoomSession, RoomState } from "./roomsApi.ts";
 import "./App.css";
@@ -65,6 +74,7 @@ type RoomParticipantView = {
     id: number;
     name: string;
     filters: ApiFilters;
+    hasLocation: boolean;
     online: boolean;
     isYou: boolean;
 };
@@ -93,6 +103,9 @@ type FilterPanelProps = {
     // Restaurants matching only your own filters.
     myMatchCount: number;
     participantCount: number;
+    originLabel: string;
+    locationStatus: GeolocationStatus;
+    onRetryLocation: () => void;
     filters: FilterState;
     onUpdateFilters: (filters: FilterState) => void;
     onResetFilters: () => void;
@@ -100,6 +113,8 @@ type FilterPanelProps = {
 
 type FloatingBostonMapProps = {
     restaurants: Restaurant[];
+    origin: LatLng;
+    originLabel: string;
     activeId: number | null;
     maxDistance: number;
     onSelectPin: (id: number) => void;
@@ -115,6 +130,7 @@ type JamQueueModalProps = {
 
 type WinnerModalProps = {
     winner: Restaurant | null;
+    originLabel: string;
     pickedByName: string | null;
     matchCount: number;
     picking: boolean;
@@ -555,11 +571,11 @@ function VideoScroller({
 // ============================================================================
 // COMPONENT 3: COLLABORATIVE JAM HEADER (Top of Right Segment)
 // ============================================================================
-function describeFilters(filters: ApiFilters) {
+function describeFilters(filters: ApiFilters, hasLocation: boolean) {
     return [
         filters.cuisines.length > 0 ? filters.cuisines.join(", ") : "Any cuisine",
         filters.max_distance_miles !== null
-            ? `≤ ${filters.max_distance_miles} mi`
+            ? `≤ ${filters.max_distance_miles} mi ${hasLocation ? "from them" : "of Boston Common"}`
             : "Any distance",
         filters.open_now && "Open now",
     ].filter(Boolean) as string[];
@@ -643,7 +659,7 @@ function JamHeader({
                             <div
                                 key={participant.id}
                                 className="participant-avatar"
-                                title={`${participant.name}: ${describeFilters(participant.filters).join(" • ")}`}
+                                title={`${participant.name}: ${describeFilters(participant.filters, participant.hasLocation).join(" • ")}`}
                             >
                                 {participant.name.slice(0, 2).toUpperCase()}
                                 {participant.online && (
@@ -689,7 +705,10 @@ function JamHeader({
                                 {participant.name}
                                 {participant.isYou && " (you)"}
                             </span>
-                            {describeFilters(participant.filters).map((part) => (
+                            {describeFilters(
+                                participant.filters,
+                                participant.hasLocation,
+                            ).map((part) => (
                                 <span key={part}>{part}</span>
                             ))}
                         </div>
@@ -708,6 +727,9 @@ function FilterPanel({
     groupMatchCount,
     myMatchCount,
     participantCount,
+    originLabel,
+    locationStatus,
+    onRetryLocation,
     filters,
     onUpdateFilters,
     onResetFilters,
@@ -818,6 +840,28 @@ function FilterPanel({
                         <span>{distanceLabel}</span>
                         <span>Any</span>
                     </div>
+
+                    <p className="text-[11px] text-white/55 mt-2 flex items-center gap-1.5 flex-wrap">
+                        <Navigation className="w-3 h-3 text-sky-400" />
+                        <span>
+                            {locationStatus === "granted"
+                                ? `Measured from ${originLabel}`
+                                : locationStatus === "pending"
+                                  ? "Finding your location… using Boston Common for now"
+                                  : locationStatus === "denied"
+                                    ? "Location blocked • measuring from Boston Common"
+                                    : "Location unavailable • measuring from Boston Common"}
+                        </span>
+                        {(locationStatus === "denied" ||
+                            locationStatus === "unavailable") && (
+                            <button
+                                onClick={onRetryLocation}
+                                className="underline text-sky-300 hover:text-sky-200"
+                            >
+                                Try again
+                            </button>
+                        )}
+                    </p>
                 </div>
 
                 {/* Open Now Toggle */}
@@ -935,6 +979,8 @@ function BostonMapViewport({
 
 function FloatingBostonMap({
     restaurants,
+    origin,
+    originLabel,
     activeId,
     maxDistance,
     onSelectPin,
@@ -949,7 +995,7 @@ function FloatingBostonMap({
         [restaurants, activeId],
     );
 
-    const userPosition: LatLngExpression = [42.3551, -71.0624];
+    const userPosition: LatLngExpression = [origin.latitude, origin.longitude];
 
     const pinIcon = (selected: boolean) =>
         L.divIcon({
@@ -995,7 +1041,7 @@ function FloatingBostonMap({
             {/* Real interactive OpenStreetMap map */}
             <div className="relative flex-1 w-full h-full bg-[#0e1116] overflow-hidden">
                 <MapContainer
-                    center={[42.3551, -71.0624]}
+                    center={userPosition}
                     zoom={expanded ? 13 : 12}
                     scrollWheelZoom={expanded}
                     zoomControl={expanded}
@@ -1087,8 +1133,8 @@ function FloatingBostonMap({
                             </div>
                             <p className="text-xs text-white/65 truncate">
                                 {activeSpot.neighborhood} • {activeSpot.cuisine}{" "}
-                                • {activeSpot.distance.toFixed(1)} mi from
-                                Boston Common
+                                • {activeSpot.distance.toFixed(1)} mi from{" "}
+                                {originLabel}
                             </p>
                         </div>
                         <button
@@ -1201,6 +1247,7 @@ function JamQueueModal({
 // ============================================================================
 function WinnerModal({
     winner,
+    originLabel,
     pickedByName,
     matchCount,
     picking,
@@ -1266,7 +1313,7 @@ function WinnerModal({
 
                 <div className="mt-4 bg-white/5 border border-white/10 rounded-2xl p-3.5 space-y-1">
                     <p className="text-xs text-white/55">
-                        {winner.distance.toFixed(1)} mi from Boston Common
+                        {winner.distance.toFixed(1)} mi from {originLabel}
                         {winner.hours && ` • ${winner.hours}`}
                     </p>
                     <p className="text-sm font-bold text-[#1DB954]">
@@ -1407,6 +1454,13 @@ export default function App() {
 
     const feedRef = useRef<HTMLDivElement>(null);
 
+    // Device GPS while in a room; distances fall back to Boston Common.
+    const geo = useGeolocation(Boolean(roomCode && profileComplete));
+    const origin = useMemo(() => geo.location ?? BOSTON_COMMON, [geo.location]);
+    const originLabel = geo.location ? "you" : "Boston Common";
+    // Last location saved to Django for this room ("none" = cleared).
+    const savedLocationKeyRef = useRef<string | null>(null);
+
     useEffect(() => {
         profileNameRef.current = profileName;
     }, [profileName]);
@@ -1441,6 +1495,7 @@ export default function App() {
     const switchRoom = useCallback((code: string | null) => {
         roomCodeRef.current = code;
         appliedSeqRef.current = 0;
+        savedLocationKeyRef.current = null;
         setFiltersHydrated(false);
         seenSelectionRef.current = undefined;
         setRoomCode(code);
@@ -1664,16 +1719,49 @@ export default function App() {
         return () => window.clearTimeout(timeout);
     }, [filtersDirty, myApiFilters, saveMyFilters]);
 
-    // Everyone's filters, with yours taken from local state for instant feedback.
-    const groupFilters = useMemo(
-        () =>
-            (room?.participants ?? [])
-                .filter((p) => p.is_active)
-                .map((p) =>
-                    p.id === session?.participantId ? myApiFilters : p.filters,
-                ),
-        [room, session, myApiFilters],
-    );
+    // Share your location with Django so your distance filter is measured from
+    // you. Cleared if location is blocked, so a stale position isn't used.
+    const wantedLocation =
+        geo.status === "granted" && geo.location
+            ? geo.location
+            : geo.status === "denied" || geo.status === "unavailable"
+              ? null
+              : undefined; // still waiting for the browser
+    const wantedLocationKey =
+        wantedLocation === undefined
+            ? null
+            : wantedLocation === null
+              ? "none"
+              : `${wantedLocation.latitude},${wantedLocation.longitude}`;
+
+    const saveMyLocation = useCallback(async () => {
+        const code = roomCodeRef.current;
+        if (!code || !session || wantedLocationKey === null) return;
+        if (savedLocationKeyRef.current === wantedLocationKey) return;
+        // Nothing to clear if Django never had a location for you.
+        if (wantedLocation === null && me && !me.has_location) {
+            savedLocationKeyRef.current = wantedLocationKey;
+            return;
+        }
+        savedLocationKeyRef.current = wantedLocationKey;
+        try {
+            await runRoomRequest(() =>
+                updateLocation(code, session.token, wantedLocation ?? null),
+            );
+            void notifyRoomUpdated(roomChannelRef.current);
+        } catch (error) {
+            savedLocationKeyRef.current = null;
+            if (error instanceof ApiError && error.status === 403) {
+                handleSeatLost(code);
+            }
+        }
+    }, [session, me, wantedLocation, wantedLocationKey, runRoomRequest, handleSeatLost]);
+
+    useEffect(() => {
+        if (!me || wantedLocationKey === null) return;
+        const timeout = window.setTimeout(() => void saveMyLocation(), 0);
+        return () => window.clearTimeout(timeout);
+    }, [me, wantedLocationKey, saveMyLocation]);
 
     const pickedId = room?.selected_restaurant?.id ?? null;
 
@@ -1684,18 +1772,21 @@ export default function App() {
         if (picked && !catalog.some((r) => r.id === picked.id)) {
             base = [...catalog, mapApiRestaurant(picked)];
         }
-        return base.map((r) => ({ ...r, inQueue: queuedIds.has(r.id) }));
-    }, [catalog, room, queuedIds]);
+        return base.map((r) => ({
+            ...r,
+            distance: haversineMiles(r.latitude, r.longitude, origin),
+            inQueue: queuedIds.has(r.id),
+        }));
+    }, [catalog, room, queuedIds, origin]);
 
-    const groupMatches = useMemo(
-        () =>
-            restaurants.filter((r) =>
-                (groupFilters.length > 0 ? groupFilters : [myApiFilters]).every(
-                    (f) => matchesFilters(r, f),
-                ),
-            ),
-        [restaurants, groupFilters, myApiFilters],
-    );
+    // Django computes matches (it knows everyone's location; clients don't).
+    // Your own unsaved filter changes narrow the preview immediately.
+    const groupMatches = useMemo(() => {
+        const serverIds = new Set(room?.matching_restaurant_ids ?? []);
+        return restaurants.filter(
+            (r) => serverIds.has(r.id) && matchesFilters(r, myApiFilters),
+        );
+    }, [restaurants, room, myApiFilters]);
 
     const myMatchCount = useMemo(
         () => restaurants.filter((r) => matchesFilters(r, myApiFilters)).length,
@@ -1760,10 +1851,14 @@ export default function App() {
                     name: p.display_name,
                     filters:
                         p.id === session?.participantId ? myApiFilters : p.filters,
+                    hasLocation:
+                        p.id === session?.participantId
+                            ? geo.location !== null
+                            : p.has_location,
                     online: onlineIds.has(p.id),
                     isYou: p.id === session?.participantId,
                 })),
-        [room, onlineIds, session, myApiFilters],
+        [room, onlineIds, session, myApiFilters, geo.location],
     );
 
     // Django picks at random from restaurants matching everyone's saved filters.
@@ -1776,7 +1871,8 @@ export default function App() {
         }
         setPicking(true);
         try {
-            // Make sure Django has your latest filters before it picks.
+            // Make sure Django has your latest location and filters before it picks.
+            await saveMyLocation();
             if (me && !sameFilters(myApiFilters, me.filters)) {
                 await runRoomRequest(() =>
                     updateFilters(code, session.token, myApiFilters),
@@ -2124,6 +2220,9 @@ export default function App() {
                         groupMatchCount={groupMatches.length}
                         myMatchCount={myMatchCount}
                         participantCount={participantViews.length}
+                        originLabel={originLabel}
+                        locationStatus={geo.status}
+                        onRetryLocation={geo.retry}
                         filters={filters}
                         onUpdateFilters={setFilters}
                         onResetFilters={handleResetFilters}
@@ -2134,6 +2233,8 @@ export default function App() {
             {/* SEGMENT 3: FLOATING EXPANDABLE BOSTON MAP CORNER */}
             <FloatingBostonMap
                 restaurants={feedRestaurants}
+                origin={origin}
+                originLabel={originLabel}
                 activeId={activeRestaurantId}
                 maxDistance={filters.maxDistance}
                 onSelectPin={handleJumpToRestaurant}
@@ -2151,6 +2252,7 @@ export default function App() {
             {/* RANDOM GROUP PICK MODAL */}
             <WinnerModal
                 winner={showPick ? pickedRestaurant : null}
+                originLabel={originLabel}
                 pickedByName={pickedByName}
                 matchCount={room?.matching_count ?? groupMatches.length}
                 picking={picking}

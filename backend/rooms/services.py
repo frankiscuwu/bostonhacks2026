@@ -28,18 +28,23 @@ def locked_room(code):
         raise NotFound("Room not found.")
 
 
-def active_filter_sets(room):
-    return list(room.participants.filter(is_active=True).values_list("filters", flat=True))
+def active_criteria(room):
+    """One ``(filters, origin)`` pair per active participant."""
+    return [(p.filters, p.origin) for p in room.participants.filter(is_active=True)]
 
 
 def matching_restaurants(room, now=None):
-    filter_sets = active_filter_sets(room)
-    return [r for r in Restaurant.objects.active().order_by("id") if matches_everyone(r, filter_sets, now)]
+    criteria = active_criteria(room)
+    return [r for r in Restaurant.objects.active().order_by("id") if matches_everyone(r, criteria, now)]
 
 
 def room_state(room):
     data = dict(RoomSerializer(room).data)
-    data["matching_count"] = len(matching_restaurants(room))
+    # IDs rather than locations, so clients can preview matches without ever
+    # seeing other participants' coordinates.
+    ids = [r.id for r in matching_restaurants(room)]
+    data["matching_count"] = len(ids)
+    data["matching_restaurant_ids"] = ids
     return data
 
 
@@ -89,6 +94,16 @@ def update_filters(code, token, filters):
         participant = authenticated_participant(room, token)
         participant.filters = filters
         participant.save(update_fields=["filters"])
+        result = room_state(room)
+    return result
+
+
+def update_location(code, token, latitude, longitude):
+    with transaction.atomic():
+        room = locked_room(code)
+        participant = authenticated_participant(room, token)
+        participant.latitude, participant.longitude = latitude, longitude
+        participant.save(update_fields=["latitude", "longitude"])
         result = room_state(room)
     return result
 

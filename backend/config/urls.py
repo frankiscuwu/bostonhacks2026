@@ -21,5 +21,6 @@ urlpatterns = [
     path("api/rooms/<str:code>/join/", room_views.join_room),
     path("api/rooms/<str:code>/", room_views.room_detail),
     path("api/rooms/<str:code>/filters/", room_views.filters),
+    path("api/rooms/<str:code>/location/", room_views.location),
     path("api/rooms/<str:code>/pick/", room_views.pick),
 ]

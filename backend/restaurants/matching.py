@@ -5,7 +5,8 @@ Participant filters (stored on rooms.Participant.filters):
     {"cuisines": ["Pizza", "Italian"], "max_distance_miles": 3.0, "open_now": false}
 
 - ``cuisines``: cuisine labels (see ``cuisine_label``); empty means any cuisine.
-- ``max_distance_miles``: straight-line miles from Boston Common; null means any.
+- ``max_distance_miles``: straight-line miles from the participant's own location
+  (from their device's GPS), or from Boston Common if they shared none; null means any.
 - ``open_now``: when true, only restaurants with known hours that are open now.
 
 A room pick only considers restaurants that satisfy *every* participant's filters.
@@ -59,18 +60,19 @@ def normalize_filters(filters):
     return DEFAULT_FILTERS | (filters or {})
 
 
-def matches(restaurant, filters, now=None):
+def matches(restaurant, filters, now=None, origin=None):
     filters = normalize_filters(filters)
     cuisines = filters["cuisines"]
     if cuisines and cuisine_label(restaurant.cuisine) not in cuisines:
         return False
     max_distance = filters["max_distance_miles"]
-    if max_distance is not None and distance_miles(restaurant) > max_distance:
+    if max_distance is not None and distance_miles(restaurant, origin or BOSTON_COMMON) > max_distance:
         return False
     if filters["open_now"] and is_open_now(restaurant, now) is not True:
         return False
     return True
 
 
-def matches_everyone(restaurant, filter_sets, now=None):
-    return all(matches(restaurant, filters, now) for filters in filter_sets)
+def matches_everyone(restaurant, criteria, now=None):
+    """``criteria`` is a list of ``(filters, origin)`` pairs, one per participant."""
+    return all(matches(restaurant, filters, now, origin) for filters, origin in criteria)

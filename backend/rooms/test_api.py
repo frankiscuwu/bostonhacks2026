@@ -108,6 +108,50 @@ class RoomAPITests(TestCase):
             mock_datetime.now.return_value = datetime(2026, 11, 21, 23, 0, tzinfo=BOSTON_TZ)
             self.assertEqual(self.pick(self.token).status_code, 409)
 
+    def set_location(self, token, latitude, longitude):
+        return self.client.put(self.base + 'location/', {'latitude': latitude, 'longitude': longitude},
+                               format='json', HTTP_X_PARTICIPANT_TOKEN=token)
+
+    def test_distance_uses_each_participants_location(self):
+        # far_pizza is at latitude 42.30, ~3.8 mi south of Boston Common.
+        self.set_filters(self.token, max_distance_miles=1)
+        self.assertEqual(self.client.get(self.base).json()['matching_restaurant_ids'],
+                         [self.pizza.id, self.sushi.id])
+        response = self.set_location(self.token, 42.3012345, -71.0624)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['matching_restaurant_ids'], [self.far_pizza.id])
+        self.assertTrue(response.json()['participants'][0]['has_location'])
+        self.assertEqual(self.pick(self.token).json()['selected_restaurant']['id'], self.far_pizza.id)
+        # A guest near Boston Common with the same radius leaves nothing in common.
+        guest = self.join().json()['participant_token']
+        self.set_filters(guest, max_distance_miles=1)
+        self.assertEqual(self.client.get(self.base).json()['matching_count'], 0)
+        # Clearing the location falls back to Boston Common.
+        self.set_location(self.token, None, None)
+        self.assertEqual(self.client.get(self.base).json()['matching_count'], 2)
+
+    def test_location_is_private_and_rounded(self):
+        self.set_location(self.token, 42.3012345, -71.0698765)
+        participant = Participant.objects.get(identity_token=self.token)
+        self.assertEqual((participant.latitude, participant.longitude), (42.301, -71.07))
+        content = self.client.get(self.base).content.decode()
+        for secret in ('42.301', '-71.07', 'latitude', 'longitude'):
+            if secret in ('latitude', 'longitude'):
+                # Restaurant objects have coordinates; participants must not.
+                for row in self.client.get(self.base).json()['participants']:
+                    self.assertNotIn(secret, row)
+            else:
+                self.assertNotIn(secret, content)
+
+    def test_invalid_location(self):
+        for data in ({'latitude': 91, 'longitude': 0}, {'latitude': 42, 'longitude': None},
+                     {'latitude': 'here', 'longitude': 0}, {}):
+            with self.subTest(data=data):
+                response = self.client.put(self.base + 'location/', data, format='json',
+                                           HTTP_X_PARTICIPANT_TOKEN=self.token)
+                self.assertEqual(response.status_code, 400)
+        self.assertEqual(self.set_location(str(uuid.uuid4()), 42, -71).status_code, 403)
+
     def test_invalid_missing_and_inactive_tokens(self):
         for token in (None, '', 'invalid', str(uuid.uuid4())):
             with self.subTest(token_present=bool(token)):
@@ -140,7 +184,9 @@ class RoomAPITests(TestCase):
     def test_input_and_missing_rooms(self):
         for name in ('', '   ', 'a' * 101):
             self.assertEqual(self.client.post('/api/rooms/', {'display_name': name}, format='json').status_code, 400)
-        for path, method in (('', 'get'), ('join/', 'post'), ('pick/', 'post'), ('filters/', 'put')):
-            response = getattr(self.client, method)('/api/rooms/ZZZZZZ/' + path, {'display_name': 'Name'},
+        for path, method in (('', 'get'), ('join/', 'post'), ('pick/', 'post'), ('filters/', 'put'),
+                             ('location/', 'put')):
+            data = {'display_name': 'Name', 'latitude': 42.0, 'longitude': -71.0}
+            response = getattr(self.client, method)('/api/rooms/ZZZZZZ/' + path, data,
                                                     format='json', HTTP_X_PARTICIPANT_TOKEN=self.token)
             self.assertEqual(response.status_code, 404)

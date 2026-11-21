@@ -28,7 +28,7 @@ export type Restaurant = {
 // One participant's filters as edited in the UI. Saved to Django per participant;
 // the room's random pick only uses restaurants matching everyone's filters.
 export type FilterState = {
-    // Miles from Boston Common; MAX_DISTANCE_MILES means "any distance".
+    // Miles from your location (GPS, else Boston Common); MAX_DISTANCE_MILES means "any".
     maxDistance: number;
     cuisines: string[];
     openNow: boolean;

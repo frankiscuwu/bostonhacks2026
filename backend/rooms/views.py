@@ -3,7 +3,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from . import services
-from .serializers import DisplayNameSerializer, FiltersSerializer
+from .serializers import DisplayNameSerializer, FiltersSerializer, LocationSerializer
 
 
 def participant_token(request):
@@ -42,6 +42,15 @@ def filters(request, code):
     serializer = FiltersSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     return Response(services.update_filters(code, participant_token(request), dict(serializer.validated_data)))
+
+
+@api_view(["PUT"])
+@authentication_classes([])
+@permission_classes([AllowAny])
+def location(request, code):
+    serializer = LocationSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    return Response(services.update_location(code, participant_token(request), **serializer.validated_data))
 
 
 @api_view(["POST"])
