@@ -6,6 +6,7 @@ from rapidfuzz import fuzz
 from pathlib import Path
 import json
 import time
+import math
 
 BASE_DIR = Path(__file__).resolve().parent
 LICENSE_CSV_PATH = BASE_DIR / "boston_active_food_licenses.csv"
@@ -192,41 +193,114 @@ def extract_open_close_times(opening_hours: str) -> tuple[Optional[str], Optiona
     return earliest_open, latest_close
 
 
-def match_licenses_to_pois(licenses_df: pd.DataFrame, pois: list[dict]) -> pd.DataFrame:
-    """Match licensure rows to OSM POIs by normalized address + name similarity."""
+def _clean_str(val: object) -> str:
+    if val is None or (isinstance(val, float) and math.isnan(val)):
+        return ""
+    s = str(val).strip()
+    return "" if s.lower() in ("nan", "none", "<na>") else s
+
+
+def _safe_float(val: object) -> Optional[float]:
+    s = _clean_str(val)
+    if not s:
+        return None
+    try:
+        num = float(s)
+        return None if math.isnan(num) or math.isinf(num) else num
+    except ValueError:
+        return None
+
+
+def _dist_meters(
+    lat1: Optional[float],
+    lon1: Optional[float],
+    lat2: Optional[float],
+    lon2: Optional[float],
+) -> Optional[float]:
+    if None in (lat1, lon1, lat2, lon2):
+        return None
+    r = 6371000.0
+    p1, p2 = math.radians(lat1), math.radians(lat2)
+    dp = math.radians(lat2 - lat1)
+    dl = math.radians(lon2 - lon1)
+    a = math.sin(dp / 2) ** 2 + math.cos(p1) * \
+        math.cos(p2) * math.sin(dl / 2) ** 2
+    return 2 * r * math.asin(math.sqrt(a))
+
+
+def match_licenses_to_pois(
+    licenses_df: pd.DataFrame,
+    pois: list[dict] | None,
+    min_addr_score: float = 65.0,
+    min_fallback_score: float = 82.0,
+    max_meters: float = 120.0,
+) -> pd.DataFrame:
+    """Match licensure rows to OSM POIs by normalized address + name, with geo/name fallback."""
     pois = pois or []
     pois_by_addr: dict[str, list[dict]] = {}
     for poi in pois:
-        if poi["norm_addr"]:
-            pois_by_addr.setdefault(poi["norm_addr"], []).append(poi)
+        n_addr = _clean_str(poi.get("norm_addr"))
+        if n_addr:
+            pois_by_addr.setdefault(n_addr, []).append(poi)
 
-    rows = []
+    rows: list[dict] = []
+    matched_total = 0
+    cuisine_total = 0
+
     for _, lic in licenses_df.iterrows():
-        lic_id = lic[LICENSE_ID_COL]
-        lic_name = str(lic.get(LICENSE_NAME_COL, "") or "").strip()
-        lic_addr = str(lic.get(LICENSE_ADDR_COL, "") or "").strip()
+        lic_id = _clean_str(lic.get(LICENSE_ID_COL))
+        dba = _clean_str(lic.get("dbaname"))
+        biz = _clean_str(lic.get("businessname"))
+        lic_name = dba or biz
+        lic_addr = _clean_str(lic.get(LICENSE_ADDR_COL))
+
+        lic_lat = _safe_float(lic.get("latitude"))
+        lic_lon = _safe_float(lic.get("longitude"))
 
         norm_addr = normalize_address(lic_addr)
         norm_name = normalize_name(lic_name)
 
-        candidates = pois_by_addr.get(norm_addr, [])
-        best_poi = None
+        best_poi: Optional[dict] = None
         best_score = 0.0
 
-        for poi in candidates:
-            score = fuzz.token_set_ratio(norm_name, poi["norm_name"])
+        # Pass 1: Same normalized street address
+        for poi in pois_by_addr.get(norm_addr, []):
+            score = float(fuzz.token_set_ratio(
+                norm_name, _clean_str(poi.get("norm_name"))))
             if score > best_score:
                 best_score = score
                 best_poi = poi
 
-        if best_poi and best_score >= MIN_NAME_SCORE:
+        accepted = best_poi is not None and best_score >= min_addr_score
+
+        # Pass 2: Coordinate proximity + strong name match fallback
+        if not accepted and norm_name:
+            best_poi = None
+            best_score = 0.0
+            for poi in pois:
+                score = float(fuzz.token_set_ratio(
+                    norm_name, _clean_str(poi.get("norm_name"))))
+                p_lat = _safe_float(poi.get("lat"))
+                p_lon = _safe_float(poi.get("lon"))
+                dist = _dist_meters(lic_lat, lic_lon, p_lat, p_lon)
+                if score >= min_fallback_score and (dist is None or dist <= max_meters):
+                    if score > best_score:
+                        best_score = score
+                        best_poi = poi
+            accepted = best_poi is not None
+
+        if accepted and best_poi is not None:
+            matched_total += 1
+            cuisine_val = _clean_str(best_poi.get("cuisine")) or None
+            if cuisine_val:
+                cuisine_total += 1
             open_time, close_time = extract_open_close_times(
-                best_poi["opening_hours"])
+                _clean_str(best_poi.get("opening_hours")))
             rows.append({
                 "id": lic_id,
                 "name": lic_name,
                 "address": lic_addr,
-                "cuisine": best_poi["cuisine"] or None,
+                "cuisine": cuisine_val,
                 "open_time": open_time,
                 "close_time": close_time,
             })
@@ -239,16 +313,9 @@ def match_licenses_to_pois(licenses_df: pd.DataFrame, pois: list[dict]) -> pd.Da
                 "open_time": None,
                 "close_time": None,
             })
-    print("Sample CSV norm_addr & name:", [
-        (normalize_address(r.get("address", "")), normalize_name(
-            r.get("dbaname") or r.get("businessname") or ""))
-        for _, r in licenses_df.head(5).iterrows()
-    ])
 
-    print("Sample OSM norm_addr & name:", [
-        (p["norm_addr"], p["norm_name"])
-        for p in pois[:5]
-    ])
+    print(
+        f"Matched {matched_total}/{len(licenses_df)} licenses ({cuisine_total} with cuisine)")
     return pd.DataFrame(rows, columns=["id", "name", "address", "cuisine", "open_time", "close_time"])
 
 
