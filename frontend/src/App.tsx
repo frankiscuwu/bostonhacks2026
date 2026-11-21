@@ -4,6 +4,7 @@ import {
     Circle,
     MapContainer,
     Marker,
+    Popup,
     TileLayer,
     useMap,
 } from "react-leaflet";
@@ -33,10 +34,7 @@ import {
     SlidersHorizontal,
 } from "lucide-react";
 
-import {
-    CUISINE_CATEGORIES,
-    PRICE_TIERS,
-} from "./data.ts";
+import { CUISINE_CATEGORIES, PRICE_TIERS } from "./data.ts";
 import type { FilterState, Restaurant } from "./data.ts";
 import type { RealtimeChannel } from "@supabase/supabase-js";
 import {
@@ -61,7 +59,7 @@ import {
     submitVote,
 } from "./roomsApi.ts";
 import type { ResultRow, RoomSession, RoomState } from "./roomsApi.ts";
-import "./App.css"
+import "./App.css";
 
 type ToggleRestaurantHandler = (id: number) => void;
 type Toast = { id: number; message: string; accent: string };
@@ -347,7 +345,9 @@ function ReelCard({
                                         voter,
                                     )} border border-black flex items-center justify-center text-[10px] font-extrabold shadow`}
                                 >
-                                    {voter === "YOU" ? "YOU" : voter[0]?.toUpperCase()}
+                                    {voter === "YOU"
+                                        ? "YOU"
+                                        : voter[0]?.toUpperCase()}
                                 </span>
                             ))}
                         </div>
@@ -382,7 +382,9 @@ function ReelCard({
                         {voteInfo.status === "current" && !voteInfo.hasVoted ? (
                             <>
                                 <button
-                                    onClick={() => onCastVote(restaurant.id, false)}
+                                    onClick={() =>
+                                        onCastVote(restaurant.id, false)
+                                    }
                                     disabled={!canVote}
                                     className="px-3 py-2 rounded-full text-xs font-bold border bg-black/60 hover:bg-rose-500/20 text-white border-white/20 transition-all active:scale-90 flex items-center gap-1 disabled:opacity-50"
                                 >
@@ -390,13 +392,17 @@ function ReelCard({
                                     <span>Pass</span>
                                 </button>
                                 <button
-                                    onClick={() => onCastVote(restaurant.id, true)}
+                                    onClick={() =>
+                                        onCastVote(restaurant.id, true)
+                                    }
                                     disabled={!canVote}
                                     className="px-3.5 py-2 rounded-full text-xs font-extrabold transition-all active:scale-90 flex items-center gap-1.5 shadow-lg bg-[#1DB954] hover:bg-[#1ed760] text-black shadow-[#1DB954]/30 disabled:opacity-50"
                                 >
                                     <Flame className="w-3.5 h-3.5 fill-black" />
                                     <span>
-                                        {voteInfo.submitting ? "Voting…" : "Yes"}
+                                        {voteInfo.submitting
+                                            ? "Voting…"
+                                            : "Yes"}
                                     </span>
                                 </button>
                             </>
@@ -694,10 +700,13 @@ function JamHeader({
                             <span>
                                 <strong className="text-white/90">
                                     {participants.length}{" "}
-                                    {participants.length === 1 ? "person" : "people"}
+                                    {participants.length === 1
+                                        ? "person"
+                                        : "people"}
                                 </strong>{" "}
                                 in this room
-                                {isRealtimeConfigured() && ` • ${onlineCount} online`}
+                                {isRealtimeConfigured() &&
+                                    ` • ${onlineCount} online`}
                             </span>
                         </p>
                         <p className="text-xs text-[#1DB954] font-semibold mt-0.5">
@@ -787,13 +796,12 @@ function FilterPanel({
     onJumpToRestaurant,
 }: FilterPanelProps) {
     const cuisineCategories = useMemo(
-        () =>
-            [
-                "All",
-                ...Array.from(
-                    new Set(allRestaurants.map((restaurant) => restaurant.cuisine)),
-                ).sort(),
-            ],
+        () => [
+            "All",
+            ...Array.from(
+                new Set(allRestaurants.map((restaurant) => restaurant.cuisine)),
+            ).sort(),
+        ],
         [allRestaurants],
     );
 
@@ -839,7 +847,10 @@ function FilterPanel({
     const topVotedSpots = useMemo(() => {
         return [...allRestaurants]
             .filter((r) => r.votes > 0)
-            .sort((a, b) => b.votes - a.votes || (b.rating ?? 0) - (a.rating ?? 0))
+            .sort(
+                (a, b) =>
+                    b.votes - a.votes || (b.rating ?? 0) - (a.rating ?? 0),
+            )
             .slice(0, 4);
     }, [allRestaurants]);
 
@@ -940,42 +951,42 @@ function FilterPanel({
 
                 {/* Minimum Rating Slider */}
                 {hasRatings && (
-                <div className="bg-[#181818] border border-white/10 rounded-2xl p-5 flex flex-col justify-between">
-                    <div className="flex items-center justify-between mb-3">
-                        <label
-                            htmlFor="rating-slider"
-                            className="text-sm font-bold text-white flex items-center gap-2"
-                        >
-                            <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-                            <span>Minimum Rating</span>
-                        </label>
-                        <span className="px-2.5 py-1 rounded-lg bg-amber-400/15 text-amber-300 font-display font-bold text-sm">
-                            {filters.minRating.toFixed(1)} ★
-                        </span>
-                    </div>
+                    <div className="bg-[#181818] border border-white/10 rounded-2xl p-5 flex flex-col justify-between">
+                        <div className="flex items-center justify-between mb-3">
+                            <label
+                                htmlFor="rating-slider"
+                                className="text-sm font-bold text-white flex items-center gap-2"
+                            >
+                                <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
+                                <span>Minimum Rating</span>
+                            </label>
+                            <span className="px-2.5 py-1 rounded-lg bg-amber-400/15 text-amber-300 font-display font-bold text-sm">
+                                {filters.minRating.toFixed(1)} ★
+                            </span>
+                        </div>
 
-                    <input
-                        id="rating-slider"
-                        type="range"
-                        min="3.5"
-                        max="5.0"
-                        step="0.1"
-                        value={filters.minRating}
-                        onChange={(e) =>
-                            onUpdateFilters({
-                                ...filters,
-                                minRating: parseFloat(e.target.value),
-                            })
-                        }
-                        className="jam-slider my-2"
-                    />
+                        <input
+                            id="rating-slider"
+                            type="range"
+                            min="3.5"
+                            max="5.0"
+                            step="0.1"
+                            value={filters.minRating}
+                            onChange={(e) =>
+                                onUpdateFilters({
+                                    ...filters,
+                                    minRating: parseFloat(e.target.value),
+                                })
+                            }
+                            className="jam-slider my-2"
+                        />
 
-                    <div className="flex justify-between text-[11px] text-white/45 mt-1.5 font-medium">
-                        <span>3.5 ★</span>
-                        <span>4.3 ★</span>
-                        <span>5.0 ★ Elite</span>
+                        <div className="flex justify-between text-[11px] text-white/45 mt-1.5 font-medium">
+                            <span>3.5 ★</span>
+                            <span>4.3 ★</span>
+                            <span>5.0 ★ Elite</span>
+                        </div>
                     </div>
-                </div>
                 )}
             </div>
 
@@ -1029,75 +1040,77 @@ function FilterPanel({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Price Tiers */}
                 {hasPrices && (
-                <div className="bg-[#181818] border border-white/10 rounded-2xl p-5">
-                    <div className="flex items-center justify-between mb-3.5">
-                        <h2 className="text-sm font-bold text-white">
-                            Cost / Price Tier
-                        </h2>
-                        <span className="text-xs text-white/45">
-                            Multi-select
-                        </span>
+                    <div className="bg-[#181818] border border-white/10 rounded-2xl p-5">
+                        <div className="flex items-center justify-between mb-3.5">
+                            <h2 className="text-sm font-bold text-white">
+                                Cost / Price Tier
+                            </h2>
+                            <span className="text-xs text-white/45">
+                                Multi-select
+                            </span>
+                        </div>
+                        <div className="grid grid-cols-4 gap-2">
+                            {PRICE_TIERS.map((tier) => {
+                                const active = filters.prices.includes(tier);
+                                return (
+                                    <button
+                                        key={tier}
+                                        onClick={() => togglePrice(tier)}
+                                        className={`py-2.5 rounded-xl text-xs font-extrabold border transition-all active:scale-95 ${
+                                            active
+                                                ? "bg-[#1DB954] text-black border-[#1DB954] shadow-[0_0_14px_rgba(29,185,84,0.35)]"
+                                                : "bg-white/5 hover:bg-white/10 text-white/85 border-white/10"
+                                        }`}
+                                    >
+                                        {tier}
+                                    </button>
+                                );
+                            })}
+                        </div>
                     </div>
-                    <div className="grid grid-cols-4 gap-2">
-                        {PRICE_TIERS.map((tier) => {
-                            const active = filters.prices.includes(tier);
-                            return (
-                                <button
-                                    key={tier}
-                                    onClick={() => togglePrice(tier)}
-                                    className={`py-2.5 rounded-xl text-xs font-extrabold border transition-all active:scale-95 ${
-                                        active
-                                            ? "bg-[#1DB954] text-black border-[#1DB954] shadow-[0_0_14px_rgba(29,185,84,0.35)]"
-                                            : "bg-white/5 hover:bg-white/10 text-white/85 border-white/10"
-                                    }`}
-                                >
-                                    {tier}
-                                </button>
-                            );
-                        })}
-                    </div>
-                </div>
                 )}
 
                 {/* Availability Toggles */}
                 {availabilityOptions.length > 0 && (
-                <div className="bg-[#181818] border border-white/10 rounded-2xl p-5">
-                    <div className="flex items-center justify-between mb-3.5">
-                        <h2 className="text-sm font-bold text-white">
-                            Availability
-                        </h2>
-                        <span className="text-xs text-white/45">
-                            Must match
-                        </span>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-1 xl:grid-cols-3 gap-2">
-                        {availabilityOptions.map((opt) => {
-                            const active = filters[opt.key];
-                            return (
-                                <button
-                                    key={opt.key}
-                                    onClick={() => toggleAvailability(opt.key)}
-                                    className={`px-3 py-2.5 rounded-xl text-xs font-semibold border transition-all flex items-center justify-center gap-1.5 active:scale-95 ${
-                                        active
-                                            ? "bg-[#1DB954]/20 text-[#1DB954] border-[#1DB954]"
-                                            : "bg-white/5 hover:bg-white/10 text-white/75 border-white/10"
-                                    }`}
-                                >
-                                    <span
-                                        className={`w-2 h-2 rounded-full ${
+                    <div className="bg-[#181818] border border-white/10 rounded-2xl p-5">
+                        <div className="flex items-center justify-between mb-3.5">
+                            <h2 className="text-sm font-bold text-white">
+                                Availability
+                            </h2>
+                            <span className="text-xs text-white/45">
+                                Must match
+                            </span>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-1 xl:grid-cols-3 gap-2">
+                            {availabilityOptions.map((opt) => {
+                                const active = filters[opt.key];
+                                return (
+                                    <button
+                                        key={opt.key}
+                                        onClick={() =>
+                                            toggleAvailability(opt.key)
+                                        }
+                                        className={`px-3 py-2.5 rounded-xl text-xs font-semibold border transition-all flex items-center justify-center gap-1.5 active:scale-95 ${
                                             active
-                                                ? "bg-[#1DB954]"
-                                                : "bg-white/30"
+                                                ? "bg-[#1DB954]/20 text-[#1DB954] border-[#1DB954]"
+                                                : "bg-white/5 hover:bg-white/10 text-white/75 border-white/10"
                                         }`}
-                                    />
-                                    <span className="truncate">
-                                        {opt.label}
-                                    </span>
-                                </button>
-                            );
-                        })}
+                                    >
+                                        <span
+                                            className={`w-2 h-2 rounded-full ${
+                                                active
+                                                    ? "bg-[#1DB954]"
+                                                    : "bg-white/30"
+                                            }`}
+                                        />
+                                        <span className="truncate">
+                                            {opt.label}
+                                        </span>
+                                    </button>
+                                );
+                            })}
+                        </div>
                     </div>
-                </div>
                 )}
             </div>
 
@@ -1141,7 +1154,8 @@ function FilterPanel({
                                                 spot.neighborhood,
                                                 spot.cuisine,
                                                 spot.price,
-                                                spot.rating !== null && `${spot.rating.toFixed(1)} ★`,
+                                                spot.rating !== null &&
+                                                    `${spot.rating.toFixed(1)} ★`,
                                             ]
                                                 .filter(Boolean)
                                                 .join(" • ")}
@@ -1214,9 +1228,9 @@ function FloatingBostonMap({
     const pinIcon = (selected: boolean) =>
         L.divIcon({
             className: "boston-map-pin-wrap",
-            html: `<div class="boston-map-pin${selected ? " selected" : ""}"></div>`,
-            iconSize: [selected ? 18 : 14, selected ? 18 : 14],
-            iconAnchor: [selected ? 9 : 7, selected ? 9 : 7],
+            html: `<div class="boston-map-pin${selected ? " selected" : ""}"><span></span></div>`,
+            iconSize: [selected ? 34 : 28, selected ? 42 : 36],
+            iconAnchor: [selected ? 17 : 14, selected ? 40 : 34],
         });
 
     return (
@@ -1252,7 +1266,7 @@ function FloatingBostonMap({
                 </button>
             </div>
 
-            {/* Real interactive OpenStreetMap/CARTO map */}
+            {/* Real interactive OpenStreetMap map */}
             <div className="relative flex-1 w-full h-full bg-[#0e1116] overflow-hidden">
                 <MapContainer
                     center={[42.3551, -71.0624]}
@@ -1263,7 +1277,11 @@ function FloatingBostonMap({
                     className="boston-real-map"
                 >
                     <TileLayer
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        url="https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}"
+                        attribution='&copy; <a href="https://www.esri.com/">Esri</a>'
+                    />
+                    <TileLayer
+                        url="https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}"
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     />
                     <BostonMapViewport
@@ -1300,7 +1318,32 @@ function FloatingBostonMap({
                             eventHandlers={{
                                 click: () => onSelectPin(spot.id),
                             }}
-                        />
+                        >
+                            <Popup
+                                closeButton={false}
+                                className="boston-map-popup"
+                                offset={[0, -24]}
+                            >
+                                <button
+                                    type="button"
+                                    className="map-popup-card"
+                                    onClick={() => onSelectPin(spot.id)}
+                                >
+                                    <span className="map-popup-name">
+                                        {spot.name}
+                                    </span>
+                                    <span className="map-popup-meta">
+                                        {[
+                                            spot.cuisine,
+                                            spot.price,
+                                            spot.distance.toFixed(1) + " mi",
+                                        ]
+                                            .filter(Boolean)
+                                            .join(" • ")}
+                                    </span>
+                                </button>
+                            </Popup>
+                        </Marker>
                     ))}
                 </MapContainer>
 
@@ -1401,7 +1444,12 @@ function JamQueueModal({
                                             {spot.name}
                                         </p>
                                         <p className="text-xs text-white/60 truncate">
-                                            {[spot.neighborhood, spot.cuisine, spot.price, `${spot.votes} yes`]
+                                            {[
+                                                spot.neighborhood,
+                                                spot.cuisine,
+                                                spot.price,
+                                                `${spot.votes} yes`,
+                                            ]
                                                 .filter(Boolean)
                                                 .join(" • ")}
                                         </p>
@@ -1477,7 +1525,8 @@ function WinnerModal({ winner, onClose, onLockIn }: WinnerModalProps) {
                         winner.neighborhood,
                         winner.cuisine,
                         winner.price,
-                        winner.rating !== null && `${winner.rating.toFixed(1)} ★`,
+                        winner.rating !== null &&
+                            `${winner.rating.toFixed(1)} ★`,
                     ]
                         .filter(Boolean)
                         .join(" • ")}
@@ -1489,7 +1538,9 @@ function WinnerModal({ winner, onClose, onLockIn }: WinnerModalProps) {
                         {winner.hours && ` • ${winner.hours}`}
                     </p>
                     <p className="text-sm font-bold text-[#1DB954]">
-                        {winner.votes} yes {winner.votes === 1 ? "vote" : "votes"} • Top Group Consensus
+                        {winner.votes} yes{" "}
+                        {winner.votes === 1 ? "vote" : "votes"} • Top Group
+                        Consensus
                     </p>
                 </div>
 
@@ -1540,14 +1591,12 @@ function getRoomCodeFromUrl() {
 }
 
 export default function App() {
-    const [roomCode, setRoomCode] = useState<string | null>(
-        getRoomCodeFromUrl,
-    );
+    const [roomCode, setRoomCode] = useState<string | null>(getRoomCodeFromUrl);
     const [roomCodeInput, setRoomCodeInput] = useState("");
     const [entryError, setEntryError] = useState("");
     const [creatingRoom, setCreatingRoom] = useState(false);
-    const [profileName, setProfileName] = useState(() =>
-        window.localStorage.getItem("boston-jam-name") ?? "",
+    const [profileName, setProfileName] = useState(
+        () => window.localStorage.getItem("boston-jam-name") ?? "",
     );
     const [profileCuisines, setProfileCuisines] = useState<string[]>(() => {
         try {
@@ -1567,11 +1616,8 @@ export default function App() {
             return [];
         }
     });
-    const [profileComplete, setProfileComplete] = useState(
-        () =>
-            Boolean(
-                window.localStorage.getItem("boston-jam-name")?.trim(),
-            ),
+    const [profileComplete, setProfileComplete] = useState(() =>
+        Boolean(window.localStorage.getItem("boston-jam-name")?.trim()),
     );
     const roomChannelRef = useRef<RealtimeChannel | null>(null);
     const roomCodeRef = useRef<string | null>(roomCode);
@@ -1767,9 +1813,14 @@ export default function App() {
             .catch((error: unknown) => {
                 if (cancelled) return;
                 if (error instanceof ApiError && error.status === 404) {
-                    setRoomError("Room not found. Check the code and try again.");
+                    setRoomError(
+                        "Room not found. Check the code and try again.",
+                    );
                 } else if (error instanceof ApiError && error.status === 409) {
-                    addToast("This room already finished voting. Showing results.", "#f59e0b");
+                    addToast(
+                        "This room already finished voting. Showing results.",
+                        "#f59e0b",
+                    );
                 } else {
                     setRoomError(`Couldn't join room: ${errorMessage(error)}`);
                 }
@@ -1830,8 +1881,9 @@ export default function App() {
         });
     }, [session, profileCuisines, profilePrices]);
 
-    const currentRestaurantId =
-        room?.is_active ? (room.current_restaurant?.id ?? null) : null;
+    const currentRestaurantId = room?.is_active
+        ? (room.current_restaurant?.id ?? null)
+        : null;
 
     const resultsById = useMemo(
         () => new Map(results.map((row) => [row.restaurant.id, row])),
@@ -1965,9 +2017,9 @@ export default function App() {
 
     const hasVotedThisRound = Boolean(
         session &&
-            room?.voting_progress.voted_participant_ids.includes(
-                session.participantId,
-            ),
+        room?.voting_progress.voted_participant_ids.includes(
+            session.participantId,
+        ),
     );
 
     const getVoteInfo = (restaurantId: number): RoomVoteInfo => {
@@ -1995,11 +2047,16 @@ export default function App() {
                 votedCount: progress.voted_count,
                 requiredCount: progress.required_count,
                 voterNames: progress.voted_participant_ids.map((id) =>
-                    id === session?.participantId ? "YOU" : (names.get(id) ?? "?"),
+                    id === session?.participantId
+                        ? "YOU"
+                        : (names.get(id) ?? "?"),
                 ),
             };
         }
-        if (currentRestaurantId === null || restaurantId < currentRestaurantId) {
+        if (
+            currentRestaurantId === null ||
+            restaurantId < currentRestaurantId
+        ) {
             return { ...base, status: "decided" };
         }
         return { ...base, status: "upcoming" };
@@ -2010,12 +2067,18 @@ export default function App() {
     const handleCastVote = async (restaurantId: number, vote: boolean) => {
         if (!room || !roomCode || submittingVote) return;
         if (!session) {
-            addToast("You're viewing this room without a seat, so you can't vote.", "#94a3b8");
+            addToast(
+                "You're viewing this room without a seat, so you can't vote.",
+                "#94a3b8",
+            );
             return;
         }
         const current = room.current_restaurant;
         if (!room.is_active || !current || current.id !== restaurantId) {
-            addToast("That restaurant isn't up for a vote right now.", "#94a3b8");
+            addToast(
+                "That restaurant isn't up for a vote right now.",
+                "#94a3b8",
+            );
             return;
         }
         setSubmittingVote(true);
@@ -2027,7 +2090,9 @@ export default function App() {
             });
             applyRoomState(state);
             addToast(
-                vote ? `🔥 Yes to ${current.name}` : `Passed on ${current.name}`,
+                vote
+                    ? `🔥 Yes to ${current.name}`
+                    : `Passed on ${current.name}`,
                 vote ? "#FF5E3A" : "#94a3b8",
             );
             void notifyRoomUpdated(roomChannelRef.current, state.current_round);
@@ -2038,11 +2103,16 @@ export default function App() {
                 .catch(() => undefined);
         } catch (error) {
             if (error instanceof ApiError && error.status === 409) {
-                addToast("The room already moved on. Showing the latest round.", "#f59e0b");
+                addToast(
+                    "The room already moved on. Showing the latest round.",
+                    "#f59e0b",
+                );
             } else if (error instanceof ApiError && error.status === 403) {
                 clearSession(roomCode);
                 setSession(null);
-                setRoomError("Your seat in this room is no longer valid. Reload the page to rejoin.");
+                setRoomError(
+                    "Your seat in this room is no longer valid. Reload the page to rejoin.",
+                );
             } else {
                 addToast(`Vote failed: ${errorMessage(error)}`, "#f43f5e");
             }
@@ -2107,7 +2177,10 @@ export default function App() {
     const handlePickWinner = () => {
         const winner = winnerFromResults();
         if (!winner) {
-            addToast("No votes yet. Vote on the current spot first!", "#94a3b8");
+            addToast(
+                "No votes yet. Vote on the current spot first!",
+                "#94a3b8",
+            );
             return;
         }
         setWinnerSpot(winner);
@@ -2171,10 +2244,7 @@ export default function App() {
                             autoComplete="off"
                             maxLength={6}
                         />
-                        <button
-                            type="submit"
-                            className="room-entry-secondary"
-                        >
+                        <button type="submit" className="room-entry-secondary">
                             Enter room
                         </button>
                     </form>
@@ -2197,12 +2267,11 @@ export default function App() {
                         <span>Boston Food Jam</span>
                     </div>
                     <h1>
-                        {roomCode
-                            ? `Join room ${roomCode}`
-                            : "Choose a room"}
+                        {roomCode ? `Join room ${roomCode}` : "Choose a room"}
                     </h1>
                     <p>
-                        Add your name and food preferences, then create or join a Jam.
+                        Add your name and food preferences, then create or join
+                        a Jam.
                     </p>
 
                     <form
