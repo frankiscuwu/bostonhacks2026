@@ -399,6 +399,10 @@ function ReelCard({
                         </span>
                     )}
 
+                    <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-[#1DB954]/20 text-[#1DB954] border border-[#1DB954]/40">
+                        {restaurant.cuisine}
+                    </span>
+
                     {restaurant.price && (
                         <span className="px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-white/10 text-white">
                             {restaurant.price}
@@ -408,14 +412,9 @@ function ReelCard({
 
                 {/* Name, Cuisine & Signature Dish */}
                 <div>
-                    <div className="flex items-baseline justify-between gap-2">
-                        <h2 className="font-display font-extrabold text-2xl sm:text-[26px] leading-tight text-white tracking-tight">
-                            {restaurant.name}
-                        </h2>
-                        <span className="text-xs font-bold text-[#1DB954] shrink-0">
-                            {restaurant.cuisine}
-                        </span>
-                    </div>
+                    <h2 className="font-display font-extrabold text-2xl sm:text-[26px] leading-tight text-white tracking-tight">
+                        {restaurant.name}
+                    </h2>
                     <p className="text-xs sm:text-sm text-white/80 mt-1 leading-relaxed">
                         {restaurant.dishHighlight}
                     </p>
@@ -440,7 +439,7 @@ function ReelCard({
                             href={video.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="px-2 py-0.5 rounded-md bg-white/5 border border-white/10 flex items-center gap-1 hover:text-white"
+                            className="px-2 py-0.5 rounded-md bg-white/5 border border-white/10 flex items-center gap-1 text-white/80 hover:text-white"
                         >
                             <ExternalLink className="w-3 h-3 text-[#1DB954]" />
                             {video.author
@@ -665,17 +664,7 @@ function VideoScroller({
                         </div>
                     )}
 
-                    <div className="flex items-center justify-between gap-2">
-                        <div className="flex items-center gap-2 bg-black/60 backdrop-blur-md border border-white/15 px-3 py-1.5 rounded-full">
-                            <span className="w-2 h-2 rounded-full bg-[#1DB954] animate-pulse" />
-                            <span className="text-[11px] font-bold tracking-wide text-white/95">
-                                BOSTON REELS •{" "}
-                                {restaurants.length > 0
-                                    ? `${activeIndex + 1} / ${restaurants.length}`
-                                    : "0 / 0"}
-                            </span>
-                        </div>
-
+                    <div className="flex items-center justify-end gap-2">
                         <button
                             onClick={onToggleSync}
                             aria-pressed={syncWithGroup}

@@ -216,6 +216,12 @@ svg {
 [class~="left-28"] { left: 7rem; }
 [class~="right-24"] { right: 6rem; }
 [class~="right-3.5"] { right: 0.875rem; }
+[class~="left-3"] { left: 0.75rem; }
+[class~="right-3"] { right: 0.75rem; }
+[class~="top-1/3"] { top: 33.333333%; }
+[class~="top-[86px]"] { top: 86px; }
+[class~="w-9"] { width: 2.25rem; }
+[class~="h-9"] { height: 2.25rem; }
 [class~="bottom-0.5"] { bottom: 0.125rem; }
 [class~="right-0.5"] { right: 0.125rem; }
 
@@ -412,6 +418,8 @@ svg {
 [class~="bg-white/25"] { background-color: rgba(255, 255, 255, 0.25); }
 [class~="bg-white/30"] { background-color: rgba(255, 255, 255, 0.30); }
 [class~="bg-white/90"] { background-color: rgba(255, 255, 255, 0.90); }
+[class~="bg-white/45"] { background-color: rgba(255, 255, 255, 0.45); }
+[class~="bg-white"] { background-color: #fff; }
 [class~="bg-rose-500"] { background-color: #f43f5e; }
 [class~="bg-rose-500/20"] { background-color: rgba(244, 63, 94, 0.20); }
 [class~="bg-rose-400"] { background-color: #fb7185; }
@@ -482,6 +490,7 @@ svg {
 [class~="cursor-default"] { cursor: default; }
 [class~="select-none"] { user-select: none; }
 [class~="pointer-events-none"] { pointer-events: none; }
+[class~="pointer-events-auto"] { pointer-events: auto; }
 [class~="snap-y"] { scroll-snap-type: y mandatory; }
 [class~="snap-mandatory"] { scroll-snap-type: y mandatory; }
 [class~="snap-start"] { scroll-snap-align: start; }
@@ -1031,7 +1040,7 @@ svg {
     --ig-header: 56px;
     --ig-w: max(100cqw + 8px, (100cqh + 12px) * 9 / 16);
     top: calc(var(--ig-header) * -1 - 2px);
-    left: calc((100cqw - var(--ig-w)) / 2);
+    left: calc((100cqw - var(--ig-w)) / 2 + 4px);
     right: auto;
     bottom: auto;
     width: var(--ig-w);
