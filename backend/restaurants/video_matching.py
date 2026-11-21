@@ -116,7 +116,7 @@ _SCHEMA = {
 }
 
 _SYSTEM = (
-    "You match short food videos (TikTok, Instagram Reels, YouTube Shorts) to restaurants in a "
+    "You match short food videos (TikTok, YouTube Shorts) to restaurants in a "
     "database of Boston food-service licenses. License names can differ from the public name: "
     "legal entity names, 'LLC' suffixes, or several branches of the same chain. Pick the candidate "
     "the video is about. Use the submitter's name hint first, then the caption and creator. "

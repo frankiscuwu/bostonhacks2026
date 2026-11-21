@@ -15,7 +15,7 @@ and ZIP. The source has no price or rating, so `price_level` and `rating` are
 always `null`. `cuisine` is the
 raw source value (often `null`, sometimes a list like `donut;coffee_shop`), and
 `open_time`/`close_time` are `HH:MM` strings or `null`. `videos` lists attached TikTok /
-Instagram / YouTube videos (`platform`, `url`, `embed_id`, `embed_url`, `thumbnail_url`,
+YouTube videos (`platform`, `url`, `embed_id`, `embed_url`, `thumbnail_url`,
 `author`, `caption`); `creator_video_url` and `image_url` come from the first one, or are empty.
 See `VIDEOS.md` for how videos are collected.
 Optional query parameters:

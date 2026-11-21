@@ -2,7 +2,8 @@ import type { Restaurant, RestaurantVideo } from "./data.ts";
 
 export type ApiVideo = {
     id: number;
-    platform: RestaurantVideo["platform"];
+    // Older rows may still carry platforms the app no longer plays.
+    platform: string;
     url: string;
     embed_id: string;
     embed_url: string;
@@ -140,14 +141,20 @@ export function mapApiRestaurant(row: ApiRestaurant): Restaurant {
             : null;
     const accentColors = ["#1DB954", "#FF5E3A", "#38bdf8", "#f59e0b", "#a855f7"];
     const accent = accentColors[row.id % accentColors.length];
-    const videos: RestaurantVideo[] = (row.videos ?? []).map((v) => ({
-        platform: v.platform,
-        url: v.url,
-        embedId: v.embed_id,
-        embedUrl: v.embed_url,
-        author: v.author,
-        caption: v.caption,
-    }));
+    // Only platforms with a usable vertical player (no Instagram).
+    const videos: RestaurantVideo[] = (row.videos ?? [])
+        .filter(
+            (v): v is ApiVideo & { platform: RestaurantVideo["platform"] } =>
+                v.platform === "tiktok" || v.platform === "youtube",
+        )
+        .map((v) => ({
+            platform: v.platform,
+            url: v.url,
+            embedId: v.embed_id,
+            embedUrl: v.embed_url,
+            author: v.author,
+            caption: v.caption,
+        }));
 
     return {
         id: row.id,

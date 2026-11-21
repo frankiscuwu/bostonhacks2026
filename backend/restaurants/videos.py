@@ -1,9 +1,9 @@
-"""Parse TikTok / Instagram / YouTube links into embeddable videos.
+"""Parse TikTok / YouTube links into embeddable videos.
 
 ``parse_video_url`` is pure (no network). ``fetch_video_metadata`` resolves
 short links and pulls title/author/thumbnail from public oEmbed endpoints
-(TikTok and YouTube need no key; Instagram oEmbed needs a Meta token, so
-Instagram videos come back without metadata).
+(neither needs a key). Instagram links are not supported: its embed is a post
+card that can't be cropped to a clean vertical player.
 """
 import json
 import re
@@ -17,7 +17,6 @@ URL_PATTERN = re.compile(r"https?://[^\s<>\"']+", re.IGNORECASE)
 
 _TIKTOK_VIDEO = re.compile(r"tiktok\.com/@[^/]+/(?:video|photo)/(\d+)", re.IGNORECASE)
 _TIKTOK_SHORT = re.compile(r"(?:vm|vt)\.tiktok\.com/|tiktok\.com/t/", re.IGNORECASE)
-_INSTAGRAM = re.compile(r"instagram\.com/(?:[^/]+/)?(reels?|p|tv)/([A-Za-z0-9_-]+)", re.IGNORECASE)
 _YOUTUBE = re.compile(
     r"(?:youtube\.com/(?:shorts/|watch\?(?:.*&)?v=|embed/|live/)|youtu\.be/)([A-Za-z0-9_-]{11})",
     re.IGNORECASE,
@@ -58,11 +57,6 @@ def parse_video_url(url):
         user = re.search(r"tiktok\.com/(@[^/]+)/", url, re.IGNORECASE).group(1)
         return ParsedVideo("tiktok", video_id, f"https://www.tiktok.com/{user}/video/{video_id}",
                            f"https://www.tiktok.com/player/v1/{video_id}")
-    if match := _INSTAGRAM.search(url):
-        kind = "reel" if match.group(1).lower().startswith("reel") else match.group(1).lower()
-        code = match.group(2)
-        canonical = f"https://www.instagram.com/{kind}/{code}/"
-        return ParsedVideo("instagram", code, canonical, f"{canonical}embed")
     if match := _YOUTUBE.search(url):
         video_id = match.group(1)
         return ParsedVideo("youtube", video_id, f"https://www.youtube.com/shorts/{video_id}",

@@ -1,6 +1,6 @@
 # Restaurant videos
 
-TikTok / Instagram Reels / YouTube Shorts links are stored in `restaurants_restaurantvideo`
+TikTok / YouTube Shorts links are stored in `restaurants_restaurantvideo`
 (Django-managed; the shared `restaurants` table is not changed) and returned in
 `GET /api/restaurants/` as `videos`, plus `creator_video_url` / `image_url` from the first one.
 

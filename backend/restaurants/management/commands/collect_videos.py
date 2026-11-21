@@ -115,7 +115,7 @@ def read_file(path):
 
 
 class Command(BaseCommand):
-    help = "Match submitted TikTok/Instagram/YouTube links to restaurants and write a review CSV."
+    help = "Match submitted TikTok/YouTube links to restaurants and write a review CSV."
 
     def add_arguments(self, parser):
         source = parser.add_mutually_exclusive_group(required=True)
@@ -168,7 +168,7 @@ class Command(BaseCommand):
         row.update(url=url, name_hint=hint, added_by=submission["added_by"],
                    source_text=submission["text"][:300])
         if video is None:
-            row.update(reason="Not a TikTok/Instagram/YouTube video link")
+            row.update(reason="Not a TikTok/YouTube video link")
             return row
         key = (video.platform, video.embed_id)
         if key in seen:

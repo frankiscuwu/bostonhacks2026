@@ -25,16 +25,12 @@ class VideoUrlTests(TestCase):
         self.assertEqual((tiktok.platform, tiktok.embed_id), ("tiktok", "7301234567890123456"))
         self.assertEqual(tiktok.url, "https://www.tiktok.com/@bostonfoodie/video/7301234567890123456")
         self.assertEqual(tiktok.embed_url, "https://www.tiktok.com/player/v1/7301234567890123456")
-        for url in ("https://www.instagram.com/reel/C1a2B3c4D5e/?igsh=abc",
-                    "https://instagram.com/reels/C1a2B3c4D5e/"):
-            reel = parse_video_url(url)
-            self.assertEqual((reel.platform, reel.embed_id), ("instagram", "C1a2B3c4D5e"))
-            self.assertEqual(reel.embed_url, "https://www.instagram.com/reel/C1a2B3c4D5e/embed")
         for url in ("https://youtube.com/shorts/dQw4w9WgXcQ?si=x", "https://youtu.be/dQw4w9WgXcQ",
                     "https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=3"):
             short = parse_video_url(url)
             self.assertEqual((short.platform, short.embed_id), ("youtube", "dQw4w9WgXcQ"))
-        for url in ("https://www.tiktok.com/@bostonfoodie", "https://example.com/video/1", "not a url"):
+        for url in ("https://www.tiktok.com/@bostonfoodie", "https://example.com/video/1", "not a url",
+                    "https://www.instagram.com/reel/C1a2B3c4D5e/"):
             self.assertIsNone(parse_video_url(url))
 
     def test_extract_urls_and_hint(self):

@@ -1025,24 +1025,3 @@ svg {
     background: #000;
     color-scheme: dark;
 }
-
-/* Sized from the card, so the player can crop to it on any screen. */
-.reel-media {
-    container-type: size;
-}
-
-/* Instagram only offers a post-card embed: white header, the 9:16 video, then
-   a white caption/likes footer. Size the iframe so the video alone covers the
-   card (wide enough that its 16:9-tall video is at least the card's height),
-   lift the header above the top edge, and leave the footer below the bottom
-   edge where the card's overflow clips it. */
-.reel-player--instagram {
-    --ig-header: 56px;
-    --ig-w: max(100cqw + 8px, (100cqh + 12px) * 9 / 16);
-    top: calc(var(--ig-header) * -1 - 2px);
-    left: calc((100cqw - var(--ig-w)) / 2 + 4px);
-    right: auto;
-    bottom: auto;
-    width: var(--ig-w);
-    height: calc(var(--ig-header) + var(--ig-w) * 16 / 9 + 400px);
-}

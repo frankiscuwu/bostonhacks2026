@@ -54,7 +54,7 @@ class Restaurant(models.Model):
 
 
 class RestaurantVideo(models.Model):
-    """A TikTok / Instagram / YouTube video about a restaurant (Django-managed).
+    """A TikTok / YouTube video about a restaurant (Django-managed).
 
     Kept in its own table instead of a column on the shared ``restaurants`` table,
     which Django only reads. See restaurants/videos.py for URL parsing.
@@ -62,7 +62,6 @@ class RestaurantVideo(models.Model):
 
     class Platform(models.TextChoices):
         TIKTOK = "tiktok", "TikTok"
-        INSTAGRAM = "instagram", "Instagram"
         YOUTUBE = "youtube", "YouTube"
 
     # The restaurants table is owned outside Django, so no database FK constraint.

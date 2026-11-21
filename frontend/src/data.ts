@@ -1,5 +1,5 @@
 export type RestaurantVideo = {
-    platform: "tiktok" | "instagram" | "youtube";
+    platform: "tiktok" | "youtube";
     // Link to the post on the platform.
     url: string;
     embedId: string;
@@ -36,7 +36,7 @@ export type Restaurant = {
     image: string;
     // False when `image` is a placeholder (no creator video thumbnail).
     hasPhoto: boolean;
-    // First attached TikTok / Instagram / YouTube video, if any.
+    // First attached TikTok / YouTube video, if any.
     video: RestaurantVideo | null;
     // Every attached video, in order (video === videos[0]).
     videos: RestaurantVideo[];

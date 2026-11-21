@@ -151,7 +151,6 @@ type WinnerModalProps = {
 
 const PLATFORM_LABELS: Record<RestaurantVideo["platform"], string> = {
     tiktok: "TikTok",
-    instagram: "Instagram",
     youtube: "YouTube",
 };
 
@@ -226,7 +225,7 @@ function ReelCard({
             className="reel-card w-full h-full snap-start relative overflow-hidden flex flex-col justify-end cursor-pointer select-none"
         >
             {/* Creator video (after tap) or image backdrop with Ken Burns motion */}
-            <div className="reel-media absolute inset-0 overflow-hidden bg-[#101010]">
+            <div className="absolute inset-0 overflow-hidden bg-[#101010]">
                 {showPlayer && video ? (
                     <iframe
                         key={video.embedUrl}
@@ -262,11 +261,7 @@ function ReelCard({
                     className={`absolute inset-0 pointer-events-none ${showPlayer ? "z-10 top-[58%]" : ""}`}
                     style={{
                         background: showPlayer
-                            ? video?.platform === "instagram"
-                                ? // Solid at the very bottom: backstop for the embed's
-                                  // white caption/likes footer.
-                                  "linear-gradient(180deg, rgba(12,12,12,0) 0%, rgba(12,12,12,0.3) 30%, rgba(12,12,12,0.9) 60%, rgb(12,12,12) 78%)"
-                                : "linear-gradient(180deg, rgba(12,12,12,0) 0%, rgba(12,12,12,0.18) 35%, rgba(12,12,12,0.55) 75%, rgba(12,12,12,0.8) 100%)"
+                            ? "linear-gradient(180deg, rgba(12,12,12,0) 0%, rgba(12,12,12,0.18) 35%, rgba(12,12,12,0.55) 75%, rgba(12,12,12,0.8) 100%)"
                             : "linear-gradient(180deg, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0.08) 38%, rgba(12,12,12,0.92) 78%, rgba(12,12,12,0.99) 100%)",
                     }}
                 />
