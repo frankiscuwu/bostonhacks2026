@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.urls import path
 from django.http import JsonResponse
+from restaurants.views import restaurant_list
+from rooms import views as room_views
 
 
 def health_check(request):
@@ -14,4 +16,10 @@ def health_check(request):
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/health/", health_check),
+    path("api/restaurants/", restaurant_list),
+    path("api/rooms/", room_views.create_room),
+    path("api/rooms/<str:code>/join/", room_views.join_room),
+    path("api/rooms/<str:code>/", room_views.room_detail),
+    path("api/rooms/<str:code>/vote/", room_views.vote),
+    path("api/rooms/<str:code>/results/", room_views.results),
 ]
