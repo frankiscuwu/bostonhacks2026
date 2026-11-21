@@ -129,18 +129,8 @@ enrichment table. The old `0002_restaurant_optional_metadata` must not be restor
 
 ## Creator videos
 
-`GET /api/restaurants/{id}/videos/` returns approved creator-video records in ID
-order, or `[]` for a restaurant without approved videos. Unknown restaurants return
-404. Public submissions and approval writes are not supported (405).
-
-The separate Django-managed `RestaurantVideo` model references shared restaurant
-IDs without modifying source rows. New entries default to pending and are manually
-reviewed in Admin. See [VIDEOS.md](VIDEOS.md) for the exact TypeScript response,
-URL allowlist, review workflow, and YouTube/TikTok/Instagram official embed guidance.
-Existing restaurant response fields remain unchanged.
-
-Migration `restaurants.0004_restaurant_video` creates the video table only. It was
-applied to shared Supabase on November 21, 2026, with no video records inserted.
-See [VIDEOS.md](VIDEOS.md) for the remaining staff permission setup.
-Video administration writes to the new table;
-the discovery endpoint continues reading the shared restaurant table without writes.
+Videos live in the Django-managed `restaurants_restaurantvideo` table (references shared
+restaurant IDs; source rows are never modified) and are returned inline in restaurant
+responses as `videos`. They are collected and reviewed in bulk; see [VIDEOS.md](VIDEOS.md).
+Migration `restaurants.0004_restaurant_videos` creates the table; `0005_rebuild_video_table`
+replaces an empty table left by an earlier, removed video schema.

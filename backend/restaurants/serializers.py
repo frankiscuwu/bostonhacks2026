@@ -77,12 +77,3 @@ class RestaurantFilterSerializer(serializers.Serializer):
             raise serializers.ValidationError("Distance filtering requires latitude, longitude, and max_distance_km.")
         return attrs
 
-
-class RestaurantVideoSerializer(serializers.ModelSerializer):
-    restaurant_id = serializers.IntegerField(read_only=True)
-
-    class Meta:
-        model = RestaurantVideo
-        fields = ("id", "restaurant_id", "platform", "canonical_url", "platform_video_id",
-                  "creator_name", "creator_handle", "verification_status", "created_at", "updated_at")
-        read_only_fields = fields
