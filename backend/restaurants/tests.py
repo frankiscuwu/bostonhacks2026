@@ -31,3 +31,14 @@ class RestaurantTests(TestCase):
         Restaurant.objects.create(**inactive_data())
         Restaurant.objects.create(**restaurant_data(latitude=None))
         self.assertEqual(list(Restaurant.objects.active()), [active])
+
+    def test_primary_key_mapping_uses_source_id(self):
+        restaurant = Restaurant.objects.create(id=123456, **restaurant_data())
+        self.assertEqual(Restaurant.objects.get(pk=123456).id, restaurant.id)
+
+    def test_admin_prohibits_shared_catalog_writes(self):
+        from django.contrib import admin
+        model_admin = admin.site._registry[Restaurant]
+        self.assertFalse(model_admin.has_add_permission(None))
+        self.assertFalse(model_admin.has_change_permission(None))
+        self.assertFalse(model_admin.has_delete_permission(None))

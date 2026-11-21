@@ -175,3 +175,13 @@ class RoomAPITests(TestCase):
             self.assertEqual(self.client.post(self.base + 'vote/', data, format='json',
                 HTTP_X_PARTICIPANT_TOKEN=self.token).status_code, 400)
         self.assertFalse(Vote.objects.exists())
+
+    def test_unknown_metadata_in_room_and_results(self):
+        room_restaurant = self.client.get(self.base).json()['current_restaurant']
+        self.assertIsNone(room_restaurant['price_level'])
+        self.assertIsNone(room_restaurant['rating'])
+        self.assertEqual(room_restaurant['creator_video_url'], '')
+        self.assertEqual(self.vote(self.token).status_code, 200)
+        result_restaurant = self.client.get(self.base + 'results/').json()[0]['restaurant']
+        self.assertIsNone(result_restaurant['rating'])
+        self.assertEqual(result_restaurant['image_url'], '')

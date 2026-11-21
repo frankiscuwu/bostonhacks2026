@@ -18,6 +18,8 @@ raw source value (often `null`, sometimes a list like `donut;coffee_shop`), and
 Optional query parameters:
 
 - `cuisine`: case-insensitive substring match.
+- `max_price` / `min_rating`: unsupported; return HTTP 400 because the shared
+  catalog has no corresponding metadata. They are not silently ignored.
 - `latitude`, `longitude`, `max_distance_km`: all three required together. Distance is
   straight-line Haversine distance in kilometers, not transit or driving distance.
 
@@ -101,8 +103,9 @@ round. Finished rooms reject joins and votes.
 The room lock serializes concurrent votes on PostgreSQL; the database unique
 constraint is an additional duplicate-vote guard. State is serialized while the lock
 is held and returned after the transaction commits. This is a committed snapshot;
-clients may observe later state on their next fetch. No Realtime broadcasts or
-WebSocket server are implemented yet. Future broadcasts should use
+clients may observe later state on their next fetch. The backend does not broadcast Realtime updates or run a WebSocket server. The
+frontend sends credential-free `room-updated` notifications after successful API
+responses and also polls Django. Future server-side broadcasts should use
 `transaction.on_commit()` and exclude credentials.
 
 ## Results
@@ -133,9 +136,16 @@ The existing dotenv loader preserves the explicit environment override. SQLite t
 verify service behavior but cannot exercise PostgreSQL row locks; a separate disposable
 PostgreSQL database is needed for a concurrent transaction integration test.
 
-Django reads restaurants from the shared `restaurants` table and writes only to
-`rooms_*`. Room and vote restaurant FKs have no database constraint because the
+The discovery/group-voting API reads restaurants from the shared `restaurants`
+table and writes room state only to `rooms_*`. Room and vote restaurant FKs have no database constraint because the
 restaurants table is owned outside Django. Migration `restaurants.0002` only creates
 `restaurants` when missing (fresh SQLite databases); on Supabase it is a no-op.
-`rooms.0002` drops the old FK constraints. The legacy `restaurants_restaurant` table is
-no longer used but was not dropped. `BostonFoodLiscences` is not used.
+`rooms.0002` drops the old restaurant FK constraints. Migration
+`restaurants.0003_drop_legacy_restaurant_table` then drops the legacy
+`restaurants_restaurant` table without CASCADE, after depending on both apps' 0002
+migrations. `BostonFoodLiscences` is not used.
+
+`managed=False` is a schema-management setting, not an ORM write prohibition.
+Do not save/update/delete source rows. See [IMPORTING.md](IMPORTING.md) for the
+retired importer, preserved stash, migration reconciliation, and proposed separate
+enrichment table. The old `0002_restaurant_optional_metadata` must not be restored.
