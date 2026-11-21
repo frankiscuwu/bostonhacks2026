@@ -156,6 +156,13 @@ export function mapApiRestaurant(row: ApiRestaurant): Restaurant {
             caption: v.caption,
         }));
 
+    // The license dataset puts its category ("Eating & Drinking", "Eating & Drinking w/ Take Out")
+    // in `description`; that isn't a real description, so ignore it.
+    const description =
+        row.description && !/^eating\s*&\s*drinking/i.test(row.description.trim())
+            ? row.description
+            : null;
+
     return {
         id: row.id,
         name: row.name,
@@ -170,13 +177,13 @@ export function mapApiRestaurant(row: ApiRestaurant): Restaurant {
         // Not available in the source data.
         tablesTonight: false,
         walkInFriendly: false,
-        vibe: row.description || cuisine,
+        vibe: description || cuisine,
         accent,
         inQueue: false,
         coords: projectCoordinates(latitude, longitude),
         latitude,
         longitude,
-        dishHighlight: [row.description, row.address].filter(Boolean).join(" • ") || cuisine,
+        dishHighlight: [description, row.address].filter(Boolean).join(" • ") || cuisine,
         hasPhoto: Boolean(row.image_url),
         image:
             row.image_url ||
