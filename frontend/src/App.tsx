@@ -32,7 +32,7 @@ import {
     Clock,
     SlidersHorizontal,
     Shuffle,
-    Users,
+    RefreshCw,
     Play,
     ExternalLink,
 } from "lucide-react";
@@ -225,7 +225,7 @@ function ReelCard({
             className="reel-card w-full h-full snap-start relative overflow-hidden flex flex-col justify-end cursor-pointer select-none"
         >
             {/* Creator video (after tap) or image backdrop with Ken Burns motion */}
-            <div className="absolute inset-0 overflow-hidden bg-[#101010]">
+            <div className="reel-media absolute inset-0 overflow-hidden bg-[#101010]">
                 {showPlayer && video ? (
                     <iframe
                         key={video.embedUrl}
@@ -517,6 +517,27 @@ function VideoScroller({
     const activeSpot = restaurants[activeIndex] || null;
 
     // Video shown within the active spot; resets when the active spot changes.
+    // "Synced with group" shows briefly after turning sync on, then the button
+    // goes back to its normal look.
+    const [showSynced, setShowSynced] = useState(false);
+    const syncedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    useEffect(
+        () => () => {
+            if (syncedTimerRef.current) clearTimeout(syncedTimerRef.current);
+        },
+        [],
+    );
+    const handleSyncClick = () => {
+        if (syncedTimerRef.current) clearTimeout(syncedTimerRef.current);
+        const turningOn = !syncWithGroup;
+        setShowSynced(turningOn);
+        if (turningOn) {
+            syncedTimerRef.current = setTimeout(() => setShowSynced(false), 2500);
+        }
+        onToggleSync();
+    };
+    const syncedLook = syncWithGroup && showSynced;
+
     const [media, setMedia] = useState({ id: activeSpot?.id, index: 0 });
     const mediaIndex = media.id === activeSpot?.id ? media.index : 0;
     const changeMedia = useCallback(
@@ -661,7 +682,7 @@ function VideoScroller({
 
                     <div className="flex items-center justify-end gap-2">
                         <button
-                            onClick={onToggleSync}
+                            onClick={handleSyncClick}
                             aria-pressed={syncWithGroup}
                             title={
                                 syncWithGroup
@@ -669,13 +690,13 @@ function VideoScroller({
                                     : "Show only spots that match everyone's filters"
                             }
                             className={`pointer-events-auto flex items-center gap-1.5 backdrop-blur-md border px-3 py-1.5 rounded-full text-[11px] font-bold transition active:scale-95 ${
-                                syncWithGroup
+                                syncedLook
                                     ? "bg-[#1DB954] text-black border-[#1DB954]"
                                     : "bg-black/60 text-white/95 border-white/15 hover:bg-white/15"
                             }`}
                         >
-                            <Users className="w-3.5 h-3.5" />
-                            {syncWithGroup
+                            <RefreshCw className="w-3.5 h-3.5" />
+                            {syncedLook
                                 ? "Synced with group"
                                 : "Sync scroller with group"}
                         </button>
@@ -962,13 +983,6 @@ function FilterPanel({
     };
 
     const anyDistance = filters.maxDistance >= MAX_DISTANCE_MILES;
-    const distanceLabel = anyDistance
-        ? "Any distance"
-        : filters.maxDistance <= 1.0
-          ? "Walkable Downtown / Back Bay"
-          : filters.maxDistance <= 3.5
-            ? "Quick T-Ride / Cambridge & Seaport"
-            : "Greater Boston Metro";
 
     return (
         <div className="px-5 sm:px-8 py-6 space-y-6 max-w-4xl">
@@ -1038,8 +1052,7 @@ function FilterPanel({
                     />
 
                     <div className="flex justify-between text-[11px] text-white/45 mt-1.5 font-medium">
-                        <span>0.2 mi (Walk)</span>
-                        <span>{distanceLabel}</span>
+                        <span>0.2 mi</span>
                         <span>Any</span>
                     </div>
 
@@ -1096,7 +1109,7 @@ function FilterPanel({
                         />
                         <span>Open Now only</span>
                     </button>
-                    <p className="text-[11px] text-white/45 mt-2">
+                    <p className="text-[11px] text-white/45 mt-4">
                         Spots without posted hours are excluded when this is on.
                     </p>
                 </div>

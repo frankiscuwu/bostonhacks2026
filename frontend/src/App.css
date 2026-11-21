@@ -180,8 +180,20 @@ input {
     font: inherit;
 }
 
+/* Match Tailwind preflight: utility classes assume no default margins/padding. */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+    margin: 0;
+}
+
 button {
     border: 0;
+    padding: 0;
     cursor: pointer;
     /* No browser-default grey box: buttons are styled by their classes. */
     background: transparent;
@@ -1024,4 +1036,21 @@ svg {
     border: 0;
     background: #000;
     color-scheme: dark;
+}
+
+/* Lets the player size itself against the card's dimensions (cq units). */
+.reel-media {
+    container-type: size;
+}
+
+/* YouTube letterboxes a 9:16 Short whenever its iframe isn't exactly 9:16.
+   Keep the iframe at 9:16 and scale it to cover the card (like object-fit:
+   cover), cropping the overflow instead of showing black bars. */
+.reel-player--youtube {
+    inset: auto;
+    top: 50%;
+    left: 50%;
+    width: max(calc(100cqw + 4px), calc((100cqh + 4px) * 9 / 16));
+    height: max(calc(100cqh + 4px), calc((100cqw + 4px) * 16 / 9));
+    transform: translate(-50%, -50%);
 }
