@@ -42,3 +42,23 @@ class RestaurantTests(TestCase):
         self.assertFalse(model_admin.has_add_permission(None))
         self.assertFalse(model_admin.has_change_permission(None))
         self.assertFalse(model_admin.has_delete_permission(None))
+
+class MatchingTests(TestCase):
+    def test_cuisine_label(self):
+        from .matching import cuisine_label
+        self.assertEqual(cuisine_label("donut;coffee_shop"), "Donut")
+        self.assertEqual(cuisine_label("bubble_tea"), "Bubble Tea")
+        self.assertEqual(cuisine_label(None), "Other")
+        self.assertEqual(cuisine_label(""), "Other")
+
+    def test_open_hours(self):
+        from datetime import datetime
+        from .matching import BOSTON_TZ, is_open_now
+        at = lambda hour: datetime(2026, 11, 21, hour, 0, tzinfo=BOSTON_TZ)
+        day = Restaurant(**restaurant_data(open_time="11:00", close_time="22:00"))
+        night = Restaurant(**restaurant_data(open_time="17:00", close_time="02:00"))
+        self.assertTrue(is_open_now(day, at(12)))
+        self.assertFalse(is_open_now(day, at(23)))
+        self.assertTrue(is_open_now(night, at(1)))
+        self.assertFalse(is_open_now(night, at(12)))
+        self.assertIsNone(is_open_now(Restaurant(**restaurant_data()), at(12)))

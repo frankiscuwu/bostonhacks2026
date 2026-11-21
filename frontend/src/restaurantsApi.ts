@@ -5,6 +5,8 @@ export type ApiRestaurant = {
     name: string;
     address: string;
     cuisine: string | null;
+    // Display label computed by Django; filters match on this value.
+    cuisine_label?: string;
     price_level: number | null;
     rating: number | string | null;
     latitude: number | string;
@@ -42,21 +44,40 @@ function isOpenAt(openTime: string | null | undefined, closeTime: string | null 
         : current >= open || current < close;
 }
 
+// Django API origin. Vite inlines VITE_API_URL at *build* time, so production
+// hosts (e.g. Vercel) must set it in their environment and rebuild. The
+// localhost fallback is for `npm run dev` only: in a deployed build it would
+// point at each visitor's own machine.
+const configuredApiUrl = (
+    import.meta.env.VITE_API_URL as string | undefined
+)?.replace(/\/$/, "");
+
+if (!configuredApiUrl && import.meta.env.PROD) {
+    console.error(
+        "VITE_API_URL is not set for this production build; API requests will fail. " +
+            "Set it to the deployed Django URL (https://…) and redeploy.",
+    );
+}
+
 export const API_BASE_URL =
-    (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, "") ||
-    "http://127.0.0.1:8000";
+    configuredApiUrl ||
+    (import.meta.env.PROD ? "/api-not-configured" : "http://127.0.0.1:8000");
 
-const BOSTON_COMMON = { latitude: 42.3551, longitude: -71.0624 };
+export type LatLng = { latitude: number; longitude: number };
 
-function haversineMiles(
+// Fallback distance origin when the device location is unavailable.
+export const BOSTON_COMMON: LatLng = { latitude: 42.3551, longitude: -71.0624 };
+
+export function haversineMiles(
     latitude: number,
     longitude: number,
+    origin: LatLng = BOSTON_COMMON,
 ): number {
     const toRadians = (degrees: number) => (degrees * Math.PI) / 180;
     const earthRadiusMiles = 3958.8;
-    const latDelta = toRadians(latitude - BOSTON_COMMON.latitude);
-    const lonDelta = toRadians(longitude - BOSTON_COMMON.longitude);
-    const lat1 = toRadians(BOSTON_COMMON.latitude);
+    const latDelta = toRadians(latitude - origin.latitude);
+    const lonDelta = toRadians(longitude - origin.longitude);
+    const lat1 = toRadians(origin.latitude);
     const lat2 = toRadians(latitude);
     const haversine =
         Math.sin(latDelta / 2) ** 2 +
@@ -100,7 +121,7 @@ export function mapApiRestaurant(row: ApiRestaurant): Restaurant {
         row.price_level === null
             ? null
             : Math.max(1, Math.min(4, Number(row.price_level) || 1));
-    const cuisine = formatCuisine(row.cuisine);
+    const cuisine = row.cuisine_label ?? formatCuisine(row.cuisine);
     const hours =
         row.open_time && row.close_time
             ? `${row.open_time}–${row.close_time}`
@@ -124,7 +145,6 @@ export function mapApiRestaurant(row: ApiRestaurant): Restaurant {
         walkInFriendly: false,
         vibe: row.description || cuisine,
         accent,
-        votes: 0,
         inQueue: false,
         coords: projectCoordinates(latitude, longitude),
         latitude,

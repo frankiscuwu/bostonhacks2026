@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from .models import Restaurant
+from .matching import cuisine_label
+from .models import Restaurant, RestaurantVideo
 
 
 class RestaurantSerializer(serializers.ModelSerializer):
@@ -14,10 +15,11 @@ class RestaurantSerializer(serializers.ModelSerializer):
     rating = serializers.SerializerMethodField()
     creator_video_url = serializers.SerializerMethodField()
     image_url = serializers.SerializerMethodField()
+    cuisine_label = serializers.SerializerMethodField()
 
     class Meta:
         model = Restaurant
-        fields = ("id", "name", "address", "cuisine", "price_level", "rating",
+        fields = ("id", "name", "address", "cuisine", "cuisine_label", "price_level", "rating",
                   "latitude", "longitude", "creator_video_url", "image_url", "description",
                   "open_time", "close_time", "license_category")
 
@@ -32,6 +34,9 @@ class RestaurantSerializer(serializers.ModelSerializer):
 
     def get_image_url(self, obj):
         return ""
+
+    def get_cuisine_label(self, obj):
+        return cuisine_label(obj.cuisine)
 
 
 class RestaurantFilterSerializer(serializers.Serializer):
@@ -55,3 +60,13 @@ class RestaurantFilterSerializer(serializers.Serializer):
         if any(key in attrs for key in coordinates) and not all(key in attrs for key in coordinates):
             raise serializers.ValidationError("Distance filtering requires latitude, longitude, and max_distance_km.")
         return attrs
+
+
+class RestaurantVideoSerializer(serializers.ModelSerializer):
+    restaurant_id = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = RestaurantVideo
+        fields = ("id", "restaurant_id", "platform", "canonical_url", "platform_video_id",
+                  "creator_name", "creator_handle", "verification_status", "created_at", "updated_at")
+        read_only_fields = fields

@@ -142,17 +142,19 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
-# Allow React + Vite frontend to communicate with Django
+# Allow React + Vite frontend to communicate with Django. Set
+# CORS_ALLOWED_ORIGINS (comma-separated, exact scheme + host, no trailing slash)
+# to override; the default covers local dev and the production Vercel site.
 CORS_ALLOWED_ORIGINS = [
     origin.strip()
     for origin in os.getenv(
         "CORS_ALLOWED_ORIGINS",
-        "http://localhost:5173,http://127.0.0.1:5173"
+        "http://localhost:5173,http://127.0.0.1:5173,https://bostonhacks2026.vercel.app,https://bostonhacks2026-production.up.railway.app"
     ).split(",")
     if origin.strip()
 ]
 
-# The vote endpoint authenticates participants with this custom header, so the
+# The room endpoints authenticate participants with this custom header, so the
 # browser's CORS preflight must be allowed to send it.
 from corsheaders.defaults import default_headers  # noqa: E402
 

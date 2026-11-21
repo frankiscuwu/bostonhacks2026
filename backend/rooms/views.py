@@ -3,7 +3,11 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from . import services
-from .serializers import DisplayNameSerializer, VoteInputSerializer
+from .serializers import DisplayNameSerializer, FiltersSerializer, LocationSerializer
+
+
+def participant_token(request):
+    return request.headers.get("X-Participant-Token")
 
 
 @api_view(["POST"])
@@ -31,17 +35,26 @@ def room_detail(request, code):
     return Response(services.get_room(code))
 
 
+@api_view(["PUT"])
+@authentication_classes([])
+@permission_classes([AllowAny])
+def filters(request, code):
+    serializer = FiltersSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    return Response(services.update_filters(code, participant_token(request), dict(serializer.validated_data)))
+
+
+@api_view(["PUT"])
+@authentication_classes([])
+@permission_classes([AllowAny])
+def location(request, code):
+    serializer = LocationSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    return Response(services.update_location(code, participant_token(request), **serializer.validated_data))
+
+
 @api_view(["POST"])
 @authentication_classes([])
 @permission_classes([AllowAny])
-def vote(request, code):
-    serializer = VoteInputSerializer(data=request.data)
-    serializer.is_valid(raise_exception=True)
-    return Response(services.submit_vote(code, request.headers.get("X-Participant-Token"), **serializer.validated_data))
-
-
-@api_view(["GET"])
-@authentication_classes([])
-@permission_classes([AllowAny])
-def results(request, code):
-    return Response(services.room_results(code))
+def pick(request, code):
+    return Response(services.pick_restaurant(code, participant_token(request)))

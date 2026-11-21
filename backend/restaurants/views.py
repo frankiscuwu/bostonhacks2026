@@ -1,11 +1,14 @@
 import math
 
+from django.http import Http404
+from django.shortcuts import get_object_or_404
+
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
-from .models import Restaurant
-from .serializers import RestaurantFilterSerializer, RestaurantSerializer
+from .models import Restaurant, RestaurantVideo
+from .serializers import RestaurantFilterSerializer, RestaurantSerializer, RestaurantVideoSerializer
 
 
 def distance_km(latitude, longitude, restaurant):
@@ -30,3 +33,14 @@ def restaurant_list(request):
     if "max_distance_km" in values:
         restaurants = [r for r in restaurants if distance_km(values["latitude"], values["longitude"], r) <= values["max_distance_km"]]
     return Response(RestaurantSerializer(restaurants, many=True).data)
+
+
+@api_view(["GET"])
+@authentication_classes([])
+@permission_classes([AllowAny])
+def restaurant_videos(request, restaurant_id):
+    if restaurant_id > 2**63 - 1:
+        raise Http404
+    restaurant = get_object_or_404(Restaurant, pk=restaurant_id)
+    videos = restaurant.videos.filter(verification_status=RestaurantVideo.VerificationStatus.APPROVED)
+    return Response(RestaurantVideoSerializer(videos, many=True).data)

@@ -4,13 +4,13 @@ import {
     Circle,
     MapContainer,
     Marker,
+    Popup,
     TileLayer,
     useMap,
 } from "react-leaflet";
 import type { LatLngExpression } from "leaflet";
 import L from "leaflet";
 import {
-    Flame,
     Heart,
     MapPin,
     Star,
@@ -31,61 +31,50 @@ import {
     Calendar,
     Clock,
     SlidersHorizontal,
+    Shuffle,
 } from "lucide-react";
 
-import {
-    CUISINE_CATEGORIES,
-    PRICE_TIERS,
-} from "./data.ts";
+import { MAX_DISTANCE_MILES } from "./data.ts";
 import type { FilterState, Restaurant } from "./data.ts";
 import type { RealtimeChannel } from "@supabase/supabase-js";
 import {
     isRealtimeConfigured,
     notifyRoomUpdated,
     subscribeToRoom,
-    updatePresence,
 } from "./websocket.ts";
-import type { PresenceProfile, RoomPreferences } from "./websocket.ts";
-import { fetchRestaurants, mapApiRestaurant } from "./restaurantsApi.ts";
+import {
+    BOSTON_COMMON,
+    fetchRestaurants,
+    haversineMiles,
+    mapApiRestaurant,
+} from "./restaurantsApi.ts";
+import type { LatLng } from "./restaurantsApi.ts";
+import { useGeolocation } from "./useGeolocation.ts";
+import type { GeolocationStatus } from "./useGeolocation.ts";
 import {
     ApiError,
     ROOM_CODE_PATTERN,
     clearSession,
     createRoom as apiCreateRoom,
     ensureMembership,
-    getResults,
     getRoom,
-    isSameOrNewerRoomState,
     normalizeRoomCode,
+    pickRestaurant,
     saveSession,
-    submitVote,
+    updateFilters,
+    updateLocation,
 } from "./roomsApi.ts";
-import type { ResultRow, RoomSession, RoomState } from "./roomsApi.ts";
-import "./App.css"
+import type { ApiFilters, RoomSession, RoomState } from "./roomsApi.ts";
+import "./App.css";
 
 type ToggleRestaurantHandler = (id: number) => void;
 type Toast = { id: number; message: string; accent: string };
 
-// Per-card view of the Django room for the restaurant shown on that card.
-type RoomVoteInfo = {
-    // "current": being voted on now; "decided": room already moved past it;
-    // "upcoming": room has not reached it yet.
-    status: "current" | "decided" | "upcoming";
-    hasVoted: boolean;
-    submitting: boolean;
-    votedCount: number;
-    requiredCount: number;
-    voterNames: string[];
-    yesCount: number;
-    noCount: number;
-};
-
-type CastVoteHandler = (restaurantId: number, vote: boolean) => void;
-
 type RoomParticipantView = {
     id: number;
     name: string;
-    preferences: RoomPreferences | null;
+    filters: ApiFilters;
+    hasLocation: boolean;
     online: boolean;
     isYou: boolean;
 };
@@ -93,8 +82,7 @@ type RoomParticipantView = {
 type ReelCardProps = {
     restaurant: Restaurant;
     isActive: boolean;
-    voteInfo: RoomVoteInfo;
-    onCastVote: CastVoteHandler;
+    isPicked: boolean;
     onToggleQueue: ToggleRestaurantHandler;
 };
 
@@ -102,8 +90,7 @@ type VideoScrollerProps = {
     restaurants: Restaurant[];
     activeId: number | null;
     onSelectActive: (id: number) => void;
-    getVoteInfo: (restaurantId: number) => RoomVoteInfo;
-    onCastVote: CastVoteHandler;
+    pickedId: number | null;
     onToggleQueue: ToggleRestaurantHandler;
     onResetFilters: () => void;
     feedRef: RefObject<HTMLDivElement | null>;
@@ -111,15 +98,23 @@ type VideoScrollerProps = {
 
 type FilterPanelProps = {
     allRestaurants: Restaurant[];
-    filteredRestaurants: Restaurant[];
+    // Restaurants matching every participant's filters.
+    groupMatchCount: number;
+    // Restaurants matching only your own filters.
+    myMatchCount: number;
+    participantCount: number;
+    originLabel: string;
+    locationStatus: GeolocationStatus;
+    onRetryLocation: () => void;
     filters: FilterState;
     onUpdateFilters: (filters: FilterState) => void;
     onResetFilters: () => void;
-    onJumpToRestaurant: (id: number) => void;
 };
 
 type FloatingBostonMapProps = {
     restaurants: Restaurant[];
+    origin: LatLng;
+    originLabel: string;
     activeId: number | null;
     maxDistance: number;
     onSelectPin: (id: number) => void;
@@ -135,8 +130,12 @@ type JamQueueModalProps = {
 
 type WinnerModalProps = {
     winner: Restaurant | null;
+    originLabel: string;
+    pickedByName: string | null;
+    matchCount: number;
+    picking: boolean;
     onClose: () => void;
-    onLockIn: (restaurant: Restaurant) => void;
+    onPickAgain: () => void;
 };
 
 // ============================================================================
@@ -145,15 +144,9 @@ type WinnerModalProps = {
 function ReelCard({
     restaurant,
     isActive,
-    voteInfo,
-    onCastVote,
+    isPicked,
     onToggleQueue,
 }: ReelCardProps) {
-    const canVote =
-        voteInfo.status === "current" &&
-        !voteInfo.hasVoted &&
-        !voteInfo.submitting;
-
     const [isPaused, setIsPaused] = useState(false);
     const [showHeartBurst, setShowHeartBurst] = useState(false);
     const lastTapRef = useRef<number>(0);
@@ -161,10 +154,10 @@ function ReelCard({
     const handleSurfaceTap = () => {
         const now = Date.now();
         if (now - lastTapRef.current < 280) {
-            // Double-tap triggers heart burst + vote
+            // Double-tap triggers heart burst + adds to your shortlist
             setShowHeartBurst(true);
-            if (canVote) {
-                onCastVote(restaurant.id, true);
+            if (!restaurant.inQueue) {
+                onToggleQueue(restaurant.id);
             }
             setTimeout(() => setShowHeartBurst(false), 850);
         } else {
@@ -173,18 +166,6 @@ function ReelCard({
         }
         lastTapRef.current = now;
     };
-
-    const getAvatarBadge = (voter: string) =>
-        voter === "YOU" ? "bg-[#1DB954] text-black" : "bg-white/20 text-white";
-
-    const voteSummary =
-        voteInfo.status === "current"
-            ? `${voteInfo.votedCount}/${voteInfo.requiredCount} voted`
-            : voteInfo.yesCount + voteInfo.noCount > 0
-              ? `${voteInfo.yesCount} yes • ${voteInfo.noCount} no`
-              : voteInfo.status === "upcoming"
-                ? "Up next in room"
-                : "No votes";
 
     return (
         <article
@@ -328,99 +309,43 @@ function ReelCard({
                         </span>
                     )}
                     <span className="px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-white/55">
-                        {voteInfo.status === "current"
-                            ? "Now voting • Double-tap for yes"
-                            : "Browse only • vote when it's up"}
+                        Double-tap to save to your queue
                     </span>
                 </div>
 
-                {/* Collaborative Jam Vote Bar */}
+                {/* Group Match Status & Queue */}
                 <div className="pt-2.5 border-t border-white/15 flex items-center justify-between gap-2">
-                    {/* Friend Avatars Who Voted */}
-                    <div className="flex items-center gap-2 min-w-0">
-                        <div className="flex -space-x-1.5 shrink-0">
-                            {voteInfo.voterNames.map((voter) => (
-                                <span
-                                    key={voter}
-                                    title={voter}
-                                    className={`w-6 h-6 rounded-full ${getAvatarBadge(
-                                        voter,
-                                    )} border border-black flex items-center justify-center text-[10px] font-extrabold shadow`}
-                                >
-                                    {voter === "YOU" ? "YOU" : voter[0]?.toUpperCase()}
-                                </span>
-                            ))}
-                        </div>
-                        <span className="text-xs font-semibold text-white/85 truncate">
-                            {voteSummary}
+                    {isPicked ? (
+                        <span className="px-3 py-1.5 rounded-full text-xs font-extrabold bg-[#FF5E3A] text-white flex items-center gap-1.5">
+                            <Trophy className="w-3.5 h-3.5" />
+                            <span>The group's pick</span>
                         </span>
-                    </div>
+                    ) : (
+                        <span className="text-xs font-semibold text-white/70 truncate">
+                            Matches everyone's filters
+                        </span>
+                    )}
 
-                    {/* Interactive Queue & Vote Actions */}
-                    <div className="flex items-center gap-2 shrink-0">
-                        <button
-                            onClick={() => onToggleQueue(restaurant.id)}
-                            className={`px-3 py-2 rounded-full text-xs font-bold border transition-all active:scale-95 flex items-center gap-1 ${
-                                restaurant.inQueue
-                                    ? "bg-white/15 text-[#1DB954] border-[#1DB954]/50"
-                                    : "bg-black/60 hover:bg-white/15 text-white border-white/20"
-                            }`}
-                        >
-                            {restaurant.inQueue ? (
-                                <>
-                                    <Check className="w-3.5 h-3.5" />
-                                    <span>Queued</span>
-                                </>
-                            ) : (
-                                <>
-                                    <Plus className="w-3.5 h-3.5" />
-                                    <span>Jam Queue</span>
-                                </>
-                            )}
-                        </button>
-
-                        {voteInfo.status === "current" && !voteInfo.hasVoted ? (
+                    <button
+                        onClick={() => onToggleQueue(restaurant.id)}
+                        className={`px-3 py-2 rounded-full text-xs font-bold border transition-all active:scale-95 flex items-center gap-1 shrink-0 ${
+                            restaurant.inQueue
+                                ? "bg-white/15 text-[#1DB954] border-[#1DB954]/50"
+                                : "bg-black/60 hover:bg-white/15 text-white border-white/20"
+                        }`}
+                    >
+                        {restaurant.inQueue ? (
                             <>
-                                <button
-                                    onClick={() => onCastVote(restaurant.id, false)}
-                                    disabled={!canVote}
-                                    className="px-3 py-2 rounded-full text-xs font-bold border bg-black/60 hover:bg-rose-500/20 text-white border-white/20 transition-all active:scale-90 flex items-center gap-1 disabled:opacity-50"
-                                >
-                                    <X className="w-3.5 h-3.5" />
-                                    <span>Pass</span>
-                                </button>
-                                <button
-                                    onClick={() => onCastVote(restaurant.id, true)}
-                                    disabled={!canVote}
-                                    className="px-3.5 py-2 rounded-full text-xs font-extrabold transition-all active:scale-90 flex items-center gap-1.5 shadow-lg bg-[#1DB954] hover:bg-[#1ed760] text-black shadow-[#1DB954]/30 disabled:opacity-50"
-                                >
-                                    <Flame className="w-3.5 h-3.5 fill-black" />
-                                    <span>
-                                        {voteInfo.submitting ? "Voting…" : "Yes"}
-                                    </span>
-                                </button>
+                                <Check className="w-3.5 h-3.5" />
+                                <span>Queued</span>
                             </>
                         ) : (
-                            <span
-                                className={`px-3.5 py-2 rounded-full text-xs font-extrabold flex items-center gap-1.5 ${
-                                    voteInfo.status === "current"
-                                        ? "bg-[#FF5E3A] text-white"
-                                        : "bg-white/10 text-white/60"
-                                }`}
-                            >
-                                {voteInfo.status === "current" ? (
-                                    <>
-                                        <Check className="w-3.5 h-3.5" />
-                                        <span>Waiting for others</span>
-                                    </>
-                                ) : voteInfo.status === "decided" ? (
-                                    <span>Decided</span>
-                                ) : (
-                                    <span>Not up yet</span>
-                                )}
-                            </span>
+                            <>
+                                <Plus className="w-3.5 h-3.5" />
+                                <span>Jam Queue</span>
+                            </>
                         )}
-                    </div>
+                    </button>
                 </div>
             </div>
         </article>
@@ -434,8 +359,7 @@ function VideoScroller({
     restaurants,
     activeId,
     onSelectActive,
-    getVoteInfo,
-    onCastVote,
+    pickedId,
     onToggleQueue,
     onResetFilters,
     feedRef,
@@ -591,18 +515,18 @@ function VideoScroller({
                                 🍽️
                             </div>
                             <h3 className="font-display font-bold text-lg text-white">
-                                No Boston spots match those exact filters
+                                No spot matches everyone's filters
                             </h3>
                             <p className="text-xs text-white/60 mt-1.5 max-w-xs leading-relaxed">
-                                Your group constraints are super specific! Try
-                                widening the distance radius or clearing a
-                                cuisine toggle.
+                                Your group's combined filters are too specific.
+                                Try widening the distance or clearing a cuisine,
+                                or ask a friend to loosen theirs.
                             </p>
                             <button
                                 onClick={onResetFilters}
                                 className="mt-5 px-5 py-2.5 rounded-full bg-[#1DB954] hover:bg-[#1ed760] text-black font-bold text-xs transition shadow-lg"
                             >
-                                Reset All Filters
+                                Reset My Filters
                             </button>
                         </div>
                     ) : (
@@ -611,8 +535,7 @@ function VideoScroller({
                                 key={`${restaurant.id}-${restaurant.id === activeSpot?.id}`}
                                 restaurant={restaurant}
                                 isActive={restaurant.id === activeSpot?.id}
-                                voteInfo={getVoteInfo(restaurant.id)}
-                                onCastVote={onCastVote}
+                                isPicked={restaurant.id === pickedId}
                                 onToggleQueue={onToggleQueue}
                             />
                         ))
@@ -648,11 +571,23 @@ function VideoScroller({
 // ============================================================================
 // COMPONENT 3: COLLABORATIVE JAM HEADER (Top of Right Segment)
 // ============================================================================
+function describeFilters(filters: ApiFilters, hasLocation: boolean) {
+    return [
+        filters.cuisines.length > 0 ? filters.cuisines.join(", ") : "Any cuisine",
+        filters.max_distance_miles !== null
+            ? `≤ ${filters.max_distance_miles} mi ${hasLocation ? "from them" : "of Boston Common"}`
+            : "Any distance",
+        filters.open_now && "Open now",
+    ].filter(Boolean) as string[];
+}
+
 function JamHeader({
     queueCount,
     onCopyInvite,
     onOpenQueue,
-    onPickWinner,
+    onPick,
+    picking,
+    canPick,
     roomCode,
     participants,
     roomStatus,
@@ -660,7 +595,9 @@ function JamHeader({
     queueCount: number;
     onCopyInvite: () => void;
     onOpenQueue: () => void;
-    onPickWinner: () => void;
+    onPick: () => void;
+    picking: boolean;
+    canPick: boolean;
     roomCode: string;
     participants: RoomParticipantView[];
     roomStatus: string;
@@ -694,10 +631,13 @@ function JamHeader({
                             <span>
                                 <strong className="text-white/90">
                                     {participants.length}{" "}
-                                    {participants.length === 1 ? "person" : "people"}
+                                    {participants.length === 1
+                                        ? "person"
+                                        : "people"}
                                 </strong>{" "}
                                 in this room
-                                {isRealtimeConfigured() && ` • ${onlineCount} online`}
+                                {isRealtimeConfigured() &&
+                                    ` • ${onlineCount} online`}
                             </span>
                         </p>
                         <p className="text-xs text-[#1DB954] font-semibold mt-0.5">
@@ -719,7 +659,7 @@ function JamHeader({
                             <div
                                 key={participant.id}
                                 className="participant-avatar"
-                                title={`${participant.name}: ${participant.preferences?.cuisines.join(", ") || "Any cuisine"} • ${participant.preferences?.prices.join(", ") || "Any price"}`}
+                                title={`${participant.name}: ${describeFilters(participant.filters, participant.hasLocation).join(" • ")}`}
                             >
                                 {participant.name.slice(0, 2).toUpperCase()}
                                 {participant.online && (
@@ -741,13 +681,19 @@ function JamHeader({
                         </span>
                     </button>
 
-                    {/* Pick Jam Winner Button */}
+                    {/* Random Group Pick Button */}
                     <button
-                        onClick={onPickWinner}
-                        className="px-4 py-2.5 rounded-full bg-[#1DB954] hover:bg-[#1ed760] text-black font-extrabold text-xs sm:text-sm tracking-tight shadow-[0_6px_22px_rgba(29,185,84,0.4)] hover:shadow-[0_8px_28px_rgba(29,185,84,0.6)] transition-all active:scale-95 flex items-center gap-1.5"
+                        onClick={onPick}
+                        disabled={picking || !canPick}
+                        title={
+                            canPick
+                                ? "Randomly pick one spot that matches everyone's filters"
+                                : "No spot matches everyone's filters yet"
+                        }
+                        className="px-4 py-2.5 rounded-full bg-[#1DB954] hover:bg-[#1ed760] text-black font-extrabold text-xs sm:text-sm tracking-tight shadow-[0_6px_22px_rgba(29,185,84,0.4)] hover:shadow-[0_8px_28px_rgba(29,185,84,0.6)] transition-all active:scale-95 flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        <Trophy className="w-4 h-4" />
-                        <span>Show Results</span>
+                        <Shuffle className="w-4 h-4" />
+                        <span>{picking ? "Picking…" : "Pick for us"}</span>
                     </button>
                 </div>
             </div>
@@ -759,14 +705,12 @@ function JamHeader({
                                 {participant.name}
                                 {participant.isYou && " (you)"}
                             </span>
-                            <span>
-                                {participant.preferences?.cuisines.join(", ") ||
-                                    "Any cuisine"}
-                            </span>
-                            <span>
-                                {participant.preferences?.prices.join(", ") ||
-                                    "Any price"}
-                            </span>
+                            {describeFilters(
+                                participant.filters,
+                                participant.hasLocation,
+                            ).map((part) => (
+                                <span key={part}>{part}</span>
+                            ))}
                         </div>
                     ))}
                 </div>
@@ -780,111 +724,70 @@ function JamHeader({
 // ============================================================================
 function FilterPanel({
     allRestaurants,
-    filteredRestaurants,
+    groupMatchCount,
+    myMatchCount,
+    participantCount,
+    originLabel,
+    locationStatus,
+    onRetryLocation,
     filters,
     onUpdateFilters,
     onResetFilters,
-    onJumpToRestaurant,
 }: FilterPanelProps) {
-    const cuisineCategories = useMemo(
-        () =>
-            [
-                "All",
-                ...Array.from(
-                    new Set(allRestaurants.map((restaurant) => restaurant.cuisine)),
-                ).sort(),
-            ],
-        [allRestaurants],
-    );
-
-    // Compute cuisine counts dynamically
+    // Cuisines sorted by how many restaurants have them ("Other" last).
     const cuisineCounts = useMemo(() => {
-        const counts: Record<string, number> = { All: allRestaurants.length };
-        cuisineCategories.slice(1).forEach((c) => {
-            counts[c] = allRestaurants.filter((r) => r.cuisine === c).length;
-        });
-        return counts;
-    }, [allRestaurants, cuisineCategories]);
+        const counts = new Map<string, number>();
+        for (const restaurant of allRestaurants) {
+            counts.set(restaurant.cuisine, (counts.get(restaurant.cuisine) ?? 0) + 1);
+        }
+        return [...counts.entries()].sort(
+            ([a, countA], [b, countB]) =>
+                Number(a === "Other") - Number(b === "Other") ||
+                countB - countA ||
+                a.localeCompare(b),
+        );
+    }, [allRestaurants]);
 
-    const toggleCuisine = (cuisine: string) => {
-        if (cuisine === "All") {
+    const toggleCuisine = (cuisine: string | null) => {
+        if (cuisine === null) {
             onUpdateFilters({ ...filters, cuisines: [] });
             return;
         }
-        const exists = filters.cuisines.includes(cuisine);
-        const next = exists
+        const next = filters.cuisines.includes(cuisine)
             ? filters.cuisines.filter((c) => c !== cuisine)
             : [...filters.cuisines, cuisine];
-        onUpdateFilters({ ...filters, cuisines: next });
+        onUpdateFilters({ ...filters, cuisines: next.sort() });
     };
 
-    const togglePrice = (price: string) => {
-        const exists = filters.prices.includes(price);
-        const next = exists
-            ? filters.prices.filter((p) => p !== price)
-            : [...filters.prices, price];
-        onUpdateFilters({ ...filters, prices: next });
-    };
-
-    const toggleAvailability = (
-        key: "openNow" | "tablesTonight" | "walkInFriendly",
-    ) => {
-        onUpdateFilters({
-            ...filters,
-            [key]: !filters[key],
-        });
-    };
-
-    // Top voted spots across Boston for quick jump
-    const topVotedSpots = useMemo(() => {
-        return [...allRestaurants]
-            .filter((r) => r.votes > 0)
-            .sort((a, b) => b.votes - a.votes || (b.rating ?? 0) - (a.rating ?? 0))
-            .slice(0, 4);
-    }, [allRestaurants]);
-
-    // Only show controls the restaurant data can actually answer.
-    const hasRatings = allRestaurants.some((r) => r.rating !== null);
-    const hasPrices = allRestaurants.some((r) => r.price !== null);
-    const hasAvailability = {
-        openNow: allRestaurants.some((r) => r.openNow !== null),
-        tablesTonight: allRestaurants.some((r) => r.tablesTonight),
-        walkInFriendly: allRestaurants.some((r) => r.walkInFriendly),
-    };
-
-    const distanceLabel =
-        filters.maxDistance <= 1.0
-            ? "Walkable Downtown / Back Bay"
-            : filters.maxDistance <= 3.5
-              ? "Quick T-Ride / Cambridge & Seaport"
-              : "Greater Boston Metro";
-    const allAvailabilityOptions: Array<{
-        key: "openNow" | "tablesTonight" | "walkInFriendly";
-        label: string;
-    }> = [
-        { key: "openNow", label: "Open Now" },
-        { key: "tablesTonight", label: "Tables Tonight" },
-        { key: "walkInFriendly", label: "Walk-in Friendly" },
-    ];
-    const availabilityOptions = allAvailabilityOptions.filter(
-        (opt) => hasAvailability[opt.key],
-    );
+    const anyDistance = filters.maxDistance >= MAX_DISTANCE_MILES;
+    const distanceLabel = anyDistance
+        ? "Any distance"
+        : filters.maxDistance <= 1.0
+          ? "Walkable Downtown / Back Bay"
+          : filters.maxDistance <= 3.5
+            ? "Quick T-Ride / Cambridge & Seaport"
+            : "Greater Boston Metro";
 
     return (
         <div className="px-5 sm:px-8 py-6 space-y-6 max-w-4xl">
-            {/* Live Match Counter & Reset Strip */}
+            {/* Group Match Counter & Reset Strip */}
             <div className="flex flex-wrap items-center justify-between gap-3 bg-[#181818] border border-white/10 rounded-2xl p-4">
                 <div className="flex items-center gap-3">
                     <div className="w-11 h-11 rounded-xl bg-[#1DB954]/15 text-[#1DB954] flex items-center justify-center font-display font-extrabold text-lg border border-[#1DB954]/25">
-                        {filteredRestaurants.length}
+                        {groupMatchCount}
                     </div>
                     <div>
                         <p className="text-sm font-bold text-white">
-                            {filteredRestaurants.length} of{" "}
-                            {allRestaurants.length} Boston restaurants matched
+                            {groupMatchCount} of {allRestaurants.length} spots
+                            match{" "}
+                            {participantCount > 1
+                                ? `all ${participantCount} people`
+                                : "your filters"}
                         </p>
                         <p className="text-xs text-white/55">
-                            Centered near Boston Common • {distanceLabel}
+                            {participantCount > 1 &&
+                                `${myMatchCount} match your own filters • `}
+                            "Pick for us" chooses one of these at random
                         </p>
                     </div>
                 </div>
@@ -894,11 +797,10 @@ function FilterPanel({
                     className="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-xs font-semibold text-white/85 hover:text-white border border-white/10 transition flex items-center gap-1.5 active:scale-95"
                 >
                     <RotateCcw className="w-3.5 h-3.5" />
-                    <span>Reset Filters</span>
+                    <span>Reset My Filters</span>
                 </button>
             </div>
 
-            {/* Sliders Grid: Max Distance & Minimum Rating */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Distance Slider */}
                 <div className="bg-[#181818] border border-white/10 rounded-2xl p-5 flex flex-col justify-between">
@@ -911,7 +813,9 @@ function FilterPanel({
                             <span>Max Distance</span>
                         </label>
                         <span className="px-2.5 py-1 rounded-lg bg-[#1DB954]/15 text-[#1DB954] font-display font-bold text-sm">
-                            {filters.maxDistance.toFixed(1)} mi
+                            {anyDistance
+                                ? "Any"
+                                : `${filters.maxDistance.toFixed(1)} mi`}
                         </span>
                     </div>
 
@@ -919,7 +823,7 @@ function FilterPanel({
                         id="distance-slider"
                         type="range"
                         min="0.2"
-                        max="10.0"
+                        max={MAX_DISTANCE_MILES}
                         step="0.2"
                         value={filters.maxDistance}
                         onChange={(e) =>
@@ -933,50 +837,67 @@ function FilterPanel({
 
                     <div className="flex justify-between text-[11px] text-white/45 mt-1.5 font-medium">
                         <span>0.2 mi (Walk)</span>
-                        <span>3.5 mi (Cambridge)</span>
-                        <span>10.0 mi</span>
+                        <span>{distanceLabel}</span>
+                        <span>Any</span>
                     </div>
+
+                    <p className="text-[11px] text-white/55 mt-2 flex items-center gap-1.5 flex-wrap">
+                        <Navigation className="w-3 h-3 text-sky-400" />
+                        <span>
+                            {locationStatus === "granted"
+                                ? `Measured from ${originLabel}`
+                                : locationStatus === "pending"
+                                  ? "Finding your location… using Boston Common for now"
+                                  : locationStatus === "denied"
+                                    ? "Location blocked • measuring from Boston Common"
+                                    : "Location unavailable • measuring from Boston Common"}
+                        </span>
+                        {(locationStatus === "denied" ||
+                            locationStatus === "unavailable") && (
+                            <button
+                                onClick={onRetryLocation}
+                                className="underline text-sky-300 hover:text-sky-200"
+                            >
+                                Try again
+                            </button>
+                        )}
+                    </p>
                 </div>
 
-                {/* Minimum Rating Slider */}
-                {hasRatings && (
+                {/* Open Now Toggle */}
                 <div className="bg-[#181818] border border-white/10 rounded-2xl p-5 flex flex-col justify-between">
-                    <div className="flex items-center justify-between mb-3">
-                        <label
-                            htmlFor="rating-slider"
-                            className="text-sm font-bold text-white flex items-center gap-2"
-                        >
-                            <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-                            <span>Minimum Rating</span>
-                        </label>
-                        <span className="px-2.5 py-1 rounded-lg bg-amber-400/15 text-amber-300 font-display font-bold text-sm">
-                            {filters.minRating.toFixed(1)} ★
+                    <div className="flex items-center justify-between mb-3.5">
+                        <h2 className="text-sm font-bold text-white">
+                            Availability
+                        </h2>
+                        <span className="text-xs text-white/45">
+                            Uses posted hours
                         </span>
                     </div>
-
-                    <input
-                        id="rating-slider"
-                        type="range"
-                        min="3.5"
-                        max="5.0"
-                        step="0.1"
-                        value={filters.minRating}
-                        onChange={(e) =>
+                    <button
+                        onClick={() =>
                             onUpdateFilters({
                                 ...filters,
-                                minRating: parseFloat(e.target.value),
+                                openNow: !filters.openNow,
                             })
                         }
-                        className="jam-slider my-2"
-                    />
-
-                    <div className="flex justify-between text-[11px] text-white/45 mt-1.5 font-medium">
-                        <span>3.5 ★</span>
-                        <span>4.3 ★</span>
-                        <span>5.0 ★ Elite</span>
-                    </div>
+                        className={`px-3 py-2.5 rounded-xl text-xs font-semibold border transition-all flex items-center justify-center gap-1.5 active:scale-95 ${
+                            filters.openNow
+                                ? "bg-[#1DB954]/20 text-[#1DB954] border-[#1DB954]"
+                                : "bg-white/5 hover:bg-white/10 text-white/75 border-white/10"
+                        }`}
+                    >
+                        <span
+                            className={`w-2 h-2 rounded-full ${
+                                filters.openNow ? "bg-[#1DB954]" : "bg-white/30"
+                            }`}
+                        />
+                        <span>Open Now only</span>
+                    </button>
+                    <p className="text-[11px] text-white/45 mt-2">
+                        Spots without posted hours are excluded when this is on.
+                    </p>
                 </div>
-                )}
             </div>
 
             {/* Cuisine Multi-Select Pills */}
@@ -993,15 +914,18 @@ function FilterPanel({
                     </span>
                 </div>
 
-                <div className="flex flex-wrap gap-2">
-                    {cuisineCategories.map((cuisine) => {
+                <div className="flex flex-wrap gap-2 max-h-64 overflow-y-auto custom-scroll">
+                    {[
+                        [null, allRestaurants.length] as const,
+                        ...cuisineCounts,
+                    ].map(([cuisine, count]) => {
                         const isSelected =
-                            cuisine === "All"
+                            cuisine === null
                                 ? filters.cuisines.length === 0
                                 : filters.cuisines.includes(cuisine);
                         return (
                             <button
-                                key={cuisine}
+                                key={cuisine ?? "All"}
                                 onClick={() => toggleCuisine(cuisine)}
                                 className={`px-3.5 py-2 rounded-full text-xs font-semibold border transition-all flex items-center gap-1.5 active:scale-95 ${
                                     isSelected
@@ -1009,7 +933,7 @@ function FilterPanel({
                                         : "bg-white/5 hover:bg-white/10 text-white/85 border-white/10"
                                 }`}
                             >
-                                <span>{cuisine}</span>
+                                <span>{cuisine ?? "All"}</span>
                                 <span
                                     className={`px-1.5 py-0.2 rounded-full text-[10px] ${
                                         isSelected
@@ -1017,148 +941,8 @@ function FilterPanel({
                                             : "bg-white/10 text-white/60"
                                     }`}
                                 >
-                                    {cuisineCounts[cuisine] ?? 0}
+                                    {count}
                                 </span>
-                            </button>
-                        );
-                    })}
-                </div>
-            </div>
-
-            {/* Cost Tier & Availability Toggles */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Price Tiers */}
-                {hasPrices && (
-                <div className="bg-[#181818] border border-white/10 rounded-2xl p-5">
-                    <div className="flex items-center justify-between mb-3.5">
-                        <h2 className="text-sm font-bold text-white">
-                            Cost / Price Tier
-                        </h2>
-                        <span className="text-xs text-white/45">
-                            Multi-select
-                        </span>
-                    </div>
-                    <div className="grid grid-cols-4 gap-2">
-                        {PRICE_TIERS.map((tier) => {
-                            const active = filters.prices.includes(tier);
-                            return (
-                                <button
-                                    key={tier}
-                                    onClick={() => togglePrice(tier)}
-                                    className={`py-2.5 rounded-xl text-xs font-extrabold border transition-all active:scale-95 ${
-                                        active
-                                            ? "bg-[#1DB954] text-black border-[#1DB954] shadow-[0_0_14px_rgba(29,185,84,0.35)]"
-                                            : "bg-white/5 hover:bg-white/10 text-white/85 border-white/10"
-                                    }`}
-                                >
-                                    {tier}
-                                </button>
-                            );
-                        })}
-                    </div>
-                </div>
-                )}
-
-                {/* Availability Toggles */}
-                {availabilityOptions.length > 0 && (
-                <div className="bg-[#181818] border border-white/10 rounded-2xl p-5">
-                    <div className="flex items-center justify-between mb-3.5">
-                        <h2 className="text-sm font-bold text-white">
-                            Availability
-                        </h2>
-                        <span className="text-xs text-white/45">
-                            Must match
-                        </span>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-1 xl:grid-cols-3 gap-2">
-                        {availabilityOptions.map((opt) => {
-                            const active = filters[opt.key];
-                            return (
-                                <button
-                                    key={opt.key}
-                                    onClick={() => toggleAvailability(opt.key)}
-                                    className={`px-3 py-2.5 rounded-xl text-xs font-semibold border transition-all flex items-center justify-center gap-1.5 active:scale-95 ${
-                                        active
-                                            ? "bg-[#1DB954]/20 text-[#1DB954] border-[#1DB954]"
-                                            : "bg-white/5 hover:bg-white/10 text-white/75 border-white/10"
-                                    }`}
-                                >
-                                    <span
-                                        className={`w-2 h-2 rounded-full ${
-                                            active
-                                                ? "bg-[#1DB954]"
-                                                : "bg-white/30"
-                                        }`}
-                                    />
-                                    <span className="truncate">
-                                        {opt.label}
-                                    </span>
-                                </button>
-                            );
-                        })}
-                    </div>
-                </div>
-                )}
-            </div>
-
-            {/* Live Jam Leaderboard Quick Jump */}
-            <div className="bg-[#181818] border border-white/10 rounded-2xl p-5">
-                <div className="flex items-center justify-between mb-3.5">
-                    <h2 className="text-sm font-bold text-white flex items-center gap-2">
-                        <Flame className="w-4 h-4 text-[#FF5E3A] fill-[#FF5E3A]" />
-                        <span>Most Yes Votes in This Room</span>
-                    </h2>
-                    <span className="text-xs text-white/50">
-                        Click to jump to reel
-                    </span>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                    {topVotedSpots.map((spot) => {
-                        const isHiddenByFilter = !filteredRestaurants.some(
-                            (r) => r.id === spot.id,
-                        );
-                        return (
-                            <button
-                                key={spot.id}
-                                onClick={() => onJumpToRestaurant(spot.id)}
-                                className={`flex items-center justify-between gap-3 p-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/10 transition text-left ${
-                                    isHiddenByFilter ? "opacity-55" : ""
-                                }`}
-                            >
-                                <div className="flex items-center gap-2.5 min-w-0">
-                                    <img
-                                        src={spot.image}
-                                        alt={spot.name}
-                                        className="w-10 h-10 rounded-lg object-cover shrink-0"
-                                    />
-                                    <div className="min-w-0">
-                                        <p className="text-xs font-bold text-white truncate">
-                                            {spot.name}
-                                        </p>
-                                        <p className="text-[11px] text-white/55 truncate">
-                                            {[
-                                                spot.neighborhood,
-                                                spot.cuisine,
-                                                spot.price,
-                                                spot.rating !== null && `${spot.rating.toFixed(1)} ★`,
-                                            ]
-                                                .filter(Boolean)
-                                                .join(" • ")}
-                                        </p>
-                                    </div>
-                                </div>
-                                <div className="flex items-center gap-1.5 shrink-0">
-                                    {spot.inQueue && (
-                                        <span className="px-1.5 py-0.5 rounded bg-[#1DB954]/20 text-[#1DB954] text-[10px] font-bold">
-                                            QUEUE
-                                        </span>
-                                    )}
-                                    <span className="px-2 py-1 rounded-full bg-[#FF5E3A]/20 text-[#FF5E3A] text-xs font-extrabold flex items-center gap-1">
-                                        <Flame className="w-3 h-3 fill-[#FF5E3A]" />
-                                        {spot.votes}
-                                    </span>
-                                </div>
                             </button>
                         );
                     })}
@@ -1195,6 +979,8 @@ function BostonMapViewport({
 
 function FloatingBostonMap({
     restaurants,
+    origin,
+    originLabel,
     activeId,
     maxDistance,
     onSelectPin,
@@ -1209,14 +995,14 @@ function FloatingBostonMap({
         [restaurants, activeId],
     );
 
-    const userPosition: LatLngExpression = [42.3551, -71.0624];
+    const userPosition: LatLngExpression = [origin.latitude, origin.longitude];
 
     const pinIcon = (selected: boolean) =>
         L.divIcon({
             className: "boston-map-pin-wrap",
-            html: `<div class="boston-map-pin${selected ? " selected" : ""}"></div>`,
-            iconSize: [selected ? 18 : 14, selected ? 18 : 14],
-            iconAnchor: [selected ? 9 : 7, selected ? 9 : 7],
+            html: `<div class="boston-map-pin${selected ? " selected" : ""}"><span></span></div>`,
+            iconSize: [selected ? 34 : 28, selected ? 42 : 36],
+            iconAnchor: [selected ? 17 : 14, selected ? 40 : 34],
         });
 
     return (
@@ -1252,10 +1038,10 @@ function FloatingBostonMap({
                 </button>
             </div>
 
-            {/* Real interactive OpenStreetMap/CARTO map */}
+            {/* Real interactive OpenStreetMap map */}
             <div className="relative flex-1 w-full h-full bg-[#0e1116] overflow-hidden">
                 <MapContainer
-                    center={[42.3551, -71.0624]}
+                    center={userPosition}
                     zoom={expanded ? 13 : 12}
                     scrollWheelZoom={expanded}
                     zoomControl={expanded}
@@ -1263,7 +1049,11 @@ function FloatingBostonMap({
                     className="boston-real-map"
                 >
                     <TileLayer
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        url="https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}"
+                        attribution='&copy; <a href="https://www.esri.com/">Esri</a>'
+                    />
+                    <TileLayer
+                        url="https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}"
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     />
                     <BostonMapViewport
@@ -1300,7 +1090,32 @@ function FloatingBostonMap({
                             eventHandlers={{
                                 click: () => onSelectPin(spot.id),
                             }}
-                        />
+                        >
+                            <Popup
+                                closeButton={false}
+                                className="boston-map-popup"
+                                offset={[0, -24]}
+                            >
+                                <button
+                                    type="button"
+                                    className="map-popup-card"
+                                    onClick={() => onSelectPin(spot.id)}
+                                >
+                                    <span className="map-popup-name">
+                                        {spot.name}
+                                    </span>
+                                    <span className="map-popup-meta">
+                                        {[
+                                            spot.cuisine,
+                                            spot.price,
+                                            spot.distance.toFixed(1) + " mi",
+                                        ]
+                                            .filter(Boolean)
+                                            .join(" • ")}
+                                    </span>
+                                </button>
+                            </Popup>
+                        </Marker>
                     ))}
                 </MapContainer>
 
@@ -1318,8 +1133,8 @@ function FloatingBostonMap({
                             </div>
                             <p className="text-xs text-white/65 truncate">
                                 {activeSpot.neighborhood} • {activeSpot.cuisine}{" "}
-                                • {activeSpot.distance.toFixed(1)} mi from
-                                Boston Common
+                                • {activeSpot.distance.toFixed(1)} mi from{" "}
+                                {originLabel}
                             </p>
                         </div>
                         <button
@@ -1347,8 +1162,8 @@ function JamQueueModal({
 }: JamQueueModalProps) {
     if (!isOpen) return null;
 
-    const sortedQueue = [...queuedRestaurants].sort(
-        (a, b) => b.votes - a.votes,
+    const sortedQueue = [...queuedRestaurants].sort((a, b) =>
+        a.name.localeCompare(b.name),
     );
 
     return (
@@ -1358,7 +1173,7 @@ function JamQueueModal({
                     <div className="flex items-center gap-2.5">
                         <ListMusic className="w-5 h-5 text-[#1DB954]" />
                         <h3 className="font-display font-extrabold text-lg text-white">
-                            Shared Jam Queue ({sortedQueue.length})
+                            My Jam Queue ({sortedQueue.length})
                         </h3>
                     </div>
                     <button
@@ -1401,7 +1216,11 @@ function JamQueueModal({
                                             {spot.name}
                                         </p>
                                         <p className="text-xs text-white/60 truncate">
-                                            {[spot.neighborhood, spot.cuisine, spot.price, `${spot.votes} yes`]
+                                            {[
+                                                spot.neighborhood,
+                                                spot.cuisine,
+                                                `${spot.distance.toFixed(1)} mi`,
+                                            ]
                                                 .filter(Boolean)
                                                 .join(" • ")}
                                         </p>
@@ -1426,7 +1245,15 @@ function JamQueueModal({
 // ============================================================================
 // COMPONENT 7: CELEBRATORY WINNER MODAL
 // ============================================================================
-function WinnerModal({ winner, onClose, onLockIn }: WinnerModalProps) {
+function WinnerModal({
+    winner,
+    originLabel,
+    pickedByName,
+    matchCount,
+    picking,
+    onClose,
+    onPickAgain,
+}: WinnerModalProps) {
     if (!winner) return null;
 
     const confettiColors = [
@@ -1458,7 +1285,7 @@ function WinnerModal({ winner, onClose, onLockIn }: WinnerModalProps) {
 
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#1DB954]/20 text-[#1DB954] text-xs font-extrabold tracking-wider uppercase mb-4">
                     <Trophy className="w-3.5 h-3.5" />
-                    <span>Jam Group Match</span>
+                    <span>The Group's Random Pick</span>
                 </div>
 
                 <div className="w-24 h-24 mx-auto rounded-2xl overflow-hidden border-2 border-[#1DB954] shadow-xl mb-4">
@@ -1477,7 +1304,8 @@ function WinnerModal({ winner, onClose, onLockIn }: WinnerModalProps) {
                         winner.neighborhood,
                         winner.cuisine,
                         winner.price,
-                        winner.rating !== null && `${winner.rating.toFixed(1)} ★`,
+                        winner.rating !== null &&
+                            `${winner.rating.toFixed(1)} ★`,
                     ]
                         .filter(Boolean)
                         .join(" • ")}
@@ -1485,27 +1313,31 @@ function WinnerModal({ winner, onClose, onLockIn }: WinnerModalProps) {
 
                 <div className="mt-4 bg-white/5 border border-white/10 rounded-2xl p-3.5 space-y-1">
                     <p className="text-xs text-white/55">
-                        {winner.distance.toFixed(1)} mi from Boston Common
+                        {winner.distance.toFixed(1)} mi from {originLabel}
                         {winner.hours && ` • ${winner.hours}`}
                     </p>
                     <p className="text-sm font-bold text-[#1DB954]">
-                        {winner.votes} yes {winner.votes === 1 ? "vote" : "votes"} • Top Group Consensus
+                        Picked{pickedByName ? ` by ${pickedByName}` : ""} from{" "}
+                        {matchCount} {matchCount === 1 ? "spot" : "spots"} that
+                        match everyone
                     </p>
                 </div>
 
                 <div className="mt-6 flex gap-3">
                     <button
-                        onClick={onClose}
-                        className="flex-1 py-3 rounded-xl bg-white/10 hover:bg-white/15 text-sm font-bold text-white transition"
+                        onClick={onPickAgain}
+                        disabled={picking}
+                        className="flex-1 py-3 rounded-xl bg-white/10 hover:bg-white/15 text-sm font-bold text-white transition flex items-center justify-center gap-1.5 disabled:opacity-50"
                     >
-                        Keep Jamming
+                        <Shuffle className="w-4 h-4" />
+                        <span>{picking ? "Picking…" : "Pick again"}</span>
                     </button>
                     <button
-                        onClick={() => onLockIn(winner)}
+                        onClick={onClose}
                         className="flex-1 py-3 rounded-xl bg-[#1DB954] hover:bg-[#1ed760] text-sm font-extrabold text-black transition shadow-lg flex items-center justify-center gap-1.5"
                     >
                         <Navigation className="w-4 h-4" />
-                        <span>Lock In Spot</span>
+                        <span>Let's go</span>
                     </button>
                 </div>
             </div>
@@ -1517,16 +1349,13 @@ function WinnerModal({ winner, onClose, onLockIn }: WinnerModalProps) {
 // MAIN ROOT APPLICATION COMPONENT
 // ============================================================================
 const DEFAULT_FILTERS: FilterState = {
-    maxDistance: 5.0,
-    minRating: 4.0,
+    maxDistance: MAX_DISTANCE_MILES,
     cuisines: [],
-    prices: [],
     openNow: false,
-    tablesTonight: false,
-    walkInFriendly: false,
 };
 
 const FEED_WINDOW = 30;
+const FILTER_SAVE_DELAY_MS = 400;
 
 function errorMessage(error: unknown) {
     return error instanceof Error ? error.message : "Unknown error";
@@ -1539,83 +1368,102 @@ function getRoomCodeFromUrl() {
     return match?.[1]?.toUpperCase() ?? null;
 }
 
+function toApiFilters(filters: FilterState): ApiFilters {
+    return {
+        cuisines: [...filters.cuisines].sort(),
+        max_distance_miles:
+            filters.maxDistance >= MAX_DISTANCE_MILES
+                ? null
+                : Math.round(filters.maxDistance * 10) / 10,
+        open_now: filters.openNow,
+    };
+}
+
+function fromApiFilters(filters: ApiFilters): FilterState {
+    return {
+        cuisines: [...filters.cuisines].sort(),
+        maxDistance: filters.max_distance_miles ?? MAX_DISTANCE_MILES,
+        openNow: filters.open_now,
+    };
+}
+
+function sameFilters(a: ApiFilters, b: ApiFilters) {
+    return JSON.stringify(a) === JSON.stringify(b);
+}
+
+// Mirrors restaurants/matching.py in Django, which is authoritative for picks.
+function matchesFilters(restaurant: Restaurant, filters: ApiFilters) {
+    if (
+        filters.cuisines.length > 0 &&
+        !filters.cuisines.includes(restaurant.cuisine)
+    )
+        return false;
+    if (
+        filters.max_distance_miles !== null &&
+        restaurant.distance > filters.max_distance_miles
+    )
+        return false;
+    if (filters.open_now && restaurant.openNow !== true) return false;
+    return true;
+}
+
 export default function App() {
-    const [roomCode, setRoomCode] = useState<string | null>(
-        getRoomCodeFromUrl,
-    );
+    const [roomCode, setRoomCode] = useState<string | null>(getRoomCodeFromUrl);
     const [roomCodeInput, setRoomCodeInput] = useState("");
     const [entryError, setEntryError] = useState("");
     const [creatingRoom, setCreatingRoom] = useState(false);
-    const [profileName, setProfileName] = useState(() =>
-        window.localStorage.getItem("boston-jam-name") ?? "",
+    const [profileName, setProfileName] = useState(
+        () => window.localStorage.getItem("boston-jam-name") ?? "",
     );
-    const [profileCuisines, setProfileCuisines] = useState<string[]>(() => {
-        try {
-            return JSON.parse(
-                window.localStorage.getItem("boston-jam-cuisines") ?? "[]",
-            ) as string[];
-        } catch {
-            return [];
-        }
-    });
-    const [profilePrices, setProfilePrices] = useState<string[]>(() => {
-        try {
-            return JSON.parse(
-                window.localStorage.getItem("boston-jam-prices") ?? "[]",
-            ) as string[];
-        } catch {
-            return [];
-        }
-    });
-    const [profileComplete, setProfileComplete] = useState(
-        () =>
-            Boolean(
-                window.localStorage.getItem("boston-jam-name")?.trim(),
-            ),
+    const [profileComplete, setProfileComplete] = useState(() =>
+        Boolean(window.localStorage.getItem("boston-jam-name")?.trim()),
     );
     const roomChannelRef = useRef<RealtimeChannel | null>(null);
     const roomCodeRef = useRef<string | null>(roomCode);
     const profileNameRef = useRef(profileName);
-    const preferencesRef = useRef<RoomPreferences>({
-        cuisines: profileCuisines,
-        prices: profilePrices,
-    });
 
     // Django-backed room state (source of truth).
     const [session, setSession] = useState<RoomSession | null>(null);
     const [room, setRoom] = useState<RoomState | null>(null);
     const [roomError, setRoomError] = useState("");
-    const [results, setResults] = useState<ResultRow[]>([]);
-    const [presence, setPresence] = useState<Map<number, PresenceProfile>>(
-        () => new Map(),
-    );
-    const [submittingVote, setSubmittingVote] = useState(false);
-    const lastFollowedRestaurantRef = useRef<number | null>(null);
-    const finishedAnnouncedRef = useRef(false);
+    const [onlineIds, setOnlineIds] = useState<Set<number>>(() => new Set());
+    const [picking, setPicking] = useState(false);
+    // Drops responses that started before a newer one was applied.
+    const requestSeqRef = useRef(0);
+    const appliedSeqRef = useRef(0);
+    // Whether local filters were loaded from this participant's saved filters.
+    // Until then nothing is saved, so defaults never overwrite saved filters.
+    const [filtersHydrated, setFiltersHydrated] = useState(false);
+    // selected_at already shown; undefined until the first room state arrives.
+    const seenSelectionRef = useRef<string | null | undefined>(undefined);
 
-    // Restaurant catalog from Django (browse only; the room decides voting order).
+    // Restaurant catalog from Django.
     const [catalog, setCatalog] = useState<Restaurant[]>([]);
     const [restaurantsLoading, setRestaurantsLoading] = useState(true);
     const [restaurantsError, setRestaurantsError] = useState("");
     const [queuedIds, setQueuedIds] = useState<Set<number>>(() => new Set());
+    // This participant's filters (saved to Django, shared with the room).
     const [filters, setFilters] = useState<FilterState>(DEFAULT_FILTERS);
 
     const [activeRestaurantId, setActiveRestaurantId] = useState<number | null>(
         null,
     );
     const [isQueueOpen, setIsQueueOpen] = useState(false);
-    const [winnerSpot, setWinnerSpot] = useState<Restaurant | null>(null);
+    const [showPick, setShowPick] = useState(false);
     const [toasts, setToasts] = useState<Toast[]>([]);
 
     const feedRef = useRef<HTMLDivElement>(null);
 
+    // Device GPS while in a room; distances fall back to Boston Common.
+    const geo = useGeolocation(Boolean(roomCode && profileComplete));
+    const origin = useMemo(() => geo.location ?? BOSTON_COMMON, [geo.location]);
+    const originLabel = geo.location ? "you" : "Boston Common";
+    // Last location saved to Django for this room ("none" = cleared).
+    const savedLocationKeyRef = useRef<string | null>(null);
+
     useEffect(() => {
         profileNameRef.current = profileName;
-        preferencesRef.current = {
-            cuisines: profileCuisines,
-            prices: profilePrices,
-        };
-    }, [profileName, profileCuisines, profilePrices]);
+    }, [profileName]);
 
     useEffect(() => {
         let cancelled = false;
@@ -1646,15 +1494,17 @@ export default function App() {
     // Switch rooms and reset all room-scoped state.
     const switchRoom = useCallback((code: string | null) => {
         roomCodeRef.current = code;
+        appliedSeqRef.current = 0;
+        savedLocationKeyRef.current = null;
+        setFiltersHydrated(false);
+        seenSelectionRef.current = undefined;
         setRoomCode(code);
         setSession(null);
         setRoom(null);
         setRoomError("");
-        setResults([]);
-        setPresence(new Map());
-        setWinnerSpot(null);
-        lastFollowedRestaurantRef.current = null;
-        finishedAnnouncedRef.current = false;
+        setOnlineIds(new Set());
+        setShowPick(false);
+        setFilters(DEFAULT_FILTERS);
     }, []);
 
     const enterRoom = useCallback(
@@ -1680,33 +1530,9 @@ export default function App() {
         const normalizedName = profileName.trim();
         if (!normalizedName) return false;
         window.localStorage.setItem("boston-jam-name", normalizedName);
-        window.localStorage.setItem(
-            "boston-jam-cuisines",
-            JSON.stringify(profileCuisines),
-        );
-        window.localStorage.setItem(
-            "boston-jam-prices",
-            JSON.stringify(profilePrices),
-        );
         setProfileComplete(true);
         return true;
-    }, [profileName, profileCuisines, profilePrices]);
-
-    const toggleProfileCuisine = (cuisine: string) => {
-        setProfileCuisines((current) =>
-            current.includes(cuisine)
-                ? current.filter((item) => item !== cuisine)
-                : [...current, cuisine],
-        );
-    };
-
-    const toggleProfilePrice = (price: string) => {
-        setProfilePrices((current) =>
-            current.includes(price)
-                ? current.filter((item) => item !== price)
-                : [...current, price],
-        );
-    };
+    }, [profileName]);
 
     // Django generates the room code and the host's participant credential.
     const createRoom = useCallback(async () => {
@@ -1730,29 +1556,45 @@ export default function App() {
         return () => window.removeEventListener("popstate", handlePopState);
     }, [switchRoom]);
 
-    const applyRoomState = useCallback((state: RoomState) => {
-        if (state.code !== roomCodeRef.current) return;
-        setRoom((prev) => (isSameOrNewerRoomState(state, prev) ? state : prev));
-    }, []);
+    // Run a room request and apply its state unless a newer one already landed.
+    const runRoomRequest = useCallback(
+        async (request: () => Promise<RoomState>) => {
+            const code = roomCodeRef.current;
+            const seq = ++requestSeqRef.current;
+            const state = await request();
+            if (
+                state.code === code &&
+                code === roomCodeRef.current &&
+                seq > appliedSeqRef.current
+            ) {
+                appliedSeqRef.current = seq;
+                setRoom(state);
+            }
+            return state;
+        },
+        [],
+    );
 
     const refreshRoom = useCallback(async () => {
         const code = roomCodeRef.current;
         if (!code) return;
         try {
-            const [state, rows] = await Promise.all([
-                getRoom(code),
-                getResults(code),
-            ]);
-            if (code !== roomCodeRef.current) return;
-            applyRoomState(state);
-            setResults(rows);
+            await runRoomRequest(() => getRoom(code));
         } catch (error) {
             if (code !== roomCodeRef.current) return;
             if (error instanceof ApiError && error.status === 404) {
                 setRoomError("Room not found. Check the code and try again.");
             }
         }
-    }, [applyRoomState]);
+    }, [runRoomRequest]);
+
+    const handleSeatLost = useCallback((code: string) => {
+        clearSession(code);
+        setSession(null);
+        setRoomError(
+            "Your seat in this room is no longer valid. Reload the page to rejoin.",
+        );
+    }, []);
 
     // Join the room once per browser (the token is reused from storage).
     useEffect(() => {
@@ -1767,9 +1609,11 @@ export default function App() {
             .catch((error: unknown) => {
                 if (cancelled) return;
                 if (error instanceof ApiError && error.status === 404) {
-                    setRoomError("Room not found. Check the code and try again.");
+                    setRoomError(
+                        "Room not found. Check the code and try again.",
+                    );
                 } else if (error instanceof ApiError && error.status === 409) {
-                    addToast("This room already finished voting. Showing results.", "#f59e0b");
+                    addToast("This room is closed. You can only look around.", "#f59e0b");
                 } else {
                     setRoomError(`Couldn't join room: ${errorMessage(error)}`);
                 }
@@ -1782,7 +1626,7 @@ export default function App() {
     // Initial fetch plus a polling fallback in case a Realtime ping is missed.
     useEffect(() => {
         if (!roomCode || !profileComplete) return;
-        void refreshRoom();
+        const initial = window.setTimeout(() => void refreshRoom(), 0);
         const refreshIfVisible = () => {
             if (document.visibilityState === "visible") void refreshRoom();
         };
@@ -1792,24 +1636,22 @@ export default function App() {
         );
         document.addEventListener("visibilitychange", refreshIfVisible);
         return () => {
+            window.clearTimeout(initial);
             window.clearInterval(interval);
             document.removeEventListener("visibilitychange", refreshIfVisible);
         };
     }, [roomCode, profileComplete, refreshRoom]);
 
-    // Realtime: "room-updated" pings trigger a refetch; presence shares preferences.
+    // Realtime: "room-updated" pings trigger a refetch; presence shows who's online.
     useEffect(() => {
         if (!roomCode || !session) return;
         const channel = subscribeToRoom(
             roomCode,
-            {
-                participantId: session.participantId,
-                preferences: preferencesRef.current,
-            },
+            { participantId: session.participantId },
             {
                 onRoomUpdated: () => void refreshRoom(),
-                onPresence: (profiles) => {
-                    setPresence(profiles);
+                onPresence: (ids) => {
+                    setOnlineIds(ids);
                     // Someone joined or left; their membership is in Django.
                     void refreshRoom();
                 },
@@ -1822,77 +1664,141 @@ export default function App() {
         };
     }, [roomCode, session, refreshRoom]);
 
+    const me = useMemo(
+        () =>
+            room?.participants.find((p) => p.id === session?.participantId) ??
+            null,
+        [room, session],
+    );
+    const myApiFilters = useMemo(() => toApiFilters(filters), [filters]);
+
+    // Load this participant's saved filters once (e.g. after a page refresh).
     useEffect(() => {
-        if (!session) return;
-        void updatePresence(roomChannelRef.current, {
-            participantId: session.participantId,
-            preferences: { cuisines: profileCuisines, prices: profilePrices },
-        });
-    }, [session, profileCuisines, profilePrices]);
+        if (!me || filtersHydrated) return;
+        const saved = fromApiFilters(me.filters);
+        const timeout = window.setTimeout(() => {
+            setFilters(saved);
+            setFiltersHydrated(true);
+        }, 0);
+        return () => window.clearTimeout(timeout);
+    }, [me, filtersHydrated]);
 
-    const currentRestaurantId =
-        room?.is_active ? (room.current_restaurant?.id ?? null) : null;
-
-    const resultsById = useMemo(
-        () => new Map(results.map((row) => [row.restaurant.id, row])),
-        [results],
+    const saveMyFilters = useCallback(
+        async (next: ApiFilters) => {
+            const code = roomCodeRef.current;
+            if (!code || !session) return;
+            try {
+                await runRoomRequest(() =>
+                    updateFilters(code, session.token, next),
+                );
+                void notifyRoomUpdated(roomChannelRef.current);
+            } catch (error) {
+                if (error instanceof ApiError && error.status === 403) {
+                    handleSeatLost(code);
+                } else {
+                    addToast(
+                        `Couldn't save your filters: ${errorMessage(error)}`,
+                        "#f43f5e",
+                    );
+                }
+            }
+        },
+        [session, runRoomRequest, handleSeatLost, addToast],
     );
 
-    // Catalog decorated with room results; the room's current restaurant is
-    // always included even if the catalog was loaded before it existed.
+    // Save filter changes to Django (debounced) so everyone's pick uses them.
+    const filtersDirty = Boolean(
+        me && filtersHydrated && !sameFilters(myApiFilters, me.filters),
+    );
+    useEffect(() => {
+        if (!filtersDirty) return;
+        const timeout = window.setTimeout(
+            () => void saveMyFilters(myApiFilters),
+            FILTER_SAVE_DELAY_MS,
+        );
+        return () => window.clearTimeout(timeout);
+    }, [filtersDirty, myApiFilters, saveMyFilters]);
+
+    // Share your location with Django so your distance filter is measured from
+    // you. Cleared if location is blocked, so a stale position isn't used.
+    const wantedLocation =
+        geo.status === "granted" && geo.location
+            ? geo.location
+            : geo.status === "denied" || geo.status === "unavailable"
+              ? null
+              : undefined; // still waiting for the browser
+    const wantedLocationKey =
+        wantedLocation === undefined
+            ? null
+            : wantedLocation === null
+              ? "none"
+              : `${wantedLocation.latitude},${wantedLocation.longitude}`;
+
+    const saveMyLocation = useCallback(async () => {
+        const code = roomCodeRef.current;
+        if (!code || !session || wantedLocationKey === null) return;
+        if (savedLocationKeyRef.current === wantedLocationKey) return;
+        // Nothing to clear if Django never had a location for you.
+        if (wantedLocation === null && me && !me.has_location) {
+            savedLocationKeyRef.current = wantedLocationKey;
+            return;
+        }
+        savedLocationKeyRef.current = wantedLocationKey;
+        try {
+            await runRoomRequest(() =>
+                updateLocation(code, session.token, wantedLocation ?? null),
+            );
+            void notifyRoomUpdated(roomChannelRef.current);
+        } catch (error) {
+            savedLocationKeyRef.current = null;
+            if (error instanceof ApiError && error.status === 403) {
+                handleSeatLost(code);
+            }
+        }
+    }, [session, me, wantedLocation, wantedLocationKey, runRoomRequest, handleSeatLost]);
+
+    useEffect(() => {
+        if (!me || wantedLocationKey === null) return;
+        const timeout = window.setTimeout(() => void saveMyLocation(), 0);
+        return () => window.clearTimeout(timeout);
+    }, [me, wantedLocationKey, saveMyLocation]);
+
+    const pickedId = room?.selected_restaurant?.id ?? null;
+
+    // Catalog plus the picked restaurant, in case the catalog predates it.
     const restaurants = useMemo(() => {
         let base = catalog;
-        const current = room?.current_restaurant;
-        if (current && !catalog.some((r) => r.id === current.id)) {
-            base = [...catalog, mapApiRestaurant(current)].sort(
-                (a, b) => a.id - b.id,
-            );
+        const picked = room?.selected_restaurant;
+        if (picked && !catalog.some((r) => r.id === picked.id)) {
+            base = [...catalog, mapApiRestaurant(picked)];
         }
         return base.map((r) => ({
             ...r,
-            votes: resultsById.get(r.id)?.yes_count ?? 0,
+            distance: haversineMiles(r.latitude, r.longitude, origin),
             inQueue: queuedIds.has(r.id),
         }));
-    }, [catalog, room, resultsById, queuedIds]);
+    }, [catalog, room, queuedIds, origin]);
 
-    // Filters are local to each viewer and never hide the restaurant being voted on.
-    const filteredRestaurants = useMemo(() => {
-        return restaurants.filter((r) => {
-            if (r.id === currentRestaurantId) return true;
-            if (r.distance > filters.maxDistance) return false;
-            if (r.rating !== null && r.rating < filters.minRating) return false;
-            if (
-                filters.cuisines.length > 0 &&
-                !filters.cuisines.includes(r.cuisine)
-            )
-                return false;
-            if (
-                filters.prices.length > 0 &&
-                r.price !== null &&
-                !filters.prices.includes(r.price)
-            )
-                return false;
-            if (filters.openNow && !r.openNow) return false;
-            if (filters.tablesTonight && !r.tablesTonight) return false;
-            if (filters.walkInFriendly && !r.walkInFriendly) return false;
-            return true;
-        });
-    }, [restaurants, filters, currentRestaurantId]);
+    // Django computes matches (it knows everyone's location; clients don't).
+    // Your own unsaved filter changes narrow the preview immediately.
+    const groupMatches = useMemo(() => {
+        const serverIds = new Set(room?.matching_restaurant_ids ?? []);
+        return restaurants.filter(
+            (r) => serverIds.has(r.id) && matchesFilters(r, myApiFilters),
+        );
+    }, [restaurants, room, myApiFilters]);
 
-    // Rooms vote in ID order through thousands of restaurants, so the feed only
-    // renders the current restaurant and the next few upcoming matches.
+    const myMatchCount = useMemo(
+        () => restaurants.filter((r) => matchesFilters(r, myApiFilters)).length,
+        [restaurants, myApiFilters],
+    );
+
+    // The feed previews restaurants matching everyone, with the pick pinned first.
     const feedRestaurants = useMemo(() => {
-        const start =
-            currentRestaurantId === null
-                ? 0
-                : Math.max(
-                      0,
-                      filteredRestaurants.findIndex(
-                          (r) => r.id >= currentRestaurantId,
-                      ),
-                  );
-        return filteredRestaurants.slice(start, start + FEED_WINDOW);
-    }, [filteredRestaurants, currentRestaurantId]);
+        const picked = restaurants.find((r) => r.id === pickedId);
+        const rest = groupMatches.filter((r) => r.id !== pickedId);
+        return (picked ? [picked, ...rest] : rest).slice(0, FEED_WINDOW);
+    }, [restaurants, groupMatches, pickedId]);
 
     const scrollToRestaurant = useCallback((id: number) => {
         setTimeout(() => {
@@ -1905,19 +1811,24 @@ export default function App() {
         }, 60);
     }, []);
 
-    // When Django advances the room, everyone jumps to the new restaurant.
+    // Show the pick to everyone when Django reports a new one.
     useEffect(() => {
-        if (
-            currentRestaurantId === null ||
-            lastFollowedRestaurantRef.current === currentRestaurantId
-        )
+        if (!room) return;
+        const selectedAt = room.selected_at;
+        if (seenSelectionRef.current === undefined) {
+            seenSelectionRef.current = selectedAt;
             return;
-        lastFollowedRestaurantRef.current = currentRestaurantId;
-        setTimeout(() => setActiveRestaurantId(currentRestaurantId), 0);
-        scrollToRestaurant(currentRestaurantId);
-    }, [currentRestaurantId, scrollToRestaurant]);
+        }
+        if (!selectedAt || selectedAt === seenSelectionRef.current) return;
+        seenSelectionRef.current = selectedAt;
+        setTimeout(() => {
+            setShowPick(true);
+            if (pickedId !== null) setActiveRestaurantId(pickedId);
+        }, 0);
+        if (pickedId !== null) scrollToRestaurant(pickedId);
+    }, [room, pickedId, scrollToRestaurant]);
 
-    // Keep activeRestaurantId synchronized when filters change
+    // Keep activeRestaurantId synchronized when the feed changes
     useEffect(() => {
         if (
             feedRestaurants.length > 0 &&
@@ -1931,24 +1842,6 @@ export default function App() {
         }
     }, [feedRestaurants, activeRestaurantId]);
 
-    const winnerFromResults = useCallback(() => {
-        const top = results[0];
-        if (!top) return null;
-        const restaurant =
-            restaurants.find((r) => r.id === top.restaurant.id) ??
-            mapApiRestaurant(top.restaurant);
-        return { ...restaurant, votes: top.yes_count };
-    }, [results, restaurants]);
-
-    // Announce the winner once when Django reports the room finished.
-    useEffect(() => {
-        if (!room || room.is_active || finishedAnnouncedRef.current) return;
-        const winner = winnerFromResults();
-        if (!winner) return;
-        finishedAnnouncedRef.current = true;
-        setTimeout(() => setWinnerSpot(winner), 0);
-    }, [room, winnerFromResults]);
-
     const participantViews = useMemo<RoomParticipantView[]>(
         () =>
             (room?.participants ?? [])
@@ -1956,99 +1849,53 @@ export default function App() {
                 .map((p) => ({
                     id: p.id,
                     name: p.display_name,
-                    preferences: presence.get(p.id)?.preferences ?? null,
-                    online: presence.has(p.id),
+                    filters:
+                        p.id === session?.participantId ? myApiFilters : p.filters,
+                    hasLocation:
+                        p.id === session?.participantId
+                            ? geo.location !== null
+                            : p.has_location,
+                    online: onlineIds.has(p.id),
                     isYou: p.id === session?.participantId,
                 })),
-        [room, presence, session],
+        [room, onlineIds, session, myApiFilters, geo.location],
     );
 
-    const hasVotedThisRound = Boolean(
-        session &&
-            room?.voting_progress.voted_participant_ids.includes(
-                session.participantId,
-            ),
-    );
-
-    const getVoteInfo = (restaurantId: number): RoomVoteInfo => {
-        const row = resultsById.get(restaurantId);
-        const base = {
-            hasVoted: false,
-            submitting: false,
-            votedCount: 0,
-            requiredCount: 0,
-            voterNames: [] as string[],
-            yesCount: row?.yes_count ?? 0,
-            noCount: row?.no_count ?? 0,
-        };
-        if (!room) return { ...base, status: "upcoming" };
-        if (restaurantId === currentRestaurantId) {
-            const progress = room.voting_progress;
-            const names = new Map(
-                room.participants.map((p) => [p.id, p.display_name]),
-            );
-            return {
-                ...base,
-                status: "current",
-                hasVoted: hasVotedThisRound,
-                submitting: submittingVote,
-                votedCount: progress.voted_count,
-                requiredCount: progress.required_count,
-                voterNames: progress.voted_participant_ids.map((id) =>
-                    id === session?.participantId ? "YOU" : (names.get(id) ?? "?"),
-                ),
-            };
-        }
-        if (currentRestaurantId === null || restaurantId < currentRestaurantId) {
-            return { ...base, status: "decided" };
-        }
-        return { ...base, status: "upcoming" };
-    };
-
-    // All votes go through Django; the room advances only after every
-    // active participant has voted on the current restaurant.
-    const handleCastVote = async (restaurantId: number, vote: boolean) => {
-        if (!room || !roomCode || submittingVote) return;
+    // Django picks at random from restaurants matching everyone's saved filters.
+    const handlePick = async () => {
+        const code = roomCodeRef.current;
+        if (!code || picking) return;
         if (!session) {
-            addToast("You're viewing this room without a seat, so you can't vote.", "#94a3b8");
+            addToast("You're viewing this room without a seat, so you can't pick.", "#94a3b8");
             return;
         }
-        const current = room.current_restaurant;
-        if (!room.is_active || !current || current.id !== restaurantId) {
-            addToast("That restaurant isn't up for a vote right now.", "#94a3b8");
-            return;
-        }
-        setSubmittingVote(true);
+        setPicking(true);
         try {
-            const state = await submitVote(roomCode, session.token, {
-                round_number: room.current_round,
-                restaurant_id: restaurantId,
-                vote,
-            });
-            applyRoomState(state);
-            addToast(
-                vote ? `🔥 Yes to ${current.name}` : `Passed on ${current.name}`,
-                vote ? "#FF5E3A" : "#94a3b8",
+            // Make sure Django has your latest location and filters before it picks.
+            await saveMyLocation();
+            if (me && !sameFilters(myApiFilters, me.filters)) {
+                await runRoomRequest(() =>
+                    updateFilters(code, session.token, myApiFilters),
+                );
+            }
+            const state = await runRoomRequest(() =>
+                pickRestaurant(code, session.token),
             );
-            void notifyRoomUpdated(roomChannelRef.current, state.current_round);
-            void getResults(roomCode)
-                .then((rows) => {
-                    if (roomCodeRef.current === roomCode) setResults(rows);
-                })
-                .catch(() => undefined);
+            void notifyRoomUpdated(roomChannelRef.current);
+            if (state.selected_restaurant) {
+                addToast(`🎲 Picked ${state.selected_restaurant.name}!`, "#FF5E3A");
+            }
         } catch (error) {
             if (error instanceof ApiError && error.status === 409) {
-                addToast("The room already moved on. Showing the latest round.", "#f59e0b");
+                addToast(error.message, "#f59e0b");
             } else if (error instanceof ApiError && error.status === 403) {
-                clearSession(roomCode);
-                setSession(null);
-                setRoomError("Your seat in this room is no longer valid. Reload the page to rejoin.");
+                handleSeatLost(code);
             } else {
-                addToast(`Vote failed: ${errorMessage(error)}`, "#f43f5e");
+                addToast(`Pick failed: ${errorMessage(error)}`, "#f43f5e");
             }
             void refreshRoom();
         } finally {
-            setSubmittingVote(false);
+            setPicking(false);
         }
     };
 
@@ -2072,22 +1919,13 @@ export default function App() {
 
     const handleResetFilters = () => {
         setFilters(DEFAULT_FILTERS);
-        addToast("Reset all Boston filters");
+        addToast("Reset your filters");
     };
 
     const handleJumpToRestaurant = (id: number) => {
-        if (currentRestaurantId !== null && id < currentRestaurantId) {
-            addToast("The room already voted on that spot.", "#94a3b8");
+        if (!feedRestaurants.some((r) => r.id === id)) {
+            addToast("That spot doesn't match everyone's filters.", "#94a3b8");
             return;
-        }
-        const isVisible = filteredRestaurants.some((r) => r.id === id);
-        if (!isVisible) {
-            setFilters({
-                ...DEFAULT_FILTERS,
-                maxDistance: 10.0,
-                minRating: 0,
-            });
-            addToast("Expanded filters to show selected spot", "#FF5E3A");
         }
         setActiveRestaurantId(id);
         scrollToRestaurant(id);
@@ -2104,31 +1942,23 @@ export default function App() {
         addToast(`Copied Jam invite link (${roomCode})`);
     };
 
-    const handlePickWinner = () => {
-        const winner = winnerFromResults();
-        if (!winner) {
-            addToast("No votes yet. Vote on the current spot first!", "#94a3b8");
-            return;
-        }
-        setWinnerSpot(winner);
-    };
-
     const queuedRestaurants = useMemo(
         () => restaurants.filter((r) => r.inQueue),
         [restaurants],
     );
 
+    const pickedRestaurant = restaurants.find((r) => r.id === pickedId) ?? null;
+    const pickedByName =
+        room?.participants.find((p) => p.id === room.selected_by)
+            ?.display_name ?? null;
+
     const roomStatus = !room
         ? "Connecting to room…"
-        : !room.is_active
-          ? "Voting finished • see the results"
-          : `Round ${room.current_round} • ${room.current_restaurant?.name ?? ""} • ${room.voting_progress.voted_count}/${room.voting_progress.required_count} voted${
-                !session
-                    ? " • viewing only"
-                    : hasVotedThisRound
-                      ? " • waiting for others"
-                      : " • your vote"
-            }`;
+        : groupMatches.length === 0
+          ? "No spot matches everyone's filters yet"
+          : `${groupMatches.length} ${groupMatches.length === 1 ? "spot matches" : "spots match"} everyone${
+                pickedRestaurant ? ` • Current pick: ${pickedRestaurant.name}` : ""
+            }${!session ? " • viewing only" : ""}`;
 
     if (!roomCode && profileComplete) {
         return (
@@ -2171,10 +2001,7 @@ export default function App() {
                             autoComplete="off"
                             maxLength={6}
                         />
-                        <button
-                            type="submit"
-                            className="room-entry-secondary"
-                        >
+                        <button type="submit" className="room-entry-secondary">
                             Enter room
                         </button>
                     </form>
@@ -2197,12 +2024,11 @@ export default function App() {
                         <span>Boston Food Jam</span>
                     </div>
                     <h1>
-                        {roomCode
-                            ? `Join room ${roomCode}`
-                            : "Choose a room"}
+                        {roomCode ? `Join room ${roomCode}` : "Choose a room"}
                     </h1>
                     <p>
-                        Add your name and food preferences, then create or join a Jam.
+                        Add your name, then create or join a Jam. You'll set
+                        your food filters inside the room.
                     </p>
 
                     <form
@@ -2227,52 +2053,6 @@ export default function App() {
                             maxLength={40}
                             required
                         />
-
-                        <fieldset>
-                            <legend>Preferred cuisines</legend>
-                            <div className="room-choice-grid">
-                                {CUISINE_CATEGORIES.filter(
-                                    (category) => category !== "All",
-                                ).map((cuisine) => (
-                                    <button
-                                        type="button"
-                                        key={cuisine}
-                                        className={
-                                            profileCuisines.includes(cuisine)
-                                                ? "room-choice selected"
-                                                : "room-choice"
-                                        }
-                                        onClick={() =>
-                                            toggleProfileCuisine(cuisine)
-                                        }
-                                    >
-                                        {cuisine}
-                                    </button>
-                                ))}
-                            </div>
-                        </fieldset>
-
-                        <fieldset>
-                            <legend>Price preferences</legend>
-                            <div className="room-choice-grid room-choice-prices">
-                                {PRICE_TIERS.map((price) => (
-                                    <button
-                                        type="button"
-                                        key={price}
-                                        className={
-                                            profilePrices.includes(price)
-                                                ? "room-choice selected"
-                                                : "room-choice"
-                                        }
-                                        onClick={() =>
-                                            toggleProfilePrice(price)
-                                        }
-                                    >
-                                        {price}
-                                    </button>
-                                ))}
-                            </div>
-                        </fieldset>
 
                         {roomCode ? (
                             <button
@@ -2412,8 +2192,7 @@ export default function App() {
                     restaurants={feedRestaurants}
                     activeId={activeRestaurantId}
                     onSelectActive={setActiveRestaurantId}
-                    getVoteInfo={getVoteInfo}
-                    onCastVote={(id, vote) => void handleCastVote(id, vote)}
+                    pickedId={pickedId}
                     onToggleQueue={handleToggleQueue}
                     onResetFilters={handleResetFilters}
                     feedRef={feedRef}
@@ -2428,7 +2207,9 @@ export default function App() {
                         queueCount={queuedRestaurants.length}
                         onCopyInvite={handleCopyInvite}
                         onOpenQueue={() => setIsQueueOpen(true)}
-                        onPickWinner={handlePickWinner}
+                        onPick={() => void handlePick()}
+                        picking={picking}
+                        canPick={Boolean(session) && groupMatches.length > 0}
                         roomCode={roomCode}
                         participants={participantViews}
                         roomStatus={roomStatus}
@@ -2436,11 +2217,15 @@ export default function App() {
 
                     <FilterPanel
                         allRestaurants={restaurants}
-                        filteredRestaurants={filteredRestaurants}
+                        groupMatchCount={groupMatches.length}
+                        myMatchCount={myMatchCount}
+                        participantCount={participantViews.length}
+                        originLabel={originLabel}
+                        locationStatus={geo.status}
+                        onRetryLocation={geo.retry}
                         filters={filters}
                         onUpdateFilters={setFilters}
                         onResetFilters={handleResetFilters}
-                        onJumpToRestaurant={handleJumpToRestaurant}
                     />
                 </section>
             </main>
@@ -2448,6 +2233,8 @@ export default function App() {
             {/* SEGMENT 3: FLOATING EXPANDABLE BOSTON MAP CORNER */}
             <FloatingBostonMap
                 restaurants={feedRestaurants}
+                origin={origin}
+                originLabel={originLabel}
                 activeId={activeRestaurantId}
                 maxDistance={filters.maxDistance}
                 onSelectPin={handleJumpToRestaurant}
@@ -2462,14 +2249,15 @@ export default function App() {
                 onSelectRestaurant={handleJumpToRestaurant}
             />
 
-            {/* MATCH WINNER CELEBRATION MODAL */}
+            {/* RANDOM GROUP PICK MODAL */}
             <WinnerModal
-                winner={winnerSpot}
-                onClose={() => setWinnerSpot(null)}
-                onLockIn={(spot) => {
-                    setWinnerSpot(null);
-                    addToast(`🎉 Locked in ${spot.name} for your Boston crew!`);
-                }}
+                winner={showPick ? pickedRestaurant : null}
+                originLabel={originLabel}
+                pickedByName={pickedByName}
+                matchCount={room?.matching_count ?? groupMatches.length}
+                picking={picking}
+                onClose={() => setShowPick(false)}
+                onPickAgain={() => void handlePick()}
             />
         </div>
     );

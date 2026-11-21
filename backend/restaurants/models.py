@@ -51,3 +51,59 @@ class Restaurant(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class RestaurantVideo(models.Model):
+    """Django-owned video links; never saves or alters the shared restaurant row."""
+
+    class Platform(models.TextChoices):
+        YOUTUBE = "youtube", "YouTube"
+        TIKTOK = "tiktok", "TikTok"
+        INSTAGRAM = "instagram", "Instagram"
+
+    class VerificationStatus(models.TextChoices):
+        PENDING = "pending", "Pending review"
+        APPROVED = "approved", "Approved"
+        REJECTED = "rejected", "Rejected"
+
+    restaurant = models.ForeignKey(
+        Restaurant, on_delete=models.PROTECT, db_constraint=False, related_name="videos",
+    )
+    platform = models.CharField(max_length=10, choices=Platform.choices)
+    canonical_url = models.URLField(max_length=2048)
+    platform_video_id = models.CharField(max_length=100, editable=False, blank=True)
+    creator_name = models.CharField(max_length=200, blank=True)
+    creator_handle = models.CharField(max_length=100, blank=True)
+    verification_status = models.CharField(
+        max_length=10, choices=VerificationStatus.choices, default=VerificationStatus.PENDING,
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ("id",)
+        constraints = [
+            models.UniqueConstraint(
+                fields=("restaurant", "platform", "platform_video_id"),
+                name="unique_restaurant_platform_video",
+            ),
+        ]
+
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        from .video_urls import canonicalize_video_url
+        super().clean()
+        try:
+            self.canonical_url, self.platform_video_id = canonicalize_video_url(self.platform, self.canonical_url)
+        except ValidationError as exc:
+            raise ValidationError({"canonical_url": exc.messages}) from None
+
+    def save(self, *args, **kwargs):
+        # Enforce validation for Admin and ordinary ORM saves, not just API inputs.
+        self.full_clean()
+        if kwargs.get("update_fields") is not None:
+            kwargs["update_fields"] = set(kwargs["update_fields"]) | {"canonical_url", "platform_video_id", "updated_at"}
+        return super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.platform}: {self.platform_video_id} (restaurant {self.restaurant_id})"

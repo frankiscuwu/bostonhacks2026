@@ -39,11 +39,7 @@ The token is a private UUID credential, returned only in this creation/join resp
 Store it privately on the client and never include it in URLs, shared room state, or
 analytics. There is no credential recovery endpoint. Each repeated create/join
 request creates a new participant; automatic retries are not idempotent.
-
-Creating a room selects the first active restaurant by ascending database ID.
-With no active restaurants it creates a finished room, still returning the host's
-credential. Joining a finished room returns HTTP 409. The host has no special
-permissions in this MVP.
+Joining a closed room (`is_active: false`) returns HTTP 409.
 
 ## Room state
 
@@ -52,74 +48,51 @@ permissions in this MVP.
 ```json
 {
   "code": "ABC123",
-  "current_restaurant": {"id": 1, "name": "Example"},
-  "current_round": 1,
+  "selected_restaurant": null,
+  "selected_at": null,
+  "selected_by": null,
   "is_active": true,
   "created_at": "...",
-  "participants": [{"id": 1, "display_name": "Alex", "joined_at": "...", "is_active": true}],
-  "voting_progress": {"required_count": 1, "voted_count": 0, "voted_participant_ids": []}
+  "participants": [{"id": 1, "display_name": "Alex", "is_active": true, "joined_at": "...",
+                    "filters": {"cuisines": [], "max_distance_miles": null, "open_now": false}}],
+  "matching_count": 3148
 }
 ```
 
-Restaurant objects include all explicit public fields in `RestaurantSerializer`;
-the abbreviated example omits address, cuisine, price, rating, coordinates, video,
-image, and description. Tokens are never part of public serializers.
+`matching_count` is how many active restaurants match every active participant's
+saved filters. `selected_restaurant` uses the restaurant shape above. Tokens are never
+part of public serializers.
 
-## Voting and membership policy
+## Filters
 
-`POST /api/rooms/{code}/vote/` requires an `X-Participant-Token` header and body:
-
-```json
-{"round_number": 1, "restaurant_id": 1, "vote": true}
-```
-
-`vote` must be a JSON boolean. Both round and restaurant must match current room
-state. Successful requests return HTTP 200 with the updated room state. Missing,
-invalid, inactive, or other-room credentials return 403; missing rooms return 404;
-duplicate votes, stale state, and finished rooms return 409. Invalid inputs return
-400. Refresh room state after a 409; do not silently cast a vote for a new round.
-
-All joins and votes acquire the same room row lock inside a database transaction.
-Every currently active participant is required to vote. Joins during a round are
-immediately required, including when other participants have already voted. A join
-that commits after advancement belongs to the new round. Thus a concurrent join
-cannot be omitted from the required set if it commits before the deciding vote.
-
-There is no departure, timeout, or presence endpoint. Closing a browser does not
-remove a voter; an abandoned participant can hold the room open. Do not change
-participant membership, active status, room state, or votes directly in Admin while
-voting is in progress. A future departure service must acquire the same room lock
-and explicitly define completion behavior.
-
-When all active participants have voted, the service selects the next active
-restaurant with an ID greater than the current ID and increments the round. It
-skips inactive restaurants and never cycles backwards. Filters on the discovery
-endpoint do not filter a room's sequence. Catalog changes affect subsequent choices;
-this MVP does not snapshot the catalog. An already-current restaurant remains
-votable if deactivated during its round. At exhaustion, `is_active` becomes false,
-`current_restaurant` becomes null, and the round increments once for the completed
-round. Finished rooms reject joins and votes.
-
-The room lock serializes concurrent votes on PostgreSQL; the database unique
-constraint is an additional duplicate-vote guard. State is serialized while the lock
-is held and returned after the transaction commits. This is a committed snapshot;
-clients may observe later state on their next fetch. The backend does not broadcast Realtime updates or run a WebSocket server. The
-frontend sends credential-free `room-updated` notifications after successful API
-responses and also polls Django. Future server-side broadcasts should use
-`transaction.on_commit()` and exclude credentials.
-
-## Results
-
-`GET /api/rooms/{code}/results/` returns an array of:
+`PUT /api/rooms/{code}/filters/` requires an `X-Participant-Token` header and replaces
+that participant's filters:
 
 ```json
-{"restaurant": {"id": 1, "name": "Example"}, "yes_count": 2, "no_count": 1, "total_votes": 3, "approval_rate": 0.6666666666666666}
+{"cuisines": ["Pizza", "Mexican"], "max_distance_miles": 1.5, "open_now": false}
 ```
 
-Ranking is approval fraction descending, then yes count descending, then restaurant
-ID ascending. Includes submitted votes from incomplete rounds and historical votes
-from participants who later become inactive. Restaurants without votes are omitted.
-This endpoint never exposes individual vote choices or participant credentials.
+- `cuisines`: `cuisine_label` values; empty means any cuisine.
+- `max_distance_miles`: 0.1–100 straight-line miles from Boston Common, or `null` for any.
+- `open_now`: JSON boolean; when true, only restaurants with posted hours that are open
+  now (Boston time). Restaurants without hours never match.
+
+Returns the updated room state. Matching logic lives in `restaurants/matching.py`.
+
+## Random pick
+
+`POST /api/rooms/{code}/pick/` requires an `X-Participant-Token` header. Django randomly
+chooses one restaurant matching *every* active participant's saved filters, stores it
+as `selected_restaurant` with `selected_at` and `selected_by`, and returns the room
+state. Any participant can pick again; each pick replaces the previous one. Returns
+409 when nothing matches everyone (or the room is closed), and 403 for missing,
+invalid, inactive, or other-room credentials.
+
+Clients should save pending filter changes before picking. Realtime notifications are
+client-sent "room-updated" pings with no payload; clients refetch from Django.
+
+There is no departure endpoint: closing a browser does not remove a participant, so
+an abandoned participant's filters still apply until they are marked inactive.
 
 ## Local verification
 
@@ -136,16 +109,33 @@ The existing dotenv loader preserves the explicit environment override. SQLite t
 verify service behavior but cannot exercise PostgreSQL row locks; a separate disposable
 PostgreSQL database is needed for a concurrent transaction integration test.
 
-The discovery/group-voting API reads restaurants from the shared `restaurants`
-table and writes room state only to `rooms_*`. Room and vote restaurant FKs have no database constraint because the
+The discovery/group-selection API reads restaurants from the shared `restaurants`
+table and writes room state only to `rooms_*`. The selected-restaurant FK has no database constraint because the
 restaurants table is owned outside Django. Migration `restaurants.0002` only creates
 `restaurants` when missing (fresh SQLite databases); on Supabase it is a no-op.
 `rooms.0002` drops the old restaurant FK constraints. Migration
 `restaurants.0003_drop_legacy_restaurant_table` then drops the legacy
 `restaurants_restaurant` table without CASCADE, after depending on both apps' 0002
-migrations. `BostonFoodLiscences` is not used.
+migrations. `rooms.0003` removes voting and adds participant filters and random selection;
+`rooms.0004` adds participant location. `BostonFoodLiscences` is not used.
 
 `managed=False` is a schema-management setting, not an ORM write prohibition.
 Do not save/update/delete source rows. See [IMPORTING.md](IMPORTING.md) for the
 retired importer, preserved stash, migration reconciliation, and proposed separate
 enrichment table. The old `0002_restaurant_optional_metadata` must not be restored.
+
+## Creator videos
+
+`GET /api/restaurants/{id}/videos/` returns approved creator-video records in ID
+order, or `[]` for a restaurant without approved videos. Unknown restaurants return
+404. Public submissions and approval writes are not supported (405).
+
+The separate Django-managed `RestaurantVideo` model references shared restaurant
+IDs without modifying source rows. New entries default to pending and are manually
+reviewed in Admin. See [VIDEOS.md](VIDEOS.md) for the exact TypeScript response,
+URL allowlist, review workflow, and YouTube/TikTok/Instagram official embed guidance.
+Existing restaurant response fields remain unchanged.
+
+Migration `restaurants.0004_restaurant_video` creates the video table only. It has
+not been applied to shared Supabase. Video administration writes to the new table;
+the discovery endpoint continues reading the shared restaurant table without writes.
