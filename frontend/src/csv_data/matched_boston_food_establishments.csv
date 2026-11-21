@@ -1,0 +1,3356 @@
+id,name,address,cuisine,open_time,close_time
+1,100 Federal Market & Barista- 10th Floor,100 Federal,,,
+2,100 Federal Market & Barista- 11th Floor,100 Federal,,,
+3,100 Federal Smoothie Bar- 11th Floor,100 Federal,,,
+4,110 Grill,25 Jan Karski,american,,
+5,129 Lake Street Cafe,127 LAKE,,,
+6,149 Eat Street,300 CHELSEA,,,
+7,150 Tremont Cafe,150 Tremont,,,
+8,163 Vietnamese Sandwich,66 Harrison,vietnamese,07:30,18:00
+9,1928 Beacon Hill,97 Mount Vernon,,,
+10,1928 Rowes Wharf,30 Rowes,,,
+11,1st Floor Cafe @ Tufts Medical Center,750 Washington,,,
+12,200 Club - 3rd Fl.,200 Clarendon,,,
+13,20TH CENTRY BOWLING LANES,1231 Hyde Park,,,
+14,211 Better Bagels,211 Congress,bagel,06:30,15:00
+15,21 ST. AMENDMENT,150 Bowdoin,,,
+16,224 BOSTON,224 Boston,italian,,
+17,311,605 Tremont,,,
+18,320 Cafe,314 Spring,,,
+19,3rd Floor @ Tufts Medical Center,750 Washington,,,
+20,410- North End Butcher,100 Legends,,,
+21,417-Sal's Pizza,100 Legends,pizza,11:00,22:00
+22,50/50 Lounge,1 Dalton,,,
+23,521  Function Kitchen,4 Jersey,,,
+24,5W Bar,100 Legends,,,
+25,728 Causeway Cones,100 Legends,,,
+26,753 South,749 South,,,
+27,75 CHESTNUT,75 Chestnut,,,
+28,75 On Liberty Wharf,220 Northern,,,
+29,7th Street Burger,267 Newbury,,,
+30,7th Street Burger,473 Broadway,,,
+31,89 Broad Street/Fin Point,89 Broad,,10:00,24:00
+32,89 Charles,89 Charles,,,
+33,99 RESTAURANT AND PUB,29 Austin,,11:00,01:00
+34,9 Thai Express,433 Cambridge,thai,,
+35,AAA Restaurant,3141 Washington,,,
+36,A + B Burgers,401 Park,,10:30,23:00
+37,ABE & LOUIE'S,793 Boylston,steak_house,11:00,23:00
+38,ABIGAIL'S TEA ROOM @CONGRESS BRIDGE,306 Congress,,,
+39,Abuelas Table,416 Centre,,,
+40,Acapella By X,1503 Dorchester,,,
+41,Acapulco Mexican Restaurant,466 CENTRE,mexican,,
+42,Aceituna,100 Federal,mediterranean;lebanese,11:00,20:00
+43,Aceituna Grill,99 Seaport,mediterranean;lebanese,11:00,20:00
+44,Achilitos Taqueria,1112 Boylston,mexican;tacos;taqueria,11:00,22:00
+45,Achilitos Taqueria,38 Hyde Park,mexican;tacos;taqueria,11:00,22:00
+46,AC Hotel by Marriot,225 Albany,,,
+47,AC Hotel by Marriott,395 Chestnut Hill,,,
+48,Adams B & B,12 Edgerly,bubble_tea;sushi,,
+49,ADK Sandwich Shop,421 Bowdoin,,,
+50,AFC Sushi @ Shaws #3696,50 Causeway,japanese,,
+51,AFC Sushi @ Walgreens #15390,10 School,japanese,,
+52,AFC Sushi / Wild Blue @ Simmons College,300 Fenway,japanese,,
+53,AFC Zenshi @ Shaws #1208,246 Border,,,
+54,Afrito,196 Quincy,,,
+55,Agavero Guac and Margs,11 Broadway,mexican,11:00,23:00
+56,Agganis Arena-FS,925 Commonwealth,,,
+57,Agganis Arena-Stand 1,925 Commonwealth,,,
+58,Agganis Arena-Stand 2,925 Commonwealth,,,
+59,Agganis Arena-Stand 3,925 Commonwealth,,,
+60,Agganis Arena-Stand 4,925 Commonwealth,,,
+61,Agganis Arena-Stand 5,925 Commonwealth,,,
+62,Airist Boston @ Air France Lounge,500 Terminal,,,
+63,Ajeen,1219 Commonwealth,mediterranean,10:00,03:00
+64,AK's Takeout,1350 Tremont,,11:00,24:00
+65,A K's Take Out & Delivery,1427 Tremont,,,
+66,Alamo Drafthouse,23 Northern,,,
+67,Alcove,131 Beverly,,,
+68,AL DENTE RISTORANTE,109 Salem,italian,11:30,23:00
+69,ALEX PIZZA,1252 Washington,pizza;sandwich;greek;salad,10:00,03:00
+70,ALEX'S CHIMIS,358 CENTRE,,,
+71,ALFREDO'S,229 Brighton,,10:00,23:00
+72,ALFREDO'S ITALIAN KITCHEN,243 Dorchester,,10:00,23:00
+73,ALFREDO'S ITALIAN KITCHEN,267 Old Colony,,10:00,23:00
+74,Ali Baba,99A Cambridge,turkish,11:00,02:45
+75,Alibi,215 Charles,,,
+76,All'Antico Vinaio,330 Washington,,,
+77,All'Antico Vinaio,565 Boylston,,,
+78,ALLIS ROTI + MEAT MARKET,1188 Blue Hill,,,
+79,All Spice Restaurant,41 Worcester,,,
+80,Alma Cantina,15 Union,mexican,11:00,02:00
+81,Alma Gaucha,401 D,,,
+82,Aloe Natural Acai $ Coffee Shop,256 Marginal,,,
+83,Aloft Boston Seaport Hotel,401 D,,,
+84,Aloft Boston Seaport Hotel Refuel,401 D,,,
+85,AL'S CAFÉ,27 Dry Dock,sandwich,09:00,15:00
+86,Al's High Street Cafe,176 High,sandwich,09:00,15:00
+87,Al's School Street Cafe,27 School,sandwich,09:00,15:00
+88,Al's South Street Cafe,179 Essex,sandwich,10:30,15:00
+89,Al's State Street Cafe,112 State,sandwich,09:00,15:00
+90,Alta Strada/AM2-A03/29,100 Terminal,,,
+91,Alumni 1,2597 Beacon,,,
+92,Alumni 2,2597 Beacon,,,
+93,Alumni 3,2597 Beacon,,,
+94,Alumni 4,2597 Beacon,,,
+95,Alumni 5,2597 Beacon,,,
+96,Al-Wadi Restaurant,1249 VFW,,,
+97,AMA,30 Western,,,
+98,Amber Road,100 Federal,,,
+99,AMC Causeway at the Garden 13,60 Causeway,,,
+100,AMC South Bay 12 (Concession),21 District,,,
+101,AMC South Bay 12 (MacGuffins),21 District,,,
+102,AMC Theatres Boston Common 19,175 Tremont,,,
+103,Amelia's Cluck & Smash,309 Huntington,,,
+104,Amelia's Taqueria,1076 Boylston,mexican,,
+105,American Airlines Club Boston,200 Terminal,,,
+106,American Flatbread,76 Guest,pizza,10:00,23:00
+107,Americano Espresso Bar,155 Meridian,,,
+108,America's Test Kitchen,21 Dry Dock,,,
+109,Amorino,249 Newbury,,12:30,24:00
+110,AMRHEIN'S,80 BROADWAY,,05:00,22:00
+111,Analla Cafe,117 Blue Hill,,,
+112,ANCHOVIES RESTAURANT,433 COLUMBUS,,,
+113,Ancient & Honorable Artillery Company,200 Faneuil Hall Market,,,
+114,Andalus Pizza & Cafe,153 SUTHERLAND,pizza,,
+115,AndJoy - Lower Level,32 Cambridge,,,
+116,ANDREW SQUARE HOUSE OF PIZZA,395 Dorchester,pizza,11:00,24:00
+117,Angela's Cafe,131 Lexington,,,
+118,Angela's Cafe II,1012 Bennington,,,
+119,Angry Orchard Bar,4 Jersey,,,
+120,Angry Orchard Concessions,4 Jersey,,,
+121,Anna Hand Cut Donuts,2056 Centre,,,
+122,Anna's Cafe,267 Medford,mexican,10:00,23:30
+123,Anna's Taqueria,242 Cambridge,mexican,10:00,23:30
+124,Anna's Taqueria,295 Devonshire,mexican,10:00,23:30
+125,Anna's Taqueria,354 Longwood,mexican,10:00,23:30
+126,Anna's Taqueria,457 Broadway,mexican,10:00,23:30
+127,Anna's Taqueria,800 Boylston,mexican,10:00,23:30
+128,Annie's Bakery & Cafe,753 Broadway,cake;coffee_shop,,
+129,Anoush Ella,35 Newton,mediterranean,10:00,21:30
+130,Anoush' Ella,201 Brookline,mediterranean,10:00,21:30
+131,A & N PIZZA,1409 Centre,turkish,,
+132,Anshur Restauruant,291 Roxbury,,,
+133,ANTICO FORNO,93 Salem,,,
+134,Antonios Bacaro,1 Fairmount,,,
+135,Antonio's Hi-Fi,1508 Dorchester,,,
+136,ANTONIO'S ITALIANO CUCINA,286 Cambridge,italian,11:00,22:30
+137,Apex Bar & Lounge,150 State,,,
+138,APM Coffee,99 Kneeland,,,
+139,APPLEBEE'S NEIGHBORHOOD GRILL & BAR,11A Allstate,diner,07:00,16:00
+140,Aqua Pazza,135 Richmond,seafood;italian,16:00,23:00
+141,AQUITAINE,569 Tremont,american,,
+142,Arboretum Grill,4021 Washington,,,
+143,ARCHIE'S NEW YORK DELI,93 Arch,sandwich,,
+144,Ariana Restaurant,123 Antwerp,mediterranean,17:00,23:00
+145,Aries Club,90 Oliver,,,
+146,Aritzia/A-OK Cafe,800 Boylston,,,
+147,Arizona B B Q,2360 Washington,bubble_tea;sushi,,
+148,ARTU,6 Prince,italian,,
+149,Arya Trattoria,253 Hanover,,,
+150,A Sanctuary Cafe,80 Charles,,09:00,18:00
+151,Ascia Foods,100 Malcolm X,,,
+152,Ashburton Cafe,1 Ashburton,,,
+153,ASIAN GARDEN RESTAURANT INC.,28 HARRISON,chinese,,
+154,Asian Thai Eatery,1064 River,asian,11:15,21:15
+155,Asia Wok,44 Harvard,chinese,,
+156,Assaggio,29 Prince,,,
+157,Assembly on 2,100 Summer,american;pizza,,
+158,Asta,47 Massachusetts,,,
+159,ATLANTIC FISH COMPANY,761 Boylston,seafood,,
+160,A. T. O'Keeffe's Provisions & Pub,911 Boylston,,,
+161,At Union,174 HARVARD,diner,07:00,17:00
+162,Audubon,838 Beacon,american,,
+163,Auntie Anne's Pretzels/ Carvel,700 Atlantic,ice_cream,,
+164,Avana Marketplace & Ding Ding Xiang,40 Harrison,,,
+165,Avana Sushi,58 Franklin,sushi,11:00,21:00
+166,AVRA Boston,1001 Boylston,,,
+167,Azama Grill,44 Harvard,egyptian,,
+168,B2J Tasty Pot,157 Brighton,taiwanese,11:00,22:15
+169,Bab AlYemen,468 Commonwealth,mediterranean,12:00,22:00
+170,Baba Shawarma,100 Blackstone,,,
+171,Baby Cafe Kitchen,128 Brighton,asian,,
+172,Baby Cafe - Space #8,122 Brighton,,,
+173,BACCO RISTORANTE & BAR,107 Salem,,,
+174,Back Bay Social Club,867 Boylston,,,
+175,Back Deck,10 West,,11:00,23:00
+176,BACKWOODS PIZZA,539 Dudley,,,
+177,Bagel Guild,100 Hanover,,,
+178,Bailey and Sage,100 Federal,,,
+179,Bailey and Sage,53 State,,,
+180,Bain Capital (40th Fl),200 Clarendon,,,
+181,Bain & Company - 9th Fl.,350 Boylston,,,
+182,Bakalao Kitchenette  Inc.,1002 Tremont,,11:00,23:00
+183,Bakey,200 Faneuil Hall Market,,,
+184,Balance Patch,1031 Commonwealth,,12:00,24:00
+185,Baleia,264 Berkeley,,,
+186,BALE RESTAURANT,1052 Dorchester,,,
+187,Ballers,25 Pier 4,,,
+188,Bambola!,225 Northern,,,
+189,Bamboo Beach Juice Bar,687 Second,thai,,
+190,Bamboo Thai Restaurant,1616 Commonwealth,thai,,
+191,Bambu,287 Adams,,,
+192,Banchan & Co.,1213 Commonwealth,,,
+193,Banchan & Co - Lower Level,32 Cambridge,,,
+194,Bangkok Bento Thai Kitchen & Sushi Bar,272 Newbury,japanese,,
+195,Bangkok Pinto,1041 Tremont,thai,12:00,21:00
+196,Banh Mi Huong Que,696 Washington,vietnamese,10:00,18:00
+197,Banh Mi K,108 Brighton,vietnamese,,
+198,Banh Mi Oi,1759 Centre,vietnamese,10:00,18:00
+199,Banh Mi Ok,42 School,vietnamese,10:00,18:00
+200,Banners Kitchen and Tap,50 Causeway,american,,
+201,Barcelona Restaurant,503 Tremont,tapas,11:00,23:00
+202,Bar Mezzana,360 Harrison,italian,,
+203,Bar Moxy,240 Tremont,,,
+204,BARNEY'S GRILL,299 Havre,,,
+205,BARRY'S BOOTCAMP,10 Huntington,,,
+206,BARRY'S BOOTCAMP,38 Chauncy,,,
+207,Bartaco,1321 Boylston,tacos,,
+208,Bartaco,25 Thomson,tacos,,
+209,Bar Volpe,170 Broadway,italian,17:00,22:00
+210,Basement Dining @ Tufts Medical Center,750 Washington,,,
+211,Basho Express,700 Commonwealth,asian,11:00,21:00
+212,Basho Japanese Brasserie,1310 Boylston,sushi,,
+213,Basho Japanese Sushi@B.U.(G.S.U.),775 Commonwealth,japanese,,
+214,BATTERY WHARF HOTEL BOSTON WATERFRONT,2 Battery,,,
+215,Battery Wharf Hotel/Grille,3 Battery,,,
+216,Bay State,1 Long,,,
+217,BBQ Chicken,178 Harvard,korean;chicken,11:00,22:00
+218,BBQ Chicken,62 Boylston,korean;chicken,11:00,22:00
+219,BBQ Chicken,636 Beacon,korean;chicken,11:00,22:00
+220,BBQ Chicken,649 Centre,korean;chicken,11:00,22:00
+221,Beachside Cafe,4 Barnes,,,
+222,Beacon - 50th Floor,800 Boylston,,,
+223,Beacon Cafe @Univ. of Mass Boston,100 William T Morrissey,,,
+224,Beacon Hill Books & Cafe,71 Charles,,09:00,21:00
+225,Bean & Berry - Lower Level,32 Cambridge,,,
+226,Bean & Leaf Cafe,20 Custom House,,,
+227,Bean & Leaf Cafe,239 Causeway,,,
+228,HSI MCA BOS FB  LLC,300 Terminal,,,
+229,Beantown Pastrami,100 Hanover,,,
+230,Beantown Pub/Ziggy's Coffee Bar,100 Tremont,,,
+231,Beard Papa Teazzi,232 Newbury,bubble_tea,,
+232,Becca's Kitchen,60 Springfield,,,
+233,Beijing Taste,377 Washington,chinese,11:00,20:30
+234,Bel Ave Pizza,330 Belgrade,,,
+235,Bella Vista,288 Hanover,,,
+236,Bell In Hand,45 Union,burger,00:00,02:00
+237,Ben Cotto,357 Hanover,,,
+238,Benevento's,111 Salem,italian;pasta;pizza,,
+239,Ben & Jerry's,174 Newbury,ice_cream,12:00,22:00
+240,Ben & Jerry's,300 Faneuil Hall Marketplace,ice_cream,12:00,22:00
+241,Ben & Jerry's,61 Brookline,ice_cream,12:00,22:00
+242,Ben & Jerry's,77 Seaport,ice_cream,12:00,22:00
+243,BEN & JERRYS,200 Faneuil Hall Marketplace,ice_cream,12:00,22:00
+244,Ben & Jerry's (Kiosk),800 Boylston,ice_cream,12:00,22:00
+245,Bennett's Sandwich Shop,1348 Boylston,,,
+246,Bennett's Sandwich Shop,91 Summer,,,
+247,Ben's Fast Food-Kitchen 117,94 Shirley,,,
+248,BERKELEY PERK CAFE,69 Berkeley,breakfast,06:30,16:30
+249,Berkeley Streat,200 Berkeley,,,
+250,Berklee College of Music,160 Massachusetts,,,
+251,Berklee Noodles,173 Massachusetts,,,
+252,Berkshire Farms Market,200 Terminal,,05:00,17:00
+253,Berkshire Farms Market A,500 Terminal,,05:00,17:00
+254,BERTUCCI'S,633 V F W,pizza;italian,,
+255,Bertucci's Pronto,18 Tremont,pizza;italian,,
+256,BESTEA - Lower Level,32 Cambridge,,,
+257,Best Fried Chicken,1198 Blue Hill,,11:00,24:00
+258,Best Western Plus Boston Hotel,8 Gerard,,,
+259,Beth Israel Deaconess,330 Brookline,,,
+260,Better Bagels,77 Seaport,bagel,06:30,15:00
+261,Beyond Proof,597 Centre,mediterranean,17:00,22:00
+262,BEY RESTAURANT,278A Shawmut,,,
+263,B. Good,100 Terminal,,11:00,20:00
+264,B. Good Burger,200 Terminal,,11:00,20:00
+265,Bibim Box,1420 Tremont,,,
+266,Biddy Earlys,141 Pearl,,,
+267,B I DEACONESS/WEST END CAFE,1 DEACONESS,bubble_tea;sushi,,
+268,BIG DADDY HOT DOGS,10 Whittier,pizza,10:30,21:30
+269,BIG DADDY'S PIZZA,436 Western,pizza,10:30,21:30
+270,Big Night Live,50 Causeway,,,
+271,Bijou Night Club,51 Stuart,,,
+272,Billares Colombia,16 Bennington,,,
+273,Bill's Bar,7 Lansdowne,,,
+274,Billy's Sub Shop,57 Berkeley,sandwich;burger;breakfast;fried_food,06:00,15:00
+275,BILLY'S TEXAS B.B.Q.,530 Washington,bubble_tea;sushi,,
+276,BILLY TSE RESTAURANT,240 Commercial,,,
+277,Birdies Hot Chicken / Patty Haus,245 Washington,,,
+278,Birria Taqueria,220 Columbia,mexican,11:00,20:30
+279,Bistro du Midi,272 Boylston,french,11:00,22:00
+280,Bitez,914 Morton,,,
+281,Black Bamboo,57 Canal,thai,,
+282,Blackbird,100 Holton,donut,07:00,16:00
+283,Blackbird Donuts,1321 Boylston,donut,07:00,16:00
+284,Blackbird Doughnuts,175 Cambridge,donut,07:00,16:00
+285,Blackbird Doughnuts & Sally's Sandwiches,460 Tremont,donut,07:00,16:00
+286,571 Tremont LLC,571 Tremont,,,
+287,Blackmoor Bar & Kitchen,1 Chelsea,grill,,
+288,Black Rose,160 State,irish,,
+289,Black Seed,140 Tremont,,,
+290,Blake's Boston,280 Friend,,,
+291,Blank Street,248 Newton,coffee_shop,,
+292,Blank Street,282 Cambridge,coffee_shop,,
+293,Blank Street,800 Boylston,coffee_shop,,
+294,Blank Street Coffee,120 Causeway,coffee_shop,,
+295,Blank Street Coffee,123 Pinckney,coffee_shop,,
+296,Blank Street Coffee,489 Broadway,coffee_shop,,
+297,Blank Street Coffee,48 Broadway,coffee_shop,,
+298,Blank Street Coffee,647 Boylston,coffee_shop,,
+299,Blasi's Kitchen & Bar,756 Adams,,,
+300,Blaze Pizza,1282 Boylston,pizza,10:30,22:00
+301,Bleacher Bar,70 Lansdowne,,,
+302,Blend,1310 DORCHESTER,,05:00,26:00
+303,Block @ Woods Hill,300 Pier 4,,,
+304,Blondie's,458 Western,,,
+305,BLOOM,23 Northern,,,
+306,Blu,4 Avery,american,,
+307,Blue Bottle Coffee,163 Newbury,,07:00,18:00
+308,Blue Bottle Coffee,43-61 Pier 4,,07:00,18:00
+309,Blue Bottle Coffee,800 Boylston,,07:00,18:00
+310,Blue Cross Blue Sheild of Ma. Cafe,101 Huntington,,,
+311,Blue Hill House of Pizza,161 Blue Hill,pizza,11:00,22:00
+312,Blue Mountain Jamaican Restaurant,1301 Blue Hill,,,
+313,Blue Nile,389 Centre,ethiopian,,
+314,Blue Ribbon Barbecue,401 Park,,11:00,23:00
+315,Blue Ribbon Sushi,500A Commonwealth,,11:00,23:00
+316,Blue Sakura,1103 Commonwealth,asian,11:30,22:30
+317,BLUE STAR RESTAURANT,11 Corinth,,,
+318,Blunch,59 EAST SPRINGFIELD,breakfast;sandwich;coffee_shop,08:00,03:00
+319,BO9/CO9/Y7,4 Jersey,,,
+320,Boardeaux BOS,52 High,,,
+321,Boardwalk Southie,309 D,,,
+322,Bohemios Restaurant,30 Bennington,colombian,,
+323,Boloco,48 Congress,,,
+324,BON,22 Beacon,,10:30,22:00
+325,Bon Appetit Creperie,100 Hanover,coffee_shop,,
+326,BON APPETIT RESTAURANT,1138 Blue Hill,coffee_shop,,
+327,Bonchon Allston,101 Brighton,,,
+328,Boneyard Wings - K105,94 Shirley,,,
+329,Bon Me,100 Hanover,,10:30,22:00
+330,Bon Me,441 Stuart,,10:30,22:00
+331,Bon Me @ BPM,300 Terminal,,10:30,22:00
+332,Bon Me Restaurant,313 Congress,,10:30,22:00
+333,Bonne Chance Cafe,77 Canal,sandwich,,
+334,Bono Restaurant and Catering,271 Meridian,colombian;salvadoran;mexican,11:00,26:00
+335,BoostBerry,21 Dry Dock,,,
+336,Bootleg Special,400 Tremont,seafood;cajun,,
+337,Boqueria,25 Thomson,,,
+338,Borrachito/The Garret Boston,131 Seaport,mexican,11:00,26:00
+339,BOS' Sichuan Taste,204 Harvard,chinese,11:00,22:00
+340,Boston Ale House,1885 Centre,american,11:00,23:00
+341,BOSTON BACK BAY HILTON,40 Dalton,,,
+342,Boston Back Bay Hilton-Employee Cafeteria,40 Dalton,,,
+343,Boston Back Bay Hilton-Lobby Bar,40 Dalton,,,
+344,Boston Barbecue - Lower Level,32 Cambridge,,,
+345,Boston Bowl,820 WM T MORRISSEY,,,
+346,Boston Burger,1100 Boylston,burger,11:00,24:00
+347,Boston Celtics Practice Facility Dining,38 Guest,,,
+348,Boston Chowda Co.,300 FANEUIL HALL MARKET,seafood,,
+349,Boston College Dining Services-Room 146,2599 Beacon,,,
+350,BOSTON COLLEGE WALSH HALL,150 ST THOMAS MOORE,,,
+351,Boston Doner,50 Causeway,shawarma;kebab,10:30,24:00
+352,Boston Elite,60 Rowes Wharf,,,
+353,Boston Fried Chicken,105 Bowdoin,,,
+354,Boston Fried Chicken,998 Blue Hill,,,
+355,Boston Fry House,20 Kneeland,pizza,,
+356,Boston Harbor Distillery,12R Ericsson,,,
+357,Boston Harbor Distillery,500 Terminal E,,,
+358,Boston Harbor Distillery - 10' Event,369 Atlantic,,,
+359,Boston Harbor Distillery - 10' Storage,369 Atlantic,,,
+360,Boston Harbor Distillery - 20' Main,369 Atlantic,,,
+361,Boston Harbor Hotel,70 Rowes,,,
+362,Boston Harbor Hotel Wharf Room,40 Rowes,,,
+363,Boston House of Pizza/Lunch Box,940 AMER LEGION,pizza,,
+364,Bostonia Cafe,1 City Hall,,,
+365,Bostonia Public House,131 State,,,
+366,Boston Kitchen Pizza,707 Washington,pizza,,
+367,Boston Living Center,29 Stanhope,,,
+368,Boston Lodge of Elks #10,1 Morrell,,,
+369,BOSTON & MAINE FISH CO.,200 Faneuil Hall Market,,,
+370,Boston Marriott Longwharf,296 State,,,
+371,Boston Marriott Long Wharf - FS,296 State,,,
+372,Boston Medical Center,830 Harrison,,,
+373,Boston Medical Center Brighton,736 Cambridge,,,
+374,Boston Medical Center (Shapiro Bldg.),830 Harrison,,,
+375,Boston News Cafe,260 Franklin,,06:00,16:00
+376,Boston News Cafe,28 State,,06:00,16:00
+377,Boston News Cafe (90 Arch St.),90 Arch,,06:00,16:00
+378,Boston Opera House,539 Washington,american,11:00,23:00
+379,Boston Park Plaza Employee Cafeteria(3rdFl),50 Park,,,
+380,Boston Park Plaza (Main Kitchen/Room Serv.),50 Park,,,
+381,Boston Pizza & Grill,533 Columbia,pizza,,
+382,Boston Restaurant Bar & Grill,1251 River,,,
+383,BOSTON SAIL LOFT,80 Atlantic,seafood;local,,
+384,Boston Shawarma,315 Huntington,international,,
+385,Boston Soup Dumplings,113 Brighton,chinese,11:30,21:00
+386,Boston Sweet Cravings,1 Faneuil Hall,,,
+387,Boston Symphony Orchestra,301 MASSACHUSETTS,,,
+388,Boston Tasty Chicken,1251 River,,,
+389,Boston Yacht Haven,87 COMMERCIAL WHARF,scottish;burger;pizza;fish_and_chips,11:00,23:00
+390,Bottega Del Sud,645 Second,,,
+391,BOURBON ST. CAFE,417 Washington,southern;tapas,10:30,23:00
+392,Bourbon Street Cafe,350 Longwood,,,
+393,BPL Newsfeed Cafe,700 Boylston,,09:00,17:00
+394,Brannellys Cafe,4432 Washington,,,
+395,Brassica Kitchen,3712 Washington,tapas;coffee;local;organic;regional;cafe,09:00,22:00
+396,Brassica Kitchen & Cafe,3710 Washington,tapas;coffee;local;organic;regional;cafe,09:00,22:00
+397,Bread Thyme,1868 Centre,lebanese,08:00,19:00
+398,BREADWINNERS/STARBUCK'S,595 Commonwealth,,,
+399,Bred,2255 Dorchester,,,
+400,Breeze,130 Jersey,,,
+401,Brendan Behan Pub,378 Centre,,12:00,01:00
+402,Brewer's Fork,29 Bunker Hill,,,
+403,BRICCO Restaurant/Bakery,239 Hanover,,,
+404,Brick Street Bagels,371 Broadway,,,
+405,Brick Street Bagels,570 Tremont,,,
+406,BRIGHAM CIRCLE CHINESE FOOD,728 Huntington,chinese,11:00,21:00
+407,Brighams & Womens Hospital - Tower Cafe,75 Francis,,,
+408,Brigham & Womens Coffee Connection,75 Francis,,,
+409,BRIGHAM & WOMENS FAULKNER HOSPITAL,1153 CENTRE,,,
+410,Bright Arena/Briggs Cage,79 NORTH HARVARD,,,
+411,Bright-Landry Arena Briggs Cafe,65 Harvard,,,
+412,Brighton Bodega,328 Washington,,,
+413,BRIGHTON CAFE,1597 COMMONWEALTH,pizza,11:00,01:00
+414,BRIGHTON HOUSE OF PIZZA,218 Market,,,
+415,Brighton Music Hall,156 Brighton,,,
+416,Brightonone,77 Warren,,,
+417,Brighton Sushi and Fry,1581 Commonwealth,,,
+418,Broadside,99 broad,,11:00,02:00
+419,Broadway Golf Club,423 Broadway,,,
+420,Broadway Pastry,258 Broadway,coffee_shop,07:00,19:00
+421,BROADWAY'S BEST PIZZA,483 Broadway,,,
+422,Broken Records Beer Hall,67 Guest,,,
+423,Broken Rice,224 Newbury,,,
+424,Broken Rice,7 Beach,,,
+425,Brother's Deli Restaurant,1636 Blue Hill,,,
+426,Brown Brothers Harriman & Co.,185 Franklin,,,
+427,BROWN SUGAR CAFE,1033 Commonwealth,thai,11:00,22:00
+428,BRUEGGER'S BAGEL BAKERY,375 LONGWOOD,,,
+429,Bruins Bar,1 Harborside,,11:00,19:00
+430,BSMNT,100 Stuart,,,
+431,B/SPOKE,54 Old Colony,bubble_tea;sushi,,
+432,BTM Cafe,60 Fenwood,,,
+433,BU 4thFl SCHOOL OF MGMT,595 Commonwealth,,,
+434,Bubble Bath,100 High,,11:00,23:00
+435,Bubble Bath Back Bay (Bar) @ CitizenM Hotel,1001 Boylston,,11:00,23:00
+436,BU CONF. CTR. SCHOOL OF MGMENT8th/9th,595 COMMONWEALTH,,,
+437,B.U.Dining Services-1st fl.,100 Bay State,bubble_tea;sushi,,
+438,B.U.Dining Services-2nd fl.,100 Bay State,bubble_tea;sushi,,
+439,B. U. Einsteins Bagels,685 Commonwealth,bubble_tea;sushi,,
+440,Buffalo Wild Wings Go/Sp. AS2-A18,100 Terminal,,,
+441,B.U. George Sherman Union,775 COMMONWEALTH,diner,07:00,17:00
+442,Bukowski Tavern,50 Dalton,american,12:00,01:00
+443,Bulfinch Crossing - 11th Fl. Happy Hour Bar,1 Congress,sandwich,,
+444,Bulfinch Crossing - 11th fl. Market Place,1 Congress,sandwich,,
+445,Bulfinch Crossing - Lobby Cafe,1 Congress,sandwich,,
+446,Bulfinch Social at Boxer Hotel,105 Merrimac,,,
+447,Bun Buds - K101,94 Shirley,,,
+448,Bunker Hill Knights of Columbus #62,545 Medford,,,
+449,B.U. PUB,225 BAY STATE,bubble_tea;sushi,,
+450,Burger King,100 Washington,burger,10:30,23:00
+451,Burger King,1200 Dorchester,burger,10:30,23:00
+452,Burger King,128 Tremont,burger,10:30,23:00
+453,Burger King,1 Maverick,burger,10:30,23:00
+454,Burger King,210 Brighton,burger,10:30,23:00
+455,Burger King,280 Broadway,burger,10:30,23:00
+456,Burger King,885 CUMMINS,burger,10:30,23:00
+457,Burger King,892 River,burger,10:30,23:00
+458,Burger King,944 Bennington,burger,10:30,23:00
+459,Burger King # 3483,1610 VFW,burger,10:30,23:00
+460,Burger King # 3531,4594 Washington,burger,10:30,23:00
+461,Burg & Shaw,80 Boylston,burger;shawarma,11:00,22:00
+462,Burritos Pizzeria,1280 Hyde Park,pizza;mexican,10:00,22:30
+463,Buttermilk & Bourbon,160 Commonwealth,southern;tapas,10:30,23:00
+464,"Butter ""UR"" Biscuit",21 Dry Dock,,,
+465,B.U. WARREN TOWER CAFE,700 COMMONWEALTH,bubble_tea;sushi,,
+466,B.U. WEST CAMPUS,278 Babcock,bubble_tea;sushi,,
+467,byChae,222 Newbury,,,
+468,C01/B01/Y01,4 Jersey,,,
+469,C11,4 Jersey,,,
+470,C12/B12,4 Jersey,,,
+471,C13/B13,4 Jersey,,,
+472,C15/B15,4 Jersey,,,
+473,C16/B16,4 Jersey,,,
+474,C17/B17,4 Jersey,,,
+475,CABANA GRILL,254 Bennington,latin_american,,
+476,Cacao,450 Massachusetts,,,
+477,Cacao,64 Broad,,,
+478,Cactus Club Cafe,500 Boylston,mexican,,
+479,Cactus Grill,42 Maverick,mexican,,
+480,Cafe 1924 @ Mass Financial Services,111 Huntington,,,
+481,Cafe 24,24 Fenway,sushi,11:30,22:30
+482,Cafe 26,26 Temple,breakfast,07:00,20:00
+483,Cafe 472,472 Commonwealth,,11:00,23:59
+484,Cafe 939,939 Boylston,,,
+485,Cafe Amalfi,2 Battery,pastry;espresso;coffee,07:00,17:00
+486,Cafe Amaro,319 Hanover,italian,12:00,23:00
+487,Cafe Bonjour,55 Temple,french;breakfast;brunch,07:00,15:00
+488,Cafe Darq,40 Beach,bubble_tea;ice_cream,08:30,22:00
+489,Cafe GiGu,102 Meridian,,,
+490,Cafe Juice Up,1290 Blue Hill,,,
+491,Cafe Landwer,383 Chestnut Hill,israeli,08:00,21:30
+492,Cafe Landwer,651 Boylston,israeli,08:00,21:30
+493,Cafe Landwer,900 Beacon,israeli,08:00,21:30
+494,Cafe La Paz,101 Huntington,coffee_shop,07:00,22:00
+495,Cafe Lava & Bento,290 Washington,coffee_shop;breakfast,08:00,19:00
+496,CAFE MIRROR,362 Washington,coffee_shop,05:30,16:00
+497,CAFENATION,378 Washington,,,
+498,Cafe Noodo,1 Nashua,,,
+499,Cafe On 3,200 Seaport,,,
+500,CAFE POLONIA,611 Dorchester,,10:00,22:00
+501,CAFE PORTO BELLO,672 Broadway,,,
+502,Cafe Presto,1 Hotel,,,
+503,Cafe Sauvage,25 Massachusetts,french,08:00,22:00
+504,Cafe Selah,615 Centre,,06:30,18:30
+505,Cafe Siete,597 Centre,,07:00,16:00
+506,Cafe SuSu,240A Newbury,,10:00,20:00
+507,Cafeteria @ BHCC,250 Rutherford,,,
+508,Cafe Weekend,120 Harvard,diner,,
+509,Caffe Alanno - Lower Level,32 Cambridge,,,
+510,Caffe Bene,333 Massachusetts,,,
+511,Caffe Dello Sport,308 HANOVER,,,
+512,Caffe Dello Sport Eastie,973 Saratoga,,,
+513,Caffe Lil Italy,178 Salem,,,
+514,Caffe Nero,100 Huntington,coffee_shop,,
+515,Caffe Nero,103 Newbury,coffee_shop,,
+516,Caffe Nero,1047 Commonwealth,coffee_shop,,
+517,Caffe Nero,10 Summer,coffee_shop,,
+518,Caffe Nero,189 Massachusetts,coffee_shop,,
+519,Caffe Nero,354 Longwood,coffee_shop,,
+520,Caffe Nero,370 Congress,coffee_shop,,
+521,Caffe Nero,3 Center,coffee_shop,,
+522,Caffe Nero,416 Broadway,coffee_shop,,
+523,Caffe Nero,443 Boylston,coffee_shop,,
+524,Caffe Nero,53 Union,coffee_shop,,
+525,Caffe Nero,558 Washington,coffee_shop,,
+526,Caffe Nero,57 Northern,coffee_shop,,
+527,Caffe Nero,725 Centre,coffee_shop,,
+528,Caffe Nero,80 Causeway,coffee_shop,,
+529,"Caffe Nero ""Express""",700 Atlantic,coffee_shop,,
+530,Caffe Nero @ Sky Lobby 3rd FL.,100 Huntington,,,
+531,CAFFE PARADISO,253 HANOVER,,,
+532,Caffe Vittoria,290 Hanover,coffee_shop;italian,,
+533,CALIFORNIA PIZZA KITCHEN,800 Boylston,pizza,,
+534,Cambria Hotel,6 Broadway,,,
+535,Cambria Hotel - Rooftop,6 Broadway,,,
+536,Camden Food Co,300 Terminal,,,
+537,Camp Harborview,1 Long Island,,09:00,17:00
+538,Camry Cafe,700 William T Morrissey,,,
+539,Cannonball Cafe,383 Dorchester,,07:00,15:00
+540,Canopy Hotel,99 Blackstone,,,
+541,Canteen @ BHCC,250 Rutherford,,,
+542,CANTINA ITALIANA,344 Hanover,italian,,
+543,CANTON EATERY,339 Meridian,,,
+544,CANTON HOUSE,6 Hancock,,,
+545,Cant Talk Mouth Full,633 Centre,,,
+546,Cape Verde Taste,481 Geneva,,,
+547,Capital Burger #3402,159 Newbury,burger,,
+548,CAPITAL GRILLE,880 Boylston,,11:30,23:00
+549,Capital One Cafe,310 Harrison,,07:00,19:00
+550,Capital One Cafe,55 Seaport,,07:00,19:00
+551,Capital One Cafe,711 Boylston,,07:00,19:00
+552,CAPITOL COFFEE HOUSE,122 Bowdoin,,05:00,16:00
+553,CAPO RESTAURANT,443 Broadway,,,
+554,CAPPY'S PIZZA,304 Centre,,,
+555,CAPPY'S PIZZA,672 TRUMAN,,,
+556,CAPPY'S PIZZA & SUBS,82 Westland,,,
+557,Capri Italian Steakhouse,478 Harrison,italian,,
+558,Cara By Craft Food Halls,54 Devonshire,,,
+559,Caramelo Bakery Cafe,375 Blue Hill,,,
+560,CarGurus Cafe,1001 Boylston,,,
+561,CARLOS CUCINA ITALIANA,131 Brighton,italian,,
+562,Carmelina's North End,307 Hanover,italian,,
+563,Carrie Nation,11 Beacon,,,
+564,Carrie's Cafe by Citra,15 Francis,,,
+565,CARVER DEN,80 TALBOT,,,
+566,Casa Azul Restaurant and Grill,1328 Blue Hill,,,
+567,Casa Bonita Mexican Grill,1033 Massachusetts,,,
+568,Casa Razdora,115 Water,,,
+569,Casarecce Cucina Italiana,285 Hanover,,,
+570,CASA ROMERO,30 Gloucester,mexican,,
+571,Casa Verde,711 Centre,,,
+572,Case Gym - Left,285 Babcock,,,
+573,Case Gym - Right,285 Babcock,,,
+574,CasiFit,100 Hanover,,,
+575,Cask N Flagon,48 BROOKLINE,,,
+576,Castle Island Brewing Co/Bardo's Bar Pizza,10 Old Colony,pizza,11:00,22:00
+577,Catering,4 Jersey,colombian;salvadoran;mexican,11:00,26:00
+578,Cathedral Station,1222 Washington,,,
+579,Cava,125 Summer,mediterranean,10:45,22:00
+580,Cava,1350 Boylston,mediterranean,10:45,22:00
+581,Cava,200 Terminal,mediterranean,10:45,22:00
+582,Cava,669 Boylston,mediterranean,10:45,22:00
+583,Cava,800 Boylston,mediterranean,10:45,22:00
+584,CAVAN CAFE,1406 Hyde Park,mediterranean,10:45,22:00
+585,Caveau,3 Center,,,
+586,CeCarré Pizza & Provisions,800 Boylston,,,
+587,Celine Restaurant,323 A,,,
+588,CENTERFOLDS,12 Lagrange,,,
+589,Centerplate @ ORPHEUM THEATRE,1 Hamilton,,,
+590,Center Stage @ Emerson,116 Boylston,,,
+591,Central Wharf Co.,160 Milk,,,
+592,Centre Squeeze,1783 Centre,,,
+593,CGK Newbury,266 Newbury,,,
+594,Chacarero,93 Arch,,,
+595,CHACHO'S PIZZA,1502 Tremont,,,
+596,Cha Kung Fong,1 Nassau,,,
+597,Chappy's Pickles (lower level),32 Cambridge,,,
+598,Charlestown Coffee - Lower Level,32 Cambridge,,,
+599,Charlestown Recovery House,15 Bunker Hill,,,
+600,Charley's Philly Steak,417 Washington,,,
+601,Charley's Philly Steaks,350 Longwood,,,
+602,CHARLIE'S HOUSE OF PIZZA,1724 Dorchester,diner;american;burger,11:00,02:00
+603,Charlie's Pizza & Cafe,177 Allston,diner;american;burger,11:00,02:00
+604,Charlies Sandwich Shoppe,429 Columbus,diner,,
+605,Charming Gardener/Dive Bar,100 High,seafood,,
+606,CHART HOUSE,60 Long,,,
+607,Chase Sapphire Lounge By The Club,200 Terminal,,,
+608,Chattermark Distillers,200 Terminal,,,
+609,CHAU CHOW,699 WM T MORRISSEY,,,
+610,CHECKMATE CAFE,900 South,,,
+611,CHELO SABOR,114 Washington,,,
+612,CHEQUERS,72 Concord,,,
+613,Chequers Coffee Express,72 Concord,,,
+614,Chestnut Park @Cleveland Circle,50 Sutherland,,,
+615,CHEZ-VOUS SKATING RINK,11 Rhoades,,,
+616,Chicha San Chen,1001 Boylston,bubble_tea,,
+617,Chicken and Fish Fry Shack - 16' Trailer,420 D,thai,11:00,21:30
+618,Chicken and Rice Guys,280 Washington,,10:30,20:00
+619,Chicken and Rice Guys,85 Bedford,,10:30,20:00
+620,Chicken & Rice Guys,21 Dry Dock,middle_eastern,,
+621,Chick-Fil-A,569 Boylston,chicken,06:30,23:00
+622,Chick-Fil-A,700 Atlantic,chicken,06:30,23:00
+623,Chick-Fil-A Boston Delivery(K112  114  116),94 Shirley,chicken,06:30,23:00
+624,Chick-Fil-A (Store#80845),100 Terminal,chicken,06:30,23:00
+625,Chick-Fil-A (Store#80846),500 Terminal,chicken,06:30,23:00
+626,Chilacates,1482 Tremont,mexican,11:00,23:00
+627,Chilacates,222 Amory,mexican,11:00,23:00
+628,Chilacates,275A Shawmut,mexican,11:00,23:00
+629,Chilacates,658 Centre,mexican,11:00,23:00
+630,Chilacates,66 Staniford,mexican,11:00,23:00
+631,Chilacates,69 L,mexican,11:00,23:00
+632,Chilacates/Love and Light,4257 Washington,mexican,11:00,23:00
+633,CHILDRENS HOSPITAL MAIN CAF,300 LONGWOOD,,,
+634,Chili Bento,1 Brighton,,,
+635,Chill On Park,142 Park,,,
+636,Chilton Club,150 Commonwealth,,,
+637,CHINA GOURMET RESTAURANT,23 Tyler,chinese,16:00,01:00
+638,China Pearl Restaurant,9 Tyler,,,
+639,CHINA SEA RESTAURANT,1194 Blue Hill,chinese,16:00,01:00
+640,China Sky,782 Adams,chinese,16:00,01:00
+641,China Station,530 Washington,chinese,16:00,01:00
+642,Chinatown Cafe,262 Harrison,chinese,09:30,19:00
+643,CHINESE DRAGON,380 Chelsea,chinese,,
+644,Chip City,97 Causeway,,11:00,22:00
+645,Chipotle Mexican Grill,144 Brookline,mexican,10:45,22:00
+646,Chipotle Mexican Grill,1924 Beacon,mexican,10:45,22:00
+647,Chipotle Mexican Grill,21 District,mexican,10:45,22:00
+648,Chipotle Mexican Grill,462 Washington,mexican,10:45,22:00
+649,Chipotle Mexican Grill,553 Boylston,mexican,10:45,22:00
+650,Chipotle Mexican Grill,8 Park,mexican,10:45,22:00
+651,Chipotle Mexican Grill,99 Seaport,mexican,10:45,22:00
+652,Chipotle Mexican Grill #1520,101 Summer,mexican,10:45,22:00
+653,Chipotle Mexican Grille,283 Washington,mexican,10:45,22:00
+654,Chop Chop Rice Thai Cuisine,248 Newbury,,,
+655,Chubbs Taco & Tequila Bar,750 Adams,,,
+656,CHUNG WAH,199 Bowdoin,,,
+657,CIAO,2 SEAPORT,pizza;pasta,11:00,22:00
+658,Ciao Roma,5 North,,,
+659,Cibao Restaurant,1487 Dorchester,,,
+660,Cinnabon# 106694,700 Atlantic,dessert,09:00,23:30
+661,Cisco Brewers Fenway,1301 Boylston,,,
+662,Cisco Brewers Fenway - Trailer 1,1301 Boylston,,,
+663,Cisco Brewers Fenway - Trailer 2,1301 Boylston,,,
+664,Cisco Brewers Fenway - Trailer 3,1301 Boylston,,,
+665,Cisco Brewers Fenway - Trailer 4,1301 Boylston,,,
+666,Cisco Brewers Fenway - Trailer 5,1301 Boylston,,,
+667,Cisco Brewers Seaport - Bar #1,85 Northern,,,
+668,Cisco Brewers Seaport - Bar #2,85 Northern,,,
+669,Cisco Brewers Seaport - Trailer #1,85 Northern,,,
+670,Cisco Brewers Seaport - Trailer #2,85 Northern,,,
+671,Cisco Brewers Seaport - Trailer #4,85 Northern,,,
+672,Cisco Brewers Seaport - Trailer #5,85 Northern,,,
+673,Cisco Brewers Seaport - Trailer #6,85 Northern,,,
+674,Cisco Brewers Seaport - Trailer #7,85 Northern,,,
+675,"Cisco Brewers Seaport - Trailer #7 "" Winery""",85 Northern,,,
+676,Cisco Brewers Seaport - Trailer #8,85 Northern,,,
+677,Cisco Brewery,200 LOGAN AIRPORT TRMNL B,,,
+678,CitizenM Hotel,50 Causeway,,,
+679,CitizenM Hotel Boston Back Bay,1001 Boylston,,,
+680,Citizen Public House & Oyster Bar,1310 Boylston,,,
+681,Citizens,772 Boylston,,,
+682,Citra A Fresh Cafe,221 Longwood,,,
+683,Citra Cafe,700 Albany,,,
+684,Citrus & Salt,319R A,,,
+685,City Bar/M. J. O'Connor's,425 Summer,,,
+686,Cityside,1958 BEACON,,10:00,02:00
+687,City Tap House,374 Congress,,,
+688,City Winery,1 Canal,,,
+689,CLARKE'S,21 Merchants,,,
+690,Classic Harbor Lines,60 Rowes,,,
+691,Clay Pot Cafe,66 Brighton,chinese,,
+692,Clay Pot Cafe,74 Kneeland,chinese,,
+693,CLERY'S,331 Columbus,,,
+694,Clock Tavern,342 Broadway,,,
+695,Clover,800 Boylston,sandwich,10:00,23:59
+696,Clover,160 Federal,sandwich,10:00,23:59
+697,Club Cafe,209 Columbus,,,
+698,CLUB HOTEL BAR,240 Mount Vernon,,,
+699,Cmelatte Cafe,197 Eighth,,,
+700,C. Noula Restaurant,962 Blue Hill,,,
+701,Aramark Corporation,4 Jersey,,,
+702,CO5/BO5,4 Jersey,,,
+703,CO6/BO6,4 Jersey,,,
+704,CO7,4 Jersey,,,
+705,Cobblestones,30 Charles,,08:00,18:00
+706,Cocobeet,100 City Hall,,07:00,20:00
+707,Cocobeet,225 Franklin,,07:00,20:00
+708,Coco Bubble Tea,150 Huntington,,,
+709,Coco Leaf,1480 Dorchester,vietnamese;dessert,06:00,23:00
+710,Code 10 Restaurant Cafe,2 Concord,,,
+711,Coffee Cup,1 Cambridge,,07:00,19:00
+712,Coffee Cup (Ashmont Station southbound side),1906 Dorchester,american,,
+713,COFFEE SHOP,11 Elkins,fish,,
+714,Coffee Turco,483 Cambridge,coffee_shop,09:00,18:00
+715,Cold Stone Creamery,800 Boylston,ice_cream,,
+716,Colette Bakery,517 Columbus,coffee_shop,,
+717,Collective,115 Federal,,,
+718,Collective Pantry,115 Federal,,,
+719,Collective Prep & Storage,115 Federal,,,
+720,College Club,44 Commonwealth,,,
+721,COLLEGE PIZZA,50 Queensberry,,,
+722,Colonnade Hotel,120 Huntington,,,
+723,Re: 3 Bars,244 Tremont,,,
+724,1844 Inc.,1882 Centre,,,
+725,Comfort Kitchen,611 Columbia,,,
+726,Committee,50 Northern,mediterranean;greek,,
+727,Common Craft,235 Old Colony,,,
+728,Common Ground Cafe @ Simmons College,300 Fenway,,,
+729,Commonwealth Pier - Harbor Cafe,200 Seaport,,,
+730,Commonwealth Pier - The Beanery,200 Seaport,,,
+731,Community Servings Employee Cafeteria,18 Marbury,,,
+732,Community Workshop Inc.,174 Portland,,,
+733,Concepts,18 Newbury,,,
+734,Concession Kitchen South Side,2597 Beacon,,,
+735,Con Sabor A columbia,244 Meridian,,,
+736,Conte 1,2597 Beacon,italian,,
+737,Conte 2,2597 Beacon,italian,,
+738,Conte 3,2597 Beacon,italian,,
+739,Conte 4,2597 Beacon,italian,,
+740,Conte 5,2597 Beacon,italian,,
+741,Conte 6,2597 Beacon,italian,,
+742,Conte 7,2597 Beacon,italian,,
+743,Conte 8,2597 Beacon,italian,,
+744,Contessa,15 Arlington,,07:30,24:00
+745,Convene @ 1 Boston Place,201 Washington,,,
+746,COOGAN'S BLUFF,171 Milk,,12:00,26:00
+747,Cool Shade Restaurant,388 Blue Hill,,,
+748,Coppa,253 SHAWMUT,italian,12:00,22:30
+749,Coquette/Cocorico,440 Summer,,,
+750,Corcoron Pub,2601 Beacon,,,
+751,Coreanos,172 Brighton,korean;fusion,,
+752,Corner Cafe,87 Prince,,12:00,22:00
+753,Cornwall's,648 Beacon,,11:30,26:00
+754,CORRIB PUB,396 Market,,,
+755,CORRIB PUB AND RESTAURANT,2030 Centre,,,
+756,Cosi,133 Federal,sandwich,07:00,15:00
+757,Cosmica @ the Revolution Hotel,40 Berkeley,,,
+758,Costello's Tavern Inc,717 Centre,,11:00,02:00
+759,Cotti Coffee Boston - Stall#1,122 Brighton,coffee_shop,,
+760,Countway LIbrary Cafe,10 Shattuck,,,
+761,Courtyard Boston Copley Square,88 Exeter,,,
+762,Courtyard Boston Downtown,275 Tremont,,,
+763,Courtyard by Marriot Boston - The Bistro,96 Beverly,,,
+764,Courtyard By Marriott,65R Boston,,,
+765,COURTYARD CAFE,200 Longwood,,,
+766,COURTYARD CAFE,275 Tremont,,,
+767,Courtyard Marriott Logan Airport,225 William F McClellan,,,
+768,CP Cafe,205 Newbury,,,
+769,Craft Food Hall,135 William T Morrissey,,,
+770,Craft Food Halls,1234 Soldiers Field,,,
+771,Craft Food Halls,1 Post Office,,,
+772,Crane River Cheese Club,138 Cambridge,,,
+773,Crazy Dough's Pizza,2201 Commonwealth,pizza,11:00,24:00
+774,Crescent Ridge Dairy,100 Hanover,,,
+775,Crisp By Stats,80 Causeway,,,
+776,CRISPY CREPES CAFE,714 Commonwealth,,,
+777,Crispy Dough Pizzeria,1512 TREMONT,,,
+778,CROKE PARK,268 Broadway,,,
+779,Crown Fried Chicken,344 Warren,,,
+780,Crumbl Cookies,21 District,,,
+781,Crush Pizza,982 Bennington,pizza,,
+782,Crystal Spoons,1950 Washington,,,
+783,Cumin Club Indian Kitchen,100 High,indian,,
+784,Cunard Tavern,24 Orleans,american,,
+785,Cuppa Coffee,275 Albany,,,
+786,CUPPACOFFEE,1 Merrimac,coffee_shop;australian,06:00,13:30
+787,Currentea,80 Causeway,,,
+788,Cusser's Roast Beef and Seafood,201 Brookline,seafood,11:00,22:00
+789,C' Yool Yemeni Coffee & Bakery,50 Malden,,,
+790,Dacoopa's Pizza,474 Saratoga,,,
+791,Daily Catch,323 Hanover,italian;seafood,,
+792,Daily Provisions,200 Seaport,,,
+793,Daily Provisions,501 Boylston,,,
+794,Daily Provisions @ Fidelity,200 Seaport,,,
+795,Dalia,429 Broadway,spanish,17:30,23:30
+796,Dalmoros Fresh Italian,700 Atlantic,italian,,
+797,Dalmoros Fresh Pasta To Go,200 Faneuil Hall Marketplace,italian,,
+798,Da Long Yi Hot Pot,137 Brighton,hotpot,,
+799,Dana Farber Cancer Institute Cafeteria,450 Brookline,,,
+800,Dandelion Coffee & Provisions,70 Rowes,,,
+801,Dani's Queer Bar,907 Boylston,,11:00,24:00
+802,Dans Mini Dogs,1010 Massachusetts,,,
+803,Darbar Indo-Pak Rest.,130 Beacon,,,
+804,Darryl's Corner Bar & Kitchen,604 Columbus,southern,,
+805,Dash Cafe,1 Henshaw,american,08:00,16:00
+806,Dave's Hot Chicken,123 Stuart,chicken,10:30,24:00
+807,Dave's Hot Chicken,1260 Boylston,chicken,10:30,24:00
+808,Dave's Hot Chicken,4 Lucy,chicken,10:30,24:00
+809,Dave's Hot Chicken - Space BA2-A15/BA-A11,200 Terminal,chicken,10:30,24:00
+810,Da Vinci Gelato & Waffle,295 Huntington,italian,,
+811,DAVIO'S,300 Terminal,,,
+812,DAVIO'S,75 Arlington,,,
+813,Davios Northern Italian Steakhouse,50 Liberty,italian,,
+814,Day Shift Cafe,115 Federal,,,
+815,DBAR,1236 Dorchester,,11:00,22:00
+816,D'BENNY'S SUBS,1433 DORCHESTER,,,
+817,D'Buly Chimis,1151B Blue Hill,,,
+818,D Coal Pot,984 Hyde Park,,,
+819,DD1/B14,4 Jersey,,,
+820,DD2 Dippin Dots,4 Jersey,,,
+821,Deja - Brew,704 Broadway,,,
+822,DelFriscos Double Eagle Steak House,250 Northern,steak_house,,
+823,Delicias Del Caribe,149 Stoughton,caribbean,,
+824,Delicious Yogurt,4198 Washington,,,
+825,Delini Gelato,5 Bellevue,,13:00,20:00
+826,DELI OF COURSE,451 D,sandwich,,
+827,DELI OF COURSE,695 Atlantic,sandwich,,
+828,Deli One,85 ARCH ST,,,
+829,Del's Lemonade (Vending 10),4 Jersey,,,
+830,Delta Premium Lounge,500 Terminal,,,
+831,Delta Sky Club Express,500 Terminal,,,
+832,Delta Sky Club Terminal SAT,100 Terminal,,,
+833,Delta Sky Club Trmnl A Main,100 Terminal,,,
+834,Democracy 154 Maverick,154 Maverick,,,
+835,Democracy Brewing,29 Temple,american,12:00,22:00
+836,DEM & TED INC.  PIZZA SHUTTLE,239 Meridian,pizza,,
+837,Deno's Pizza and Subs,2040 Centre,pizza,,
+838,Deparma,182 Sumner,italian,,
+839,Desi Quick Bite (DQB),273 Huntington,,,
+840,Desnuda Cocina & Bar,647 Tremont,,,
+841,Detroit Pizza,594A Washington,,,
+842,Deuxave,371 Commonwealth,french,,
+843,DEVLIN'S RESTAURANT,332 Washington,,,
+844,D'Guru,43 Kingston,,,
+845,Diamond Tart,179 Harvard,,,
+846,Dig Inn,25 Thomson,regional,11:00,21:00
+847,Dig Inn,277 Washington,regional,11:00,21:00
+848,Dig Inn,557 Boylston,regional,11:00,21:00
+849,DILLON'S,955 Boylston,,,
+850,DIMITRIOS HOUSE OF PIZZA,1750 Dorchester,pizza,11:00,22:00
+851,Dining Hall @Emerson,122 Boylston,,,
+852,DINO'S CAFE,141 Salem,italian,11:00,22:00
+853,Dirty Water Dough Company,20 Maverick,pizza,,
+854,Dirty Water Dough Company,222 Newbury,pizza,,
+855,Discovery Cafe,3 Blackfan,,,
+856,Distraction Brewing Co,2 Belgrade,,,
+857,District 7 Cafe,376 Warren,,,
+858,District 7 Tavern,380 Warren,,,
+859,Doce de Boston - Lower Level,32 Cambridge,,,
+860,Dockside Beer Garden,250 Atlantic,american;seafood,11:30,25:00
+861,Dog House,300 FANEUIL HALL MARKET,,,
+862,Dolce,270 Hanover,,07:00,15:00
+863,DOLCE VITA (1696 Comm. Ave.),1696 Commonwealth,,07:00,15:00
+864,Dolphin Bay,72 Brighton,chinese,11:00,22:00
+865,Domino's,1144 Saratoga,pizza,10:30,24:00
+866,Domino's,1400 Tremont,pizza,10:30,24:00
+867,Domino's,165 Fairmount,pizza,10:30,24:00
+868,Domino's,25 Staniford,pizza,10:30,24:00
+869,Domino's,4000 Washington,pizza,10:30,24:00
+870,Domino's Pizza,1514 Blue Hill,pizza,10:30,24:00
+871,Domino's Pizza,163 Old Colony,pizza,10:30,24:00
+872,Domino's Pizza,205 Adams,pizza,10:30,24:00
+873,Domino's Pizza,277 Main,pizza,10:30,24:00
+874,Domino's Pizza,416 Cambridge,pizza,10:30,24:00
+875,Domino's Pizza,464 Washington,pizza,10:30,24:00
+876,Domino's Pizza,508 Park,pizza,10:30,24:00
+877,Dona Habana Restaurant,811 Massachusetts,,,
+878,Don Tequeno Y Dona Arepa,401A Centre,venezuelan,08:00,23:00
+879,Don Tequeno Y Dona Arepa,491 Blue Hill,venezuelan,08:00,23:00
+880,Don't Tell Aunty,1080 Boylston,,,
+881,Dora Taqueria,112 Stoughton,mexican,11:00,20:30
+882,Dorchester Brewing Company,1246 Massachusetts,,,
+883,Dorchester Food Co-op,195 Bowdoin,,,
+884,Dorchester Fried Chicken,851 Washington,,,
+885,Dorchester Pizza & Fried Chicken,159 Washington,pizza,,
+886,Dos Manos Kitchen,525 Western,international,,
+887,Dot Block Diner,1203 Dorchester,,,
+888,DOT TEA,1700 Dorchester,bubble_tea,10:30,23:00
+889,Double Tree Club Hotel/Starbucks,821 WASHINGTON,coffee_shop,,
+890,Double Tree Guest Suites,400 Soldiers Field,,,
+891,Doubletree Hotel Boston-Wisteria,821 Washington,,,
+892,Doughboy Donuts & Deli,220 Dorchester,pizza;donut;sandwich;coffee,00:00,23:59
+893,DOUZO JAPANESE RESTAURANT,131 Dartmouth,,,
+894,Dovetail,1 First,,,
+895,Down Home Delivery & Catering,2 Bowdoin,,,
+896,Dragon Bowl,396 Brookline,,,
+897,Drip By Craft Food Halls,2 Dry Dock,,,
+898,Drydock Cafe,7 Dry Dock,,,
+899,Dublin House of Pizza,197 Humboldt,pizza,11:00,22:00
+900,Ducali Pizzeria & Bar,289 Causeway,,,
+901,Shanti Boston LLC,2296 Washington,indian,12:00,22:00
+902,Dugout Inseat,4 Jersey,,11:30,02:00
+903,Dumpling Cafe,693 Washington,chinese,15:30,02:00
+904,Dumpling Center,179 Massachusetts,chinese,,
+905,Dumpling King,40 Harrison,chinese,,
+906,Dumpling Kingdom,137 Harvard,chinese,,
+907,Dumpling Kitchen,79 River,chinese,15:30,02:00
+908,Dunkin,100 Cambridge,donut;coffee_shop,05:00,18:00
+909,Dunkin,11 Broadway,donut;coffee_shop,05:00,18:00
+910,Dunkin,214 Beacon,donut;coffee_shop,05:00,18:00
+911,Dunkin,44 Parker,donut;coffee_shop,05:00,18:00
+912,Dunkin,5318 Washington,donut;coffee_shop,05:00,18:00
+913,DUNKIN',157 Seaport,donut;coffee_shop,05:00,18:00
+914,DUNKIN',1621 Blue Hill,donut;coffee_shop,05:00,18:00
+915,DUNKIN',1 First,donut;coffee_shop,05:00,18:00
+916,DUNKIN',300 Cambridge,donut;coffee_shop,05:00,18:00
+917,DUNKIN',684 American Legion,donut;coffee_shop,05:00,18:00
+918,DUNKIN',715 Boylston,donut;coffee_shop,05:00,18:00
+919,DUNKIN DONUT,16 KNEELAND,donut;coffee_shop,05:00,18:00
+920,DUNKIN DONUT,326 Congress,donut;coffee_shop,05:00,18:00
+921,Dunkin Donuts,100 William T Morrissey,donut;coffee_shop,05:00,18:00
+922,Dunkin Donuts,115 Forsyth,donut;coffee_shop,05:00,18:00
+923,Dunkin Donuts,1200 Hyde Park,donut;coffee_shop,05:00,18:00
+924,Dunkin Donuts,1236 Dorchester,donut;coffee_shop,05:00,18:00
+925,Dunkin Donuts,1443 Tremont,donut;coffee_shop,05:00,18:00
+926,Dunkin Donuts,147 Tremont,donut;coffee_shop,05:00,18:00
+927,Dunkin Donuts,153 Massachusetts,donut;coffee_shop,05:00,18:00
+928,Dunkin Donuts,1580 Dorchester,donut;coffee_shop,05:00,18:00
+929,Dunkin Donuts,15 Transportation,donut;coffee_shop,05:00,18:00
+930,Dunkin Donuts,1627 Tremont,donut;coffee_shop,05:00,18:00
+931,Dunkin Donuts,179 BRIGHTON,donut;coffee_shop,05:00,18:00
+932,Dunkin Donuts,1912 Beacon,donut;coffee_shop,05:00,18:00
+933,Dunkin Donuts,1931 Dorchester,donut;coffee_shop,05:00,18:00
+934,Dunkin Donuts,1 Harbor,donut;coffee_shop,05:00,18:00
+935,Dunkin Donuts,200 Terminal,donut;coffee_shop,05:00,18:00
+936,Dunkin Donuts,210 HARVARD,donut;coffee_shop,05:00,18:00
+937,Dunkin Donuts,2290 Dorchester,donut;coffee_shop,05:00,18:00
+938,Dunkin Donuts,2489 Washington,donut;coffee_shop,05:00,18:00
+939,Dunkin Donuts,283 Huntington,donut;coffee_shop,05:00,18:00
+940,Dunkin Donuts,315 Centre,donut;coffee_shop,05:00,18:00
+941,Dunkin Donuts,31 WM C KELLY,donut;coffee_shop,05:00,18:00
+942,Dunkin Donuts,344 Washington,donut;coffee_shop,05:00,18:00
+943,Dunkin Donuts,37 Huntington,donut;coffee_shop,05:00,18:00
+944,Dunkin Donuts,405 D,donut;coffee_shop,05:00,18:00
+945,Dunkin Donuts,4175 WASHINGTON,donut;coffee_shop,05:00,18:00
+946,Dunkin Donuts,510 Southampton,donut;coffee_shop,05:00,18:00
+947,Dunkin Donuts,530 Commonwealth,donut;coffee_shop,05:00,18:00
+948,Dunkin Donuts,598 Washington,donut;coffee_shop,05:00,18:00
+949,Dunkin Donuts,616 MASSACHUSETTS,donut;coffee_shop,05:00,18:00
+950,Dunkin Donuts,711 Atlantic,donut;coffee_shop,05:00,18:00
+951,Dunkin Donuts,719 Gallivan,donut;coffee_shop,05:00,18:00
+952,Dunkin Donuts,736 Cambridge,donut;coffee_shop,05:00,18:00
+953,Dunkin Donuts,750 Washington,donut;coffee_shop,05:00,18:00
+954,Dunkin Donuts,75 L,donut;coffee_shop,05:00,18:00
+955,Dunkin Donuts,77 MILK ST,donut;coffee_shop,05:00,18:00
+956,Dunkin Donuts,875 William T Morrissey,donut;coffee_shop,05:00,18:00
+957,Dunkin' Donuts,1131 Tremont,donut;coffee_shop,05:00,18:00
+958,Dunkin' Donuts,13 Maverick,donut;coffee_shop,05:00,18:00
+959,Dunkin' Donuts,1926 Columbus,donut;coffee_shop,05:00,18:00
+960,Dunkin' Donuts,1 DEACONESS,donut;coffee_shop,05:00,18:00
+961,Dunkin' Donuts,21 AUSTIN,donut;coffee_shop,05:00,18:00
+962,Dunkin' Donuts,235 Washington,donut;coffee_shop,05:00,18:00
+963,Dunkin' Donuts,2360 Washington,donut;coffee_shop,05:00,18:00
+964,Dunkin' Donuts,256 Boston,donut;coffee_shop,05:00,18:00
+965,Dunkin' Donuts,356 Bennington,donut;coffee_shop,05:00,18:00
+966,Dunkin' Donuts,7 Walk Hill,donut;coffee_shop,05:00,18:00
+967,Dunkin' Donuts,847 Dorchester,donut;coffee_shop,05:00,18:00
+968,Dunkin' Donuts,951 Bennington,donut;coffee_shop,05:00,18:00
+969,DUNKIN DONUTS',20 North,donut;coffee_shop,05:00,18:00
+970,DUNKIN DONUTS',800 Boylston,donut;coffee_shop,05:00,18:00
+971,DUNKIN' DONUTS,16 Tremont,donut;coffee_shop,05:00,18:00
+972,DUNKIN' DONUTS #0311,818 Harrison,donut;coffee_shop,05:00,18:00
+973,Dunkin Donuts/1138 Washington St.,1138 Washington,donut;coffee_shop,05:00,18:00
+974,Dunkin Donuts (209 North Harvard St.),209 NORTH HARVARD,donut;coffee_shop,05:00,18:00
+975,Dunkin Donuts (219 Cambridge),219 Cambridge,donut;coffee_shop,05:00,18:00
+976,Dunkin Donuts(757 Centre St.),757 Centre,donut;coffee_shop,05:00,18:00
+977,Dunkin Donuts (895 Morton St.),895 Morton,donut;coffee_shop,05:00,18:00
+978,Dunkin Donuts/Airside,400 Terminal,donut;coffee_shop,05:00,18:00
+979,DUNKIN DONUTS (ALLSTON),509 Cambridge,donut;coffee_shop,05:00,18:00
+980,Dunkin Donuts-Amer Airlines/Landside,200 LOGAN AIRPORT TRMNL B,donut;coffee_shop,05:00,18:00
+981,DUNKIN DONUTS(ARRIVAL),100 Terminal,donut;coffee_shop,05:00,18:00
+982,Dunkin Donuts at Old Colony,75 OLD COLONY,donut;coffee_shop,05:00,18:00
+983,DUNKIN DONUTS BLUE HILL AVE,456 Blue Hill,donut;coffee_shop,05:00,18:00
+984,Dunkin' Donuts(C.A. Donuts),155 Spring,donut;coffee_shop,05:00,18:00
+985,Dunkin Donuts (Canal St.),168 Canal,donut;coffee_shop,05:00,18:00
+986,Dunkin Donuts (Causeway St.),55 Causeway,donut;coffee_shop,05:00,18:00
+987,DUNKIN DONUTS (CITY PLACE),8 Park,donut;coffee_shop,05:00,18:00
+988,DUNKIN DONUTS(DEPARTURE),100 LOGAN AIRPORT TRMNL A,donut;coffee_shop,05:00,18:00
+989,DUNKIN DONUTS/FIRST DONUTS INC,100 Legends,donut;coffee_shop,05:00,18:00
+990,DUNKIN DONUTS(FRANKLIN),265 Franklin,donut;coffee_shop,05:00,18:00
+991,DUNKIN DONUTS/GALLERIA,340 Longwood,donut;coffee_shop,05:00,18:00
+992,DUNKIN DONUTS @ HAYDEN HALL,330 HUNTINGTON,donut;coffee_shop,05:00,18:00
+993,DUNKIN DONUTS/HYDE PK AVE,1800 Hyde Park,donut;coffee_shop,05:00,18:00
+994,Dunkin Donuts Kiosk,640 Atlantic,donut;coffee_shop,05:00,18:00
+995,Dunkin Donuts @ MBTA Station,145 Dartmouth,donut;coffee_shop,05:00,18:00
+996,Dunkin Donuts North Station,100 Legends,donut;coffee_shop,05:00,18:00
+997,DUNKIN DONUTS/PLAZA ENT,66 CORNHILL,donut;coffee_shop,05:00,18:00
+998,DUNKIN DONUTS(SATELLITE),100 Terminal,donut;coffee_shop,05:00,18:00
+999,DUNKIN DONUTS/SCNVANOS,440 Massachusetts,donut;coffee_shop,05:00,18:00
+1000,Dunkin Donuts @ Stop & Shop,1100 MASSACHUSETTS,donut;coffee_shop,05:00,18:00
+1001,Dunkin Donuts (V.F.W. Pkwy.),1435 V F W,donut;coffee_shop,05:00,18:00
+1002,DUNKIN DONUTS/WALDWIN GROUP,500 Terminal,donut;coffee_shop,05:00,18:00
+1003,DUNKIN' DONUTS-WATERMARK,111 State,donut;coffee_shop,05:00,18:00
+1004,DUNKIN' DONUTS/WATERMARK,1 Summer,donut;coffee_shop,05:00,18:00
+1005,DUNKIN'DONUTS/WATERMARK,101 Summer,donut;coffee_shop,05:00,18:00
+1006,DUNKIN DONUTS(WOLCOTT SQ. LLC),942 Hyde Park,donut;coffee_shop,05:00,18:00
+1007,DUNKIN/DONUT/WATERMARK,630 Washington,donut;coffee_shop,05:00,18:00
+1008,Dunkin Gate C 29,300 Terminal,donut;coffee_shop,05:00,18:00
+1009,Dunkin Gate C Baggage Claim,300 Terminal,donut;coffee_shop,05:00,18:00
+1010,Dunkin/Hudson Gate C25,300 Terminal,donut;coffee_shop,05:00,18:00
+1011,DUNKIN (STATION DONUTS),4610 Washington,donut;coffee_shop,05:00,18:00
+1012,Dunkin (store 1916),1 Harborside,donut;coffee_shop,05:00,18:00
+1013,Dunkin-Term E Airside,100 Terminal,donut;coffee_shop,05:00,18:00
+1014,Durty Nellie's,108 Blackstone,,11:00,02:00
+1015,Dynasty,14 Hudson,,,
+1016,Eagle Hill Cafe,65 Meridian,coffee_shop,,
+1017,Eagles Deli,1918 BEACON,deli;sandwich;breakfast,,
+1018,Earl's Kitchen and Bar,800 Boylston,,,
+1019,EASTERN STANDARD,775 Beacon,,,
+1020,East Roof Production Kitchen,2597 Beacon,,,
+1021,Eataly 1St. Floor,800 Boylston,,,
+1022,Eat Well Meal Kits,196 Quincy,,,
+1023,Eddie Merlot's,505 Congress,steak_house,,
+1024,Edelin's Restaurant Pizzeria,445 Columbia,,,
+1025,Effie's Kitchen,37 Poplar,,,
+1026,EGLESTON PIZZA,3080 Washington,,,
+1027,Eire Pub,791 Adams,,,
+1028,El Barco,50 Dalton,,,
+1029,El Barrio Mexican Grill,1782 Dorchester,mexican,10:00,21:00
+1030,El Barrio Mexican Grill,809 Harrison,mexican,10:00,21:00
+1031,El Centro,474 SHAWMUT,,,
+1032,EL CHALAN,405 Chelsea,,,
+1033,El Dugout,122 Seaver,,11:30,02:00
+1034,Element Boston Seaport Hotel Rise,391 D,,,
+1035,ELEMENTS CAFE & CONFERENCE,77 Avenue Louis Pasteur,,,
+1036,Elephant & Castle Pub and Restaurant,161 Devonshire,,07:00,24:00
+1037,Elephantine Bakery,332 Congress,,,
+1038,Elevated Eats Pro - Lower Level,32 Cambridge,,,
+1039,El Jardin,15 William C Kelly,colombian,,
+1040,El Jefe's Taqueria,80 Boylston,mexican,08:00,04:00
+1041,El Jefe's Taqueria,957 Commonwealth,mexican,08:00,04:00
+1042,El Jefe's Taqueria of Boston Common,139 Tremont,,,
+1043,El Jefe's Taqueria of Kenmore Sq.,533 Commonwealth,mexican,08:00,04:00
+1044,El Jefe's Taqueria of Northeastern,269 Huntington,mexican,08:00,04:00
+1045,EL MONDONGUITO,219 Dudley,,,
+1046,El Palmar Restaurant,290 Bennington,latin_american,,
+1047,El Parche Tapa Bar & Restaurant,636 Bennington,,,
+1048,El Paso Enchiladas,1 FANEUIL HALL MKT PL,,,
+1049,El Patron De Los Tacos,50 Maverick,,,
+1050,El Pelon,2193 Commonwealth,mexican,11:00,23:00
+1051,EL PENOL RESTAURANT,54 Bennington,,,
+1052,El Recreo Coffee & Roastene,1872 Centre,breakfast;coffee_shop,07:00,16:00
+1053,El Rey Del Pollo Restautant,109 Blue Hill,,,
+1054,El Rinconcito,226 Sumner,,,
+1055,El Sonorense Boston - K124,94 Shirley,,,
+1056,El Triunfo Restaurant / Ali Baba,147 Berkeley,turkish,11:00,02:45
+1057,Emack & Bolio's,1 Chelsea,ice_cream,,
+1058,Emack & Bolio's,290 Newbury,ice_cream,,
+1059,Embassy Suites Boston Kiosk,207 Porter,,,
+1060,Embassy Suites @Logan Airport,207 Porter,,,
+1061,EMC CLUB,4 Jersey,,,
+1062,EMC Inseat,4 Jersey,,,
+1063,Emerson Colonial Theatre,98 Boylston,,,
+1064,Emirates Lounge,500 Terminal,,,
+1065,Emmanuel College,400 FENWAY,,,
+1066,Emmanuel College (Muddy River Cafe),400 FENWAY,,,
+1067,EMMETS/ROXANNE'S,6 Beacon,,,
+1068,Emmi Bakery and Cafe,1 Chelsea,coffee_shop,,
+1069,Empanadas De La Abuela - Lower Level,32 Cambridge,,,
+1070,Empire Fruit,1536 Tremont,,,
+1071,EMPIRE GARDEN,686 Washington,,,
+1072,Empire Restaurant,1 Marina Park,,,
+1073,Energize,265 Massachusetts,juice;salad;bowl;smoothie,09:00,19:00
+1074,Energize,610 Washington,juice;salad;bowl;smoothie,09:00,19:00
+1075,Epiphany Kuisine,196 Quincy,,,
+1076,Equis Pica Pollo,600 Blue Hill,,,
+1077,Equis Pica Pollo,656 Centre,,,
+1078,Erich Lindemann Mental Health Center,25 Staniford,,,
+1079,Ernestos Pizza,69 Salem,,,
+1080,Erudite Farms,196 Quincy,,,
+1081,Esperia Grill & Rotisserie,344 Washington,,,
+1082,Espresso Love Cafe,33 Broad,,,
+1083,Essential Herb & Juice Cafe,501B Washington,juice,,
+1084,Estella,49 Temple,,,
+1085,Esthetic Bean,16 Preble,,,
+1086,Estragon,700 Harrison,,,
+1087,ETHEL & ANDY'S SUB SHOP,134 K,,,
+1088,Ethiopian Cafe,377 Centre,ethiopian,12:00,20:00
+1089,Etnias Bar and Grill,145 Meridian,,,
+1090,EUGENE O' NEILLS,3700 Washington,,,
+1091,Eurest @ Delta Sky Club,500 Terminal,,,
+1092,Eurest @ Griffith Properties,20 Guest,,,
+1093,Eurest @ WBZ Cafe,1170 Soldiers Field,,,
+1094,EVA,279A Newbury,,,
+1095,Evan To Go,411 Adams,,,
+1096,Eventide Fenway,1321 Boylston,,,
+1097,Evergreen Eatery,154 Green,,08:00,20:30
+1098,Everlasting Flow,66 Brighton,,,
+1099,F1 Arcade,113 Seaport,,,
+1100,Faccia a Faccia,278 Newbury,italian,12:00,22:30
+1101,FAI Canteen,535 Albany,,,
+1102,Fairmont Copley Plaza,138 Saint James,,,
+1103,Falafel King II,262 Washington,,,
+1104,Falafel King I I I,62 Summer,,,
+1105,Fan Fan Restaurant,15 Harvard,,,
+1106,Farmer Horse Coffee,374 Massachusetts,,07:00,20:00
+1107,Farmhouse Cafe,1 FRANKLIN PARK,,,
+1108,Far Out Ice Cream,1930 BEACON,,12:00,20:00
+1109,Far Out Ice Cream,201 Brookline,,12:00,20:00
+1110,Fasika Cafe,51 Roxbury,,,
+1111,Fat Baby Sushi,116 Dorchester,asian,,
+1112,Felcaro Pizzeria,276 Cambridge,pizza,,
+1113,Fenway Grill & Bar,84 Peterborough,,,
+1114,Fenway Park-Aura Club,4 Jersey,,,
+1115,Fenway Theater-L2 (Club Kitchen),2 Lansdowne,,,
+1116,Fete Restaurant and Lounge,23 Kingston,,,
+1117,Fidelity 245 Cafe,245 Summer,,,
+1118,Fidelity Beanery,245 Summer,,,
+1119,Figaro's,92 Peterborough,sandwich,08:30,14:30
+1120,FIGARO'S BOSTON DELICATESSEN,105 Beach,sandwich,08:30,14:30
+1121,FILIPPO'S,283 Causeway,,,
+1122,FILL A BUSTER,130 Bowdoin,,,
+1123,FINAGLE-A-BAGEL,535 Boylston,bagel,06:00,18:00
+1124,Finns Fusion Cuisine,1187 Blue Hill,,,
+1125,FIN'S SUSHI & GRILL,240 Cambridge,japanese,11:30,22:00
+1126,Fins Sushi & Grill  Inc.,354 Chestnut Hill,japanese,11:30,22:00
+1127,FIRE & ICE,31 Saint James,,,
+1128,First Baptist Church in Jamaica Plain,633 Centre,,,
+1129,First Watch#1180,777 Boylston,,,
+1130,FISHER COLLEGE,118 Beacon,,,
+1131,Fiskie's Cafe,27 Harbor Point,chinese,,
+1132,Five Elements Life - Lower Level,32 Cambridge,,,
+1133,Five Guys,1213 Commonwealth,burger,11:00,21:30
+1134,Five Guys,263 Huntington,burger,11:00,21:30
+1135,Five Guys,58 Summer,burger,11:00,21:30
+1136,Five Horses Tavern,535 Columbus,,,
+1137,Five Iron Golf,1 Washington Mall,,,
+1138,Five Iron Golf,311 Summer,,,
+1139,Five Spices House,58 Beach,chinese,,
+1140,Five Star Pizza,616 Gallivan,pizza,11:00,22:00
+1141,FLAMES RESTAURANT,1 Peabody,,,
+1142,FLAMES RESTAURANT,663 Morton,,,
+1143,FLAMES RESTAURANT,746 Huntington,,,
+1144,FLAMES RESTAURANT III  INC.,469 BLUE HILL,,,
+1145,Flaming Grill & Buffet,950 American Legion,,,
+1146,FLANN O'BRIENS,1619 Tremont,,,
+1147,FLAT BLACK COFFEE CO. LTD.,1170 Washington,coffee_shop,,
+1148,Flavor Boom,30 Batterymarch,,11:00,20:00
+1149,Flavor Boom,703 Centre,,11:00,20:00
+1150,Flight Club,60 Seaport,,,
+1151,Flik@Foley Hoag 13th Floor Cafe,155 Seaport,,,
+1152,Flik @ Goodwin Proctor,100 Northern,,,
+1153,Flik International @VCGT,316 Northern,,,
+1154,Flik @ Kirkland & Ellis,200 Clarendon,,,
+1155,Flik @ One Lincoln Club 1st Fl.,1 Lincoln,,,
+1156,Flik @ Putnam Investments,100 Federal,,,
+1157,Flik @ Skadden  Arps  Slate,500 Boylston,,,
+1158,Flik @ Willmer Hale Cafe,60 State,,,
+1159,FLORENTINE CAFFE,333 Hanover,italian,10:00,24:00
+1160,Florenza,164 Sumner,italian,,
+1161,FLORIAN RESTAURANT,55 Hallet,,,
+1162,Florina Restaurant,16 Derne,pizza,11:00,20:00
+1163,Flour Bakery,209 Cambridge,,06:30,08:00
+1164,Flour Bakery & Cafe,12 Farnsworth,,06:30,08:00
+1165,Flour Bakery + Cafe,1B Charles,,06:30,08:00
+1166,FLOUR BAKERY & CAFE,131 Clarendon,,06:30,08:00
+1167,FLOUR BAKERY & CAFE,1595 Washington,,06:30,08:00
+1168,FLOUR BAKERY & CAFE,1618 Tremont,,06:30,08:00
+1169,FLOUR BAKERY & CAFE,19 Dry Dock,,06:30,08:00
+1170,FLOUR BAKERY & CAFE,30 Dalton,,06:30,08:00
+1171,Fluffy Fluffy - Space#5,122 Brighton,,,
+1172,Fogo de Chao - Churrascaria,10 Huntington,,,
+1173,Folio @ The Boston Athenaeum,14 Beacon,,,
+1174,Fomu Ice Cream,140 Brookline,,,
+1175,Food 4 Thought Cafe,145 Harrison,,,
+1176,Food Opera,81 Essex,,,
+1177,FOOD WALL CHINESE,387 Centre,chinese,,
+1178,Forcella,33 North,,,
+1179,Ford Clubhouse,4 Jersey,,,
+1180,FOREST HILLS PIZZA,3722 Washington,pizza,,
+1181,For Five,450 Brookline,,,
+1182,For Five Coffee Roasters,200 State,,,
+1183,Formaggio Kitchen,268 Shawmut,,,
+1184,Fornax Bread,27 Corinth,,,
+1185,Fort Hill Bar & Grill,2801 Washington,,,
+1186,Foundation Kitchen - Cafe/Bar,32 Cambridge,,17:00,22:00
+1187,Four Seasons,1 Dalton,,,
+1188,Four Seasons Hotel Boston,200 Boylston,,,
+1189,Four Seasons Hotel Boston Lounge,200 Boylston,,,
+1190,Fox and Flight,100 Terminal A,,,
+1191,Foxglove Terrace - 16th Fl,30 Western,,,
+1192,Foxhole,269 Newbury,,,
+1193,Fox & The Knife,28 Broadway,italian,04:30,22:00
+1194,Franciscan Children's Cafe,30 Warren,,,
+1195,Franciscan Children's Hospital/Dunkin Donuts,30 Warren,donut;coffee_shop,05:00,18:00
+1196,FRANKLIN CAFE,278 Shawmut,,,
+1197,Freeport Street Cafeteria,179 Freeport,,,
+1198,Frenchie,560 Tremont,french,,
+1199,Fresh Bowls & Greens - 14' Trailer,420 D,,,
+1200,Fresh Food Generation,191 Talbot,,,
+1201,Fresh Fuel at Granby Commons,213 Bay State,,,
+1202,Fresh Monkee,106 Cambridge,juice,,
+1203,Friendship BBQ Allston,103 Brighton,chinese;barbecue,,
+1204,Fries Before Guys,485 Cambridge,,,
+1205,Frio Rico,360 Bennington,,,
+1206,Fritay Restaurant,1336 Blue Hill,bubble_tea,,
+1207,Fritay Restaurant,499B Washington,bubble_tea,,
+1208,Fritay Restaurant,532 River,bubble_tea,,
+1209,Frog Pond Boston @ Boston Common,0 Boston Common,,,
+1210,Fromage,399 Broadway,,,
+1211,From Scratch,2 Tremont,italian_pizza,,
+1212,Frosty Freeze,530 AMER LEGION,,,
+1213,Froyo World,157 Harvard,,,
+1214,Fu Chun Ju,55 Beach,,,
+1215,Fuda Sushi Seafood Buffet,128 Brighton,japanese,,
+1216,Fuel America,152 Chestnut Hill,coffee_shop,07:30,20:00
+1217,Fuel America,805 Columbus,coffee_shop,07:30,20:00
+1218,Fuful Bakery,274 Franklin,,,
+1219,Fuji at HSP,100 High,japanese,,
+1220,Fuji at Ink Block,350 Harrison,japanese,,
+1221,Fuller Mental Health Center,85 Newton,,,
+1222,Futago Udon,512 Park,,,
+1223,Future Chefs,295 Blue Hill,,,
+1224,Gachi Sushi and Noodles,500 Terminal,japanese,,
+1225,Gachi Sushi & Noodles,300 Terminal,japanese,,
+1226,Ga Ga Seafood Restaurant,23 Tyler,chinese,,
+1227,GALLERIA UMBERTO,287 Hanover,pizza,,
+1228,Galway House,704 Centre,american,11:30,23:00
+1229,GAME ON FENWAY PARK,70 LANSDOWNE,,,
+1230,Gangnam Spice,225 Centre,chicken;korean,,
+1231,GAO Vietnamese Kitchen,1031 Dorchester,,,
+1232,Garden Halal Restaurant,96 Blackstone,,,
+1233,Garden Slice,100 Legends,italian,11:00,23:00
+1234,Gardner Museum Cafe,2 Palace,,,
+1235,Garlic 'N Lemons,133 HARVARD,,,
+1236,Gary's Pizza,1744 Washington,,,
+1237,Gateway Canteen,19 Hudson,,,
+1238,Gathering Spicy House,108 Brighton,,,
+1239,GENE'S CHINESE FLATBREAD CAFE,86 Bedford,,11:00,18:30
+1240,Genki Ya of Boston,232 Tremont,sushi,,
+1241,George Howell Coffee,408 Newbury,coffee_shop,05:00,23:00
+1242,George Howell Coffee,505 Washington,coffee_shop,05:00,23:00
+1243,Ghost Light Tavern,253 Tremont,,,
+1244,Ghost Pepper,120 Savin Hill,,,
+1245,Giacomo's Ristorante,353 Hanover,italian,16:00,22:30
+1246,Gifu Teriyaki and Sushi,705 Massachusetts,sushi,,
+1247,Gigantic Wonton,170 Brighton,,,
+1248,Gigi,431 Columbus,italian,,
+1249,Gillette Cafeteria,1 Gillette,,,
+1250,Ginger Exchange,1625 Tremont,asian,11:30,23:00
+1251,Glasser Coffee Company,589 Washington,coffee_shop,07:00,15:00
+1252,Glass Slipper,22 Lagrange,,,
+1253,Glenn's Kreme & Kone,308 Congress,,,
+1254,GlowBowl - Lower Level,32 Cambridge,,,
+1255,Gluten Friendly,4 Jersey,american,,
+1256,GM1,4 Jersey,,,
+1257,Gogo Ya,201 Brookline,japanese,11:00,22:00
+1258,Golden Crust Bakery,18 Hudson,,,
+1259,Golden House,4403 Washington,,,
+1260,Gongcha,40 Harrison,,,
+1261,Gongcha,700 Atlantic,,,
+1262,Gong Cha,120 Emerson,bubble_tea,,
+1263,Gong Cha,1472 Dorchester,bubble_tea,,
+1264,Gong Cha,154 Harvard,bubble_tea,,
+1265,Gong Cha,175 Cambridge,bubble_tea,,
+1266,Gong Cha,270 Newbury,bubble_tea,,
+1267,Gong Cha,281 Huntington,bubble_tea,,
+1268,Gong Cha,912 Beacon,bubble_tea,,
+1269,Gopchong Story,973 Commonwealth,korean,,
+1270,Gordon Ramsay Burger-1st floor,99 Blackstone,,,
+1271,Gori & Co.,633 Centre,,,
+1272,Gori & Co.,660B Centre,,,
+1273,Goulston & Storrs Cafe (25th Fl.),1 Post Office,,,
+1274,Goulston & Storrs Catering (26th Fl.),1 Post Office,,,
+1275,Gourmet Kreyol,1210 Blue Hill,coffee_shop,06:00,22:00
+1276,Grace by Nia,23 Northern,,,
+1277,Gracenote Coffee,108 Lincoln,,07:00,16:30
+1278,Grace Note Coffee,100 High,coffee_shop,07:00,22:00
+1279,Granary Tavern,168 Milk,american,,
+1280,Grasshopper Vegan Restaurant,1 Brighton,,,
+1281,Gray's Hall,615 Broadway,,,
+1282,Great Chef,390 Chelsea,chinese,,
+1283,Great Taste Bakery and Restaurant,61 Beach,chinese,08:00,23:00
+1284,Great Wok,1284 Massachusetts,,,
+1285,GreCo,1 Milk,greek;mediterranean,11:00,22:00
+1286,Gre.Co,200 Pier 4,,,
+1287,Gre.Co,225 Newbury,,,
+1288,GreCo- K11,80 Causeway,greek;mediterranean,11:00,22:00
+1289,GREEN DRAGON TAVERN,11 Marshall,,11:00,02:00
+1290,Green Haus Cafe,1520 Tremont,,,
+1291,GREENHILLS BAKERY,780 Adams,,,
+1292,Greenhouse Kitchen,435 Faneuil,italian,,
+1293,Green T Coffee Shop,873 South,,,
+1294,Greystone Cafe  Bakery  and Provisions,123 Appleton,,07:00,16:00
+1295,GRILL 23 AND BAR,161 Berkeley,,,
+1296,Growl Growl Hot Pot,48 Winter,,11:30,22:00
+1297,GrubStreet,50 Liberty,,,
+1298,Guckenheimer Services @ Athenahealth Boston (Hospitality Pantry 3rd floor),80 Guest,,,
+1299,Guira and Tambora Restaurant,4014 Washington,,,
+1300,Gyro City,167 Chestnut Hill,greek,11:00,23:00
+1301,Gyroscope/Sprout/Bos Hse of Pizza,305 Huntington,,,
+1302,Gyrotheory,354 Chestnut Hill,,,
+1303,Gyu Kaku,21 District,japanese;barbecue,11:00,22:00
+1304,HABANERO MEXICAN GRILL  INC.,166 Brighton,mexican,,
+1305,Habibi's Lounge,1213 Commonwealth,hookah,14:00,02:00
+1306,Haju Kitchen,175 Massachusetts,korean,,
+1307,Halal Indian Cuisine,736 Huntington,indian,,
+1308,haley henry wine bar,45 Province,seafood,,
+1309,HALEY HOUSE,12 Dade,,,
+1310,Haley Janes,100 High,chicken,11:00,21:00
+1311,Half Moon Empanadas,100 Terminal,,,
+1312,Half Moon Empanadas,200 Terminal,,,
+1313,Halftime Pizza,115 Causeway,pizza,,
+1314,Hampshire House Butcher Block,84 Beacon,,,
+1315,Hampton Inn Pantry,15 Terminal,,,
+1316,HAMPTON INN & SUITES BOSTON,811 Massachusetts,,,
+1317,HAN,186 Harvard,,,
+1318,Hangover B&B  Space#13,122 Brighton,bubble_tea;sushi,,
+1319,Hanmaru,164 Harvard,korean,11:30,21:00
+1320,Hao Shi Guang,48 Harvard,,,
+1321,Happy Lamb Hot Pot,130 Brighton,mongolian;hot_pot,,
+1322,Happy Lamb Mongolian Hot Pot,693 Washington,mongolian;hot_pot,,
+1323,Happy Lemon,3193 Washington,bubble_tea,11:00,21:00
+1324,Happy Lemon,417 Washington,bubble_tea,11:00,21:00
+1325,Happy Rice Seaport,99 Seaport,,,
+1326,Harborview Cafe,250 Atlantic,,09:00,17:00
+1327,Harbourvest Cafe 35th Fl.,1 Lincoln,,,
+1328,Harbourvest Cafe 36th Fl.,1 Lincoln,,,
+1329,Hare Krishna Food For Life,72 COMMONWEALTH,,,
+1330,Harp & Bard,1097 Dorchester,,,
+1331,Harpoon,100 Terminal,,12:00,22:00
+1332,Harpoon Brewery Beer Hall,306 Northern,,12:00,22:00
+1333,HARRISON CAFE @ BOS. W & S,924 Harrison,,,
+1334,Harry's All American Breakfast,1410 Centre,american,,
+1335,Harry's Bar & Grill,1430 Commonwealth,american,,
+1336,HARVARD BUS./ALDRICH HALL,35 Harvard,,,
+1337,HARVARD BUS./BAKER FACULTY,25 Harvard,,,
+1338,HARVARD CLUB OF BOSTON,374 Commonwealth,,,
+1339,Harvard Gardens,310 Cambridge,american,10:00,02:00
+1340,HARVARD SCHOOL-PUBLIC HEALTH,677 HUNTINGTON,,,
+1341,Harvard Stadium Stand #2,65 NORTH HARVARD,,,
+1342,Harvard Stadium Stand #3,65 NORTH HARVARD,,,
+1343,Harvard Stadium Stand #4,65 NORTH HARVARD,,,
+1344,Harvest Cloud Cafe-Lowel level,32 Cambridge,,,
+1345,Hava (basement at Wilbur Theatre),246 Tremont,,,
+1346,Hawksmoor Boston,15 Necco,,,
+1347,HEBREW REHAB CENTER,1200 Centre,,,
+1348,Hebrew Rehab Center 6th. Fl.,1200 Centre,,,
+1349,Heidi's House of Coffee,350 Longwood,,,
+1350,Hello Yummy,1 Brighton,,,
+1351,Hemlock Grill,420 West,,,
+1352,Hencraft,80 Causeway,,,
+1353,Hey! I am Yogost,147 Brighton,,,
+1354,Hey Tea,162 Harvard,bubble_tea,,
+1355,Hey Tea,223 Newbury,bubble_tea,,
+1356,Heytea Harrison,75 Harrison,bubble_tea,,
+1357,Hibachi2U,1724 Dorchester,,,
+1358,Hills Deli,3696 Washington,,,
+1359,HILLSIDE CAFE,21 ST THOMAS MORE,coffee_shop;sandwich;breakfast,,
+1360,HILTON BOSTON FINANCIAL DISTRICT,89 Broad,,,
+1361,HILTON BOSTON LOGAN AIRPORT,1 Hotel,,,
+1362,HILTON GARDEN INN EAST BOSTON,100 Boardman,,,
+1363,Himayalan Bistro,1735 Centre,regional,10:00,22:00
+1364,Hippo Kitchen,241 Market,,,
+1365,Hissho Sushi,1 Court,japanese,,
+1366,Hissho Sushi @ Mass Art-Kennedy Cafe,625 Huntington,japanese,,
+1367,Hissho Sushi & Mein Bowl,100 William T Morrissey,japanese,,
+1368,Hissho Sushi @ Stop & Shop,1620 Tremont,japanese,,
+1369,Hissho Sushi @ Stop & Shop #2489,301 Guest,japanese,,
+1370,Hobgoblin,48 Temple,,,
+1371,Hobson's Bar & Kitchen,353 Cambridge,,,
+1372,Hojoko,1271 Boylston,,,
+1373,Hokkaldo Ramen Santouka,169 Brighton,noodle;ramen;soup,,
+1374,Holdfast Specialty Seafood Co.,164 Brighton,seafood,12:00,21:00
+1375,Holiday Inn Express,69R Boston,,,
+1376,Holly Crab,1098 Commonwealth,cajun;seafood,,
+1377,HOme 2 Suites,15 Jan Karski,,,
+1378,Homeclubs  LLC - K122,94 Shirley,,,
+1379,Home Run Cafe,1269 Massachusetts,,,
+1380,Home Stead,1448 Dorchester,,,
+1381,Homewood Suites Pantry,15 Terminal,,,
+1382,Honeycomb Cafe,107 Savin Hill,,12:00,23:00
+1383,Honey Dew Donuts,470 Meridian,,,
+1384,Honeygrow,100 Northern,noodle;rice;salad,,
+1385,Honeygrow,1282 Boylston,noodle;rice;salad,,
+1386,Honeygrow,301 Guest,noodle;rice;salad,,
+1387,Hong Kong 888 Cafe,888 South,chinese,12:00,23:00
+1388,Hong Kong At Faneuil Hall,65 Chatham,chinese,12:00,23:00
+1389,Hong Kong Eatery,79 Harrison,asian;chinese,09:00,20:30
+1390,Hong Kong Harbor,5 Maverick,chinese,,
+1391,Hornitos,4 Jersey,,,
+1392,Hoshi Ya,529 Washington,,,
+1393,Hostelling International Boston,11 Stuart,,,
+1394,Hotel Aka Back Bay-Hotel,154 Berkeley,,,
+1395,Hotel Aka Lobby Bar,90 Tremont,,,
+1396,Hot Pot Buffet,70 Beach,chinese,,
+1397,House of Blues,15 Lansdowne,american,,
+1398,House Of Seven Cafe,196 Quincy,,,
+1399,HOUSE OF SIAM,542 Columbus,,,
+1400,Howl at the Moon,184 High,,16:00,02:00
+1401,Hub Bar Stand 4BE,100 Legends,,,
+1402,Hub Hall Bars,80 Causeway,,,
+1403,HUE,47 Huntington,,,
+1404,Hummingbird Jamaican Cuisine,310 Bowdoin,,,
+1405,Hunan Gourmet,45 Beach,coffee_shop,06:00,22:00
+1406,Hunter's,110 Dorchester,,,
+1407,Huong Que Vietnamese Restaurant,272 Adams,,,
+1408,HURRICANE O'REILLY'S,150 Canal,,,
+1409,HYATT CONF. & HOTEL (FS),101 Harborside,,,
+1410,Hyatt Place Boston/Seaport District,295 Northern,,,
+1411,Hyatt Regency Boston,1 Avenue De Lafayette,,,
+1412,Hyde Park Youth Hockey,75 Turtle Pond,,,
+1413,Ibasho Sushi @ B&W Hospital,75 Francis,bubble_tea;sushi,,
+1414,Ichiban Yakitori Sushi House,14 Westland,sushi,,
+1415,Paga Inc.,100 Warrenton,,,
+1416,IDEAL SUB SHOP,522 Dudley,,,
+1417,iFresh Noodle,182 Brighton,chinese,11:30,21:30
+1418,Ilmondo Pizzaria,738 Huntington,pizza,10:30,01:00
+1419,IL NIDO,257 North,,,
+1420,Ilona,493 Massachusetts,mediterranean,,
+1421,Il Panino Restaurant,7 Parmenter,,,
+1422,Imperial Kitchen,50 Corinth,,,
+1423,IMPROV ASYLUM,216 Hanover,,,
+1424,INBOUND PIZZA & RESTAURANT,1232 Commonwealth,pizza,11:00,12:00
+1425,INCHU,201 Brookline,asian,,
+1426,Indian Kitchen,7 Craftsman,indian,11:30,23:00
+1427,India Quality,484 Commonwealth,indian,11:30,22:30
+1428,In House Cafe Company,132 Chestnut Hill,,,
+1429,Insomnia Cookies,100 Tremont,snack,11:00,03:00
+1430,Insomnia Cookies,220 Clarendon,snack,11:00,03:00
+1431,Insomnia Cookies,708 Commonwealth,snack,11:00,03:00
+1432,Integrated Sciences Complex Cafe,100 William T Morrissey,,,
+1433,Intelligentsia Coffee,225 Franklin,coffee_shop,07:00,15:00
+1434,Intercontinental Boston - Bar Fellini,500 Atlantic,,,
+1435,Intercontinental Boston - Clipper Room,500 Atlantic,,,
+1436,Intercontinental Boston - Matria,500 Atlantic,,,
+1437,International House of Pancake,1850 SOLDIERS FIELD,,,
+1438,Invi Restaurant,761 Morton,,,
+1439,Irashai Sushi and Teriyaki,8 Kneeland,japanese,,
+1440,Irie Jamaican Style Restaurant & Wingz n Tingz,1450 Dorchester,,,
+1441,Irish Village Inc.,224 Market,,,
+1442,Isabella Restaurant,2 Prince,italian,11:00,22:30
+1443,Island Creek Oyster Bar #1,99 Autumn,,,
+1444,Island Creek Oyster Bar #2,99 Autumn,,,
+1445,Island Creek Raw Bar #3,99 Autumn,,,
+1446,Island Creek Raw Bar #4,99 Autumn,,,
+1447,Island Cuisine Restaurant and Bakery,554 Dudley,,,
+1448,ISLAND STYLE INC.,183 Washington,pizza,11:00,22:00
+1449,Isshindou Ramen,1 Brighton,ramen,11:00,22:00
+1450,Istanbul Doner Burrito,350 Longwood,,,
+1451,Italian Pizza & Sub Express,162 South,,,
+1452,Jacques,77 Broadway,,,
+1453,LCY  Inc.,20 Tyler,,,
+1454,Jadu,767 Centre,coffee_shop,08:00,22:00
+1455,Jaho Coffee Roaster & Wine Bar,116 Huntington,coffee_shop,06:30,23:00
+1456,Jaho Coffee Roaster & Wine Bar,659 Washington,coffee_shop,06:30,23:00
+1457,Jaho Coffee & Tea,1651 Washington,,,
+1458,Jamaica Mi Hungry/Swirld Cinnamon Rolls,11 Walter,,,
+1459,Jamaica Plain House of Pizza,775 Centre,pizza,11:00,22:00
+1460,Jamaica's Best Restaurant,1614 Blue Hill,,,
+1461,Java House,539 Broadway,,,
+1462,Jays Kitchen - K110,94 Shirley,,,
+1463,JEANIE JOHNSTON PUB,144 South,,12:00,24:00
+1464,Jen Lai Noodle and Rice Co.,1 FANEUIL HALL MKT PL,,,
+1465,JENNY'S PIZZA,320 Medford,pizza,10:00,03:00
+1466,Jersey Mikes,64 Staniford,,,
+1467,Jersey Mikes Subs,462 Washington,sandwich,,
+1468,Jetblue Lounge,300 Terminal,,,
+1469,Jiang Nan,177 Tremont,chinese,,
+1470,Jibei Chuan,50 Beach,,,
+1471,Jimmy Buffett's Margaritaville,300 Faneuil Hall Marketplace,,11:00,21:00
+1472,JIMMY JOHN'S,100 Terminal,sandwich,11:00,21:00
+1473,JIMMY JOHN'S,411 D,sandwich,11:00,21:00
+1474,Jim Roche Ice Arena,1275 VFW,,,
+1475,Jim's Restaurant and Deli,371 Washington,,06:00,21:00
+1476,Jiro's Sushi,32 Kneeland,japanese,,
+1477,J. J. DONOVAN INC.,200 FANEUIL HALL MARKET,,,
+1478,J J Foley's Cafe,117 EAST BERKELEY,,00:00,24:00
+1479,J J FOLEY'S GRILL INC.,19 KINGSTON,,00:00,24:00
+1480,J & J IRISH PUB & GRILLE,1130 Dorchester,,,
+1481,JJ Nugs Mac & Cheese-Lower Level,32 Cambridge,,,
+1482,J M Curley/Bogie's Place/Wig Shop Lounge,21 Temple,,17:00,26:00
+1483,JOE'S AMERICAN BAR & GRILL,100 Atlantic,american,,
+1484,JOE'S AMERICAN BAR & GRILL,26 Exeter,american,,
+1485,Joe's Famous Subs & Pizza,140 Dudley,pizza,10:00,03:00
+1486,Joe's Pizza,144 Brookline,pizza,10:00,03:00
+1487,Joey Bats Cafe,700 Atlantic,portuguese,,
+1488,JOEY'S FUN FOODS,100-199 Faneuil Hall Market,,,
+1489,Johanetts Kitchen - Lower Level,32 Cambridge,,,
+1490,JOHN B. HYNES VET. MEM. CTR.,880 Boylston,bubble_tea;sushi,,
+1491,Johnnies On The Side,138 Portland,,,
+1492,Johnny Burke Catering & Events,168 Spring,,,
+1493,Johnny Pomodoro,297 Main,,,
+1494,JOHNNY'S PIZZA & SUBS,1917 Dorchester,pizza,,
+1495,John's Pizza,863 Washington,pizza,10:00,03:00
+1496,JOIA Ristorante & Lounge,189 State,,,
+1497,Jones Day @ South Station Tower 23rd Fl.,680 Atlantic,,,
+1498,Joseph's Pizza & Sub Shop,1200 Blue Hill,,,
+1499,Joseph's Pizzeria,8 Huntington,,,
+1500,J. Pace & Son Uptown,225 Northern,,,
+1501,J-Pizzle Kitchen,536 Centre,,,
+1502,J.P. LICKS,173 Newbury,,09:00,23:00
+1503,J.P. LICKS AT W.R.  INC.,661 V F W,,09:00,23:00
+1504,J.P. Licks @ Boylston St.,1106 Boylston,,09:00,23:00
+1505,J.P. Licks @ Charles Street,144 Charles,,09:00,23:00
+1506,J.P. LICKS INC.,659 Centre,,09:00,23:00
+1507,J.P. Licks @ Southbay,20 District,,09:00,23:00
+1508,J.P. Licks @ West Broadway,397 Broadway,,09:00,23:00
+1509,J. P. Roti Shop,482 Washington,,,
+1510,J. P. SEAFOOD CAFE INC.,730 Centre,seafood,12:00,21:00
+1511,Jugos,502 Massachusetts,,,
+1512,Jugos Juice Boston @ MBTA,145 Dartmouth,,,
+1513,Juicy Greens,125 Summer,juice,,
+1514,Juicy Greens,61 South,juice,,
+1515,JuicyGreens at the Hub- K14,80 Causeway,juice;coffee_shop,08:00,17:00
+1516,Jules on Devonshire,54 Devonshire,,,
+1517,Jumbo Seafood,5 Hudson,,,
+1518,Jump On In,100 Holton,,,
+1519,Just Salad,185 Franklin,salad,,
+1520,Just Salad,372 Congress,salad,,
+1521,Just Thai,1512 Dorchester,thai,11:30,22:00
+1522,Kahaani on Broadway,22 Broadway,,,
+1523,Kaia,370 Harrison,,,
+1524,Kajiken,83 Harrison,,,
+1525,Kaju Tofu House,56 Harvard,korean,,
+1526,Kala Thai Cookery,120 Blackstone,thai,11:30,21:00
+1527,KALIHARI GRILL,1 Circuit,,,
+1528,Kane's Donuts,1 International,,,
+1529,Kaori Cafe,299 Meridian,coffee_shop,,
+1530,Kapow Thai Cuisine,2255 Dorchester,,,
+1531,Kartal,520 Tremont,,,
+1532,Kava Neo Taverna,315 Shawmut,,11:00,23:30
+1533,Kaze Shabu Shabu,41 Essex,japanese;hotpot,11:30,22:00
+1534,Kchickin,84 Peterborough,,,
+1535,Kchickin,84 Peterborough,,,
+1536,KELLEY'S SQ. PUB,84 Bennington,,,
+1537,Kelly's Roast Beef @BOS,200 Terminal,sandwich,09:00,21:00
+1538,Kelly's Roastbeef (Pier A),200 Terminal,sandwich,09:00,21:00
+1539,Kentucky Fried Chicken,465 Washington,,,
+1540,Kentucky Fried Chicken,625 American Legion,,,
+1541,Kentucky Fried Chicken,695 Columbia,,,
+1542,Kenzoku Mazesoba,506 Park,,,
+1543,KFC,30 Beacon,,,
+1544,KHAU GALLI,38 Brooks,,,
+1545,Kicco Italian Coffee,1 Nashua,,,
+1546,Kimchipapi Kitchen,81 Harvard,korean,,
+1547,King Do,1154 Dorchester,vietnamese,05:00,20:00
+1548,Kings Bowl Seaport,60 Seaport,,,
+1549,KING'S/THE 88 CLUB,50 Dalton,,,
+1550,Kis O Yogurt,44 Beacon,,,
+1551,KKR Boston Cafe - 13th Fl,90 Oliver,,,
+1552,KKR Boston Cafe - 14th Fl. Coffee Bar,90 Oliver,,,
+1553,Klin Thai West Roxbury,1894 Centre,,,
+1554,Kneeland Cafe,75 Kneeland,,,
+1555,Knoll Street Tavern,1410 Centre,,,
+1556,Kohi Coffee Company,40 Berkeley,,,
+1557,Kohi Coffee Company,70 Guest,,,
+1558,Koko Coffee,226 Causeway,,07:00,19:00
+1559,Koko Coffee,255 State,,07:00,19:00
+1560,Koko Coffee,745 Atlantic,,07:00,19:00
+1561,Koko Coffee,87 L,,07:00,19:00
+1562,Kokoro Everyday Japanese Food,6 Tremont,,,
+1563,Kongdog,200 Faneuil Hall Marketplace,,,
+1564,Korean Garden Restaurant,122 Harvard,korean,11:30,22:30
+1565,Korean Village  Park's Kitchen  Kimbap Heaven-S#10,122 Brighton,korean,12:00,21:00
+1566,Korokoro Ramen and Sushi,329 Sumner,ramen;sushi,11:30,22:00
+1567,Kozy Kitchen,728 Commonwealth,,,
+1568,Krasi,48 Gloucester,greek,10:00,23:00
+1569,Kuizinn Lakay Plus,1672 Blue Hill,,,
+1570,Kung Fu Tea,1916B Beacon,bubble_tea,11:00,23:00
+1571,Kung Fu Tea @ Mass. Ave.,334 Massachusetts,bubble_tea,11:00,23:00
+1572,Kura Revolving Sushi Bar,39 District,sushi,11:00,21:30
+1573,Kured,81 Charles,sandwich,08:00,18:00
+1574,Kwench Juice Cafe,1587 Blue Hill,juice,07:00,19:00
+1575,Kwench Juice Cafe,230 Congress,juice,07:00,19:00
+1576,Kwench Juice Cafe,401 Washington,juice,07:00,19:00
+1577,Kwench Juice Cafe,643 VFW,juice,07:00,19:00
+1578,Kyoichi,665A Tremont,,,
+1579,L5C1,4 Jersey,,,
+1580,L5C3,4 Jersey,,,
+1581,La Abundancia Bakery  Corporation,59 Meridian,,,
+1582,La Be Fana Pizzeria,15 Beacon,pizza,11:00,21:45
+1583,L.A. Burdick Chocolate,224 Clarendon,,,
+1584,La Cabra Restaurant,1294 Blue Hill,,,
+1585,LA CHIVA RESTAURANT,259 Bennington,,,
+1586,HSI MCA BOS FB  LLC,300 Terminal,,,
+1587,La Cocina VROCC,389 Maverick,,,
+1588,La Cuchara Restaurant,381 Blue Hill,,,
+1589,La Esquina Restaurant,624 Blue Hill,mexican,,
+1590,LA FAMIGLIA RISTORANTE,112 Salem,,,
+1591,La Fonda Boston,1620 Commonwealth,latin_american,,
+1592,La Fonda Colombiana,972 Saratoga,latin_american,,
+1593,La Gran Manzana,22 William C Kelly,colombian,,
+1594,La Hacienda,150 Meridian,mexican,,
+1595,Lakon Brighton,407 Washington,,,
+1596,Lakon Paris Patissier,43-61 Pier 4,,,
+1597,Lala's Neapolitan-ish Pizza,401 Park,pizza,,
+1598,La Lechonera Restaurant,342 Cummins,,,
+1599,La Maison du Chocolat,772 Boylston,,,
+1600,La Mamma Pizza And More,190 Brighton,italian,,
+1601,La Marina Restaurant,124 Harvard,,,
+1602,La Mesa Market,744 Dudley,,,
+1603,Landmark Public House,772 Adams,,,
+1604,Land of Fire Pizzeria,1696 Commonwealth,,,
+1605,Land of Pizza,445 Broadway,,,
+1606,La Neta,255 Newbury,mexican;tacos,,
+1607,La Neta Taco Shop,100 City Hall,mexican;tacos,,
+1608,Lani's Pizza,1288 Blue Hill,,,
+1609,Lanner Noodle Bar,43-61 Pier 4,chinese,11:30,22:00
+1610,La Padrona,40 Trinity,,,
+1611,La Padrona - 1st Fl. Bar,40 Trinity,,,
+1612,La Parada Dominican Kitchen,3094 Washington,,,
+1613,La Petite Maison Boston,1 Dalton,,,
+1614,La Pheegan Chef,196 Quincy,,,
+1615,La Pinata,199 Sumner,,,
+1616,LA REINA,80 Bennington,,,
+1617,LARRY J'S BBQ CAFE,600 D,barbecue,,
+1618,La Saison Bakery,219 Main,,,
+1619,LAS PALMAS RESTAURANT,4337A Washington,,,
+1620,LA SULTANA BAKERY,40 MAVERICK,,,
+1621,LA SUMMA,26 Fleet,,,
+1622,Las Vegas Seafood Restaurant,1200 River,seafood,12:00,21:00
+1623,La Taqueria,1132 Blue Hill,mexican,11:00,20:30
+1624,La Taqueria Taco Bar & Grill,632 Hyde Park,mexican,11:00,20:30
+1625,La Tavernetta by Mida,45 Lewis,italian,10:30,24:00
+1626,LA TERRAZA RESTAURANT,19 Bennington,colombian,,
+1627,LATINO RESTAURANT,302 Centre,,,
+1628,Laugh Boston,425 Summer,,,
+1629,Laughing Monk Cafe,164 Brighton,thai,11:00,22:00
+1630,Laughing Monk Cafe,737 Huntington,thai,11:00,22:00
+1631,Lavietes Pavillion,65 Harvard,,,
+1632,La Voile,257 Newbury,,,
+1633,Lawn on D - 40' Container Kitchen,420 D,,,
+1634,Lawn on D - The Grove Bar B1,420 D,,,
+1635,Lawn on D - The Grove Bar C1,420 D,,,
+1636,Lawn on D - The Grove Bar C2,420 D,,,
+1637,Lawn on D - The Grove Bar E1,420 D,,,
+1638,Lawn on D - The Grove Bar E2,420 D,,,
+1639,Layla's American Tavern,332 Broadway,american,,
+1640,Lazuri Chicken N Pizza,487 Cambridge,turkish,,
+1641,Lazy Bear Creamery,383 Neponset,,,
+1642,LC1/Pizza/LB2,4 Jersey,,,
+1643,LC2/LY1,4 Jersey,,,
+1644,LC4,4 Jersey,,,
+1645,Leader Bank Pavilion - Dockside 5,290 Northern,american;seafood,11:30,25:00
+1646,Leader Bank Pavilion - Dock side 6,290 Northern,,,
+1647,Leader Bank Pavilion - Ful Liquor,290 Northern,,,
+1648,Leader Bank Pavilion - Harborside 1,290 Northern,,,
+1649,Leader Bank Pavilion - Jade Lane,290 Northern,,,
+1650,Leader Bank Pavilion - Limited Concessions,290 Northern,,,
+1651,Leader Bank Pavilion - Mobile Bar 1,290 Northern,,,
+1652,Leader Bank Pavilion - Mobile Bar 2,290 Northern,,,
+1653,Leader Bank Pavilion - Mobile Bar 3,290 Northern,,,
+1654,Leader Bank Pavilion - Mosh Burger,290 Northern,,,
+1655,Leader Bank Pavilion - Pavillion Side 1,290 Northern,,,
+1656,Leader Bank Pavilion - Rebel Hen,290 Northern,,,
+1657,Leader Bank Pavilion - Riffresher,290 Northern,,,
+1658,Leader Bank Pavilion - Shaker Bar,290 Northern,,,
+1659,Leader Bank Pavilion - Shaker Bar Dockside,290 Northern,american;seafood,11:30,25:00
+1660,Leader Bank Pavilion - Tequila Bar,290 Northern,,,
+1661,Leader Bank Pavilion - VIP Tent,290 Northern,,,
+1662,Leader Bank Pavilion - Wine & Spritz,290 Northern,,,
+1663,Le Cafe,66 Kneeland,vietnamese,,
+1664,Left Field Inseat,4 Jersey,,,
+1665,Left Field Pantry,4 Jersey,,,
+1666,Legacy Boston/Candibar,275 Tremont,,,
+1667,Legal Crossing,558 Washington,sandwich,,
+1668,Legal Harborside,260 Northern,,,
+1669,LEGAL SEA FOOD E3-A34,500 Terminal,,,
+1670,Legal Sea Foods,100 Huntington,seafood,05:00,20:00
+1671,Legal Sea Foods,100 Terminal,seafood,05:00,20:00
+1672,Legal Sea Foods,255 State,seafood,05:00,20:00
+1673,Legal Sea Foods,300 Boylston,seafood,05:00,20:00
+1674,LEGAL SEAFOODS,200 Terminal,,,
+1675,LEGAL SEAFOODS,300 Terminal,,,
+1676,LEGAL SEAFOODS,500 Terminal,,,
+1677,Legal Sea Foods (B Connector),200 Terminal,seafood,05:00,20:00
+1678,Legends Bar & Grill,525 William F McClellan,,,
+1679,Lemuel Shattuck Hospital Cafe,170 Morton,,,
+1680,Lenox Hotel - Employee Cafeteria,61 Exeter,,,
+1681,Lenox Sophia,87 A,,17:00,22:00
+1682,Levi's Restaurant & Lounge,323 Washington,,,
+1683,Levy Premium Food Court 1,415 Summer,,,
+1684,Levy Premium Food Court 2,415 Summer,,,
+1685,Levy Premium Food Court 3,415 Summer,,,
+1686,Levy Premium Food Court 4,415 Summer,,,
+1687,Levy Premium Food Court 5,415 Summer,,,
+1688,Levy Premium Main Kitchen & Commissary,415 Summer,,,
+1689,LFV,4 Jersey,,,
+1690,Libertine,123 Salem,,,
+1691,Liberty Diner,1003 MASSACHUSETTS,,,
+1692,LICKS CAFE,1140 Boylston,,09:00,23:00
+1693,Life Alive,431 Boylston,organic,07:30,21:00
+1694,Life Alive Cafe,162 Seaport,organic,07:30,21:00
+1695,Life Alive Cafe,505 Tremont,organic,07:30,21:00
+1696,Life Alive Organic Cafe,435 Huntington,organic,07:30,21:00
+1697,Life Time,800 Boylston,,,
+1698,Lilly Boston-Food Services,15 Necco,,,
+1699,Lilly Gourmet Pasta Express,1526 Tremont,coffee_shop,06:00,22:00
+1700,Lily's,33 Batterymarch,pizza,,
+1701,Lily's Coffee & Cafe,33 Arch,pizza,,
+1702,Lily's Pizza,2 Oliver,pizza,,
+1703,Limani Grille,100 Northern,,,
+1704,Lime Red Tea House,1092 Commonwealth,,,
+1705,LIMONCELLO,190 North,italian,11:30,23:00
+1706,Lincoln Tavern,425 Broadway,american;pizza;burger,,
+1707,Linger,525 Western,,,
+1708,Liq 4 / Kettle One,4 Jersey,,,
+1709,LITTLE ASIA RESTAURANT,991 Bennington,,,
+1710,Little Haiti International Cuisine,1184 Hyde Park,,,
+1711,Little Pizza King,389 Washington,pizza,11:00,24:00
+1712,Little Sage,350 Hanover,,,
+1713,Little Tao,1153 Commonwealth,sichuan,11:30,21:30
+1714,Little Whale Oyster Bar,314 Newbury,,,
+1715,Little Wolf Coffee,51 Sleeper,,,
+1716,Liuyishon Hotpot Boston,702 Washington,,12:00,22:00
+1717,LIV Space#6,122 Brighton,,10:00,22:00
+1718,LNJ Food Holdings  LLC - K120,94 Shirley,,,
+1719,Lobstah On A Roll,254 Newbury,seafood;lobster,,
+1720,Local 149,143 P,american,,
+1721,LoContes Italian Restaurant,114 Salem,,,
+1722,Loco Taqueria & Oyster Bar,412 Broadway,,10:00,01:00
+1723,Loco Taqueria & Oyster Bar,61 Brookline,,10:00,01:00
+1724,Logan Food Market,45 Transportation,,,
+1725,Lola 42,20 Liberty,,,
+1726,Lolita Cocina & Tequila Bar,253 Summer,mexican,11:00,02:00
+1727,Lolita Cocina & Tequila Bar,265 Dartmouth,mexican,11:00,02:00
+1728,Lone Star Taco Bar,465 Cambridge,,,
+1729,Long Live Roxbury - Taproom,152 Hampden,,,
+1730,Lookout Rooftop and Bar,70 Sleeper,,11:00,23:30
+1731,Lord Hobo Seaport,2 Dry Dock,,,
+1732,Loretta's Last Call/Back Door Donuts,1 Lansdowne,,,
+1733,Los Alebrijes,190H Sumner,mexican,,
+1734,Los Amigos,366 Washington,mexican,11:00,21:30
+1735,Los Amigos Mexican Grill,1741 Centre,,,
+1736,LOS ARRIEROS REST,13 Meridian,colombian,,
+1737,Los Delicias Colombianas 2,1231 River,,,
+1738,Los Hornitos,235 Meridian,,,
+1739,Los Pinos Restaurante Mexican Grill,82 Bennington,,,
+1740,L'OSTERIA RESTAURANT,104 Salem,,,
+1741,Lotus Test Kitchen,2 Avenue De Lafayette,asian,10:30,19:45
+1742,Louis Corner,552 Tremont,,,
+1743,Love Art Sushi,1 Haviland,,11:00,21:00
+1744,Love Art Sushi,40 Water,,11:00,21:00
+1745,Love Art Sushi,53 Northern,,11:00,21:00
+1746,LOVEDROP  LLC - Lower Level,32 Cambridge,,,
+1747,Love Health,444 Blue Hill,,,
+1748,LOWER DINING CORCORAN DINING FACILITY,60 ST THOMAS MORE,,,
+1749,Lower Mills Tavern,2269 Dorchester,,,
+1750,L Street Diner & Pizzeria,108 L,,,
+1751,L Street Tavern,656 Eighth,,,
+1752,Lucca North End,226 Hanover,italian,,
+1753,Lucca Restaurant & Bar,200 Terminal,italian,,
+1754,Lucia Ristorante,415 Hanover,,11:00,23:30
+1755,Lucie's,120 Huntington,american,,
+1756,Lucky Boston Chinese Restaurant,3096 Washington,,,
+1757,LUCKY CAFE,1107 Dorchester,,10:00,02:00
+1758,LUCKY'S,355 Congress,,10:00,02:00
+1759,Lucky Strike Fenway,145 Ipswich,,,
+1760,Lucky Tiger/Sunnyside Cafe,100 Hood Park,brunch,,
+1761,Lucy Ethopian Cafe,334 Massachusetts,ethiopian,12:00,20:00
+1762,Lucy's American Tavern,11 Granite,american,,
+1763,Lufthansa Lounge,500 Terminal,,,
+1764,Luke's Lobster,191W Atlantic,,,
+1765,Luke's Lobster,290 Washington,,,
+1766,Luke's Lobster,75 Exeter,,,
+1767,Lulu Green #14 / Cafe Lulu #15,201 Brookline,,10:00,21:00
+1768,Lulu Green Cafe,246 Broadway,,10:00,21:00
+1769,LULUS' ALLSTON,417 Cambridge,american,09:00,23:00
+1770,Luma's Coffee Shop,1 Federal,,,
+1771,Lumi Roll & Bowl - Space#3,122 Brighton,vietnamese;coffee_shop,,
+1772,Luna's,945 Saratoga,,09:00,20:00
+1773,Aramark Corporation,4 Jersey,,,
+1774,Maaz's Chicken,838 Blue Hill,,,
+1775,Macaron Milieu - Lower Level,32 Cambridge,,,
+1776,Machi Machi,176 Harvard,bubble_tea,12:00,22:00
+1777,MACUMBA LATINA,477 River,,,
+1778,Macy's Starbucks Kiosk,450 Washington,coffee_shop,,
+1779,Madhouse Cafe,24 Blue Hill,coffee_shop,08:00,16:00
+1780,Madras Dosa Co,99 Seaport,indian,11:00,03:00
+1781,MAGGIANO'S,4 COLUMBUS,italian,11:00,23:00
+1782,Maggie's Grill @ Franklin Park Golf Course,1 Circuit,korean,12:00,21:00
+1783,Mai,31 Northern,sushi,,
+1784,Mala Kungfu,155 Brighton,chinese;ramen,,
+1785,Ma La Restaurant,129 Brighton,,,
+1786,Mala Town,190 Harvard,chinese;szechuan,,
+1787,Mamacita,329 Huntington,mexican,,
+1788,Ma Maison,272 Cambridge,french,11:00,22:00
+1789,Mama's Place,764 Huntington,,,
+1790,Mama Stella's Pizza,427 Faneuil,pizza,11:00,22:00
+1791,MAMMA MARIA RESTAURANT,3 North,,,
+1792,Mana Escondido Cafe,68 Pembroke,,,
+1793,Mana Grill,220 Columbia,,,
+1794,Mandarin House,633 Hyde Park,,,
+1795,Mandarin Oriental Hotel,776 Boylston,,,
+1796,MANGIA MANGIA,147 Endicott,,,
+1797,Mangu Dominican Bistro,264 Hyde Park,,08:00,21:00
+1798,Manhattan Bagel and Coffee CO,147 Massachusetts,coffee_shop,05:00,17:00
+1799,Maple & Ash,131 Seaport,steak_house;seafood;fine_dining,04:30,23:00
+1800,Marabou Cafe,1592 Blue Hill,,,
+1801,Marcelino's,1 Courthouse,,12:00,24:00
+1802,Marcelino's Boutique Bar,1 Courthouse,,,
+1803,MARE,3 Mechanic,,,
+1804,Maria's Kitchen,1819 Centre,mexican,11:00,01:00
+1805,Maria's Taqueria,226 Tremont,mexican,11:00,01:00
+1806,Mariel/My Girl,10 Post Office,,,
+1807,MARINER'S HOUSE,9 NORTH,,,
+1808,Mario's,8 Perkins,pizza,,
+1809,MARIO'S RESTAURANT,347 CHELSEA,pizza,,
+1810,Mario's Subs & Salads,651 Warren,,,
+1811,HSI MCA BOS FB  LLC,300 Terminal,,,
+1812,HSI MCA BOS FB  LLC,300 Terminal,,,
+1813,Marketplace Cafe & Take Away,240 Mount Vernon,,,
+1814,MARRIOTT HOTEL-COPLEY PLACE,110 HUNTINGTON,,,
+1815,MARRIOTT'S CUSTOM HOUSE,3 MC KINLEY,,,
+1816,Marseille,560 Harrison,,,
+1817,Maryann's Breakfast & Lunch,223 Grove,,,
+1818,Marzae Cellart Provisions,100 Hanover,,,
+1819,Massachusetts Eye & Ear EyeOpener Cafe,800 Huntington,,,
+1820,Massachusetts Eye & Ear Infirmary Eye Opener Cafe,243 Charles,,,
+1821,MassArt Eat Cafe,625 Huntington,,,
+1822,MassArt Starbucks,625 Huntington,coffee_shop,,
+1823,Mass Bay Lines/Freedom,60 Rowes,,,
+1824,MASS EYE AND EAR INFIRMARY,243 Charles,,,
+1825,Mass General Hospital Cafe,55 Fruit,,,
+1826,Mass General Hospital/Coffee Central,55 Fruit,,,
+1827,Massiminos Cucina,207 Endicott,,,
+1828,MassMutual,10 Fan Pier,,,
+1829,MASTER WOK,650 Atlantic,chinese,,
+1830,Mast' Restaurant,45 Province,,,
+1831,Mastro's Ocean Club,22 Liberty,,,
+1832,Matcha Cafe Maiko,115 Jersey,,,
+1833,Matsu Nori Handroll Bar,900 Beacon,japanese,,
+1834,Mattapan House of Pizza,1621 Blue Hill,pizza,11:00,22:00
+1835,MAX'S DELI CAFE,30 BATTERYMARCH,sandwich,,
+1836,Mc Cafe,700 Atlantic,,,
+1837,Mcdonalds,100 Legends,burger,00:00,23:59
+1838,Mcdonalds,1223 Commonwealth,burger,00:00,23:59
+1839,Mcdonalds,1312 Hyde Park,burger,00:00,23:59
+1840,Mcdonalds,146 Tremont,burger,00:00,23:59
+1841,Mcdonalds,1650 VFW,burger,00:00,23:59
+1842,Mcdonalds,1750 Soldiers Field,burger,00:00,23:59
+1843,Mcdonalds,301 Warren,burger,00:00,23:59
+1844,Mcdonalds,3064 Washington,burger,00:00,23:59
+1845,Mcdonalds,315 Washington,burger,00:00,23:59
+1846,Mcdonalds,360 Western,burger,00:00,23:59
+1847,Mcdonalds,500 Geneva,burger,00:00,23:59
+1848,Mcdonalds,511 Gallivan,burger,00:00,23:59
+1849,Mcdonalds,540 Commonwealth,burger,00:00,23:59
+1850,Mcdonalds,718 American Legion,burger,00:00,23:59
+1851,Mcdonalds,870 Massachusetts,burger,00:00,23:59
+1852,McDonald's,178 Border,burger,00:00,23:59
+1853,McDonald's,340 Longwood,burger,00:00,23:59
+1854,McDonald's,607 Washington,burger,00:00,23:59
+1855,McDonald's,700 Atlantic,burger,00:00,23:59
+1856,McDonald's Bus Term.,700 Atlantic,burger,00:00,23:59
+1857,Mc Gonagle's Pub,367 Neponset,,,
+1858,MCKENNA'S CAFE,109 Savin Hill,american;breakfast;coffee_shop,06:00,16:00
+1859,M Club,110 Huntington,,,
+1860,MCPHS Univ Eat Cafe Express,179 Longwood,,,
+1861,MDM Noodle,351 Washington,chinese,11:30,21:29
+1862,Mecha Noodle Bar,44 Thomson,noodle,11:30,22:00
+1863,Medallo,411 Chelsea,,,
+1864,Media,4 Jersey,,,
+1865,MEDITERRANEAN GRILL,281 Franklin,mediterranean,11:00,23:00
+1866,Meet Fresh,130 Brighton,taiwanese,13:00,21:45
+1867,Megumi of Japan,200 Faneuil Hall Marketplace,,,
+1868,Mei Mei Dumplings,58 Old Colony,,,
+1869,MELA RESTAURANT,574 Tremont,,,
+1870,Melodias Restaurant,1045 Saratoga,,,
+1871,Melting Sun Cafe,700 Atlantic,,,
+1872,Melt in Your Mouth-Lower Level,32 Cambridge,,,
+1873,MELTWICH,1102 Commonwealth,,,
+1874,Merengue Express,1 Gurney,,,
+1875,MERENGUE RESTAURANT,156 Blue Hill,,,
+1876,Mesob Restaurant and Bar,1746 Washington,,,
+1877,METROPOLIS CAFE,574 Tremont,,,
+1878,MGM Music Hall Absolut Bar,2 Lansdowne,,,
+1879,MGM Music Hall Botnist Bar,2 Lansdowne,,,
+1880,MGM Music Hall Cazadores Bar,2 Lansdowne,,,
+1881,MGM Music Hall Distiller's Rm,2 Lansdowne,,,
+1882,MGM Music Hall Lobby Bar,2 Lansdowne,,,
+1883,MGM Music Hall Mass. Mutual Lounge,2 Lansdowne,,,
+1884,MGM Music Hall Prisoners Bar,2 Lansdowne,,,
+1885,MGM Music Hall Rooftop Bar,2 Lansdowne,,,
+1886,MGM Music Hall Sam Adams Bar,2 Lansdowne,,,
+1887,MGM Music Hall Truly Bar,2 Lansdowne,,,
+1888,MIAMI RESTAURANT,379 Centre,japanese,11:45,21:00
+1889,Mia's Bakery,131 Seaport,,,
+1890,MIDA,186 Brookline,italian,10:30,24:00
+1891,MIDA,65 Lewis,italian,10:30,24:00
+1892,MIDA Restaurant,782 Tremont,italian,10:30,24:00
+1893,Midnight Morning,14B Birch,,,
+1894,Midway Cafe,3496 Washington,,,
+1895,Mi Finca Mexican Food,4249 Washington,mexican,,
+1896,Mighty Squirrel Fenway,1 David Ortiz,,,
+1897,Mija Cantina & Tequila Bar,1 Harborside,,06:00,20:00
+1898,Mike and Patty's,12 Church,sandwich;breakfast,07:30,14:30
+1899,Mike and Patty's,300 Terminal,sandwich;breakfast,07:30,14:30
+1900,Mike & Patty's,100 High,sandwich;breakfast,07:30,14:30
+1901,Mike & Patty's,388 Centre,sandwich;breakfast,07:30,14:30
+1902,MIKE'S CITY DINER,1714 Washington,diner,07:00,14:00
+1903,MIKES DONUTS,1524A Tremont,,,
+1904,MIKES DONUT SHOP,500 ARBORWAY,,,
+1905,MIKE'S FITNESS,21D Bismarck,,,
+1906,Mike's Pastry - Gate C-10,300 Terminal,,,
+1907,MIKE'S PASTRY INC.,298 Hanover,sandwich;breakfast,07:30,14:30
+1908,Mike's Pastry- K16,80 Causeway,,,
+1909,Mikiya Wagyu Shabu House,19 Hudson,japanese;hotpot,11:30,22:00
+1910,Milano Pizzeria and Pasta,60 Washington,pizza;pasta,11:00,22:00
+1911,MILANO'S DELI,976 Saratoga,,,
+1912,MILK ST CAFE,50 Milk,,,
+1913,Milkweed,1010 William T Morrissey,,,
+1914,Milkweed,1508 Tremont,,,
+1915,Millennium Tower Residents Only Amenity Restaurant,1 Franklin,,,
+1916,Mini Donut Diva-Lower Level,32 Cambridge,,,
+1917,Minina's Cafe,430 Geneva,,,
+1918,MiNori Sushi #7,122 Brighton,japanese,,
+1919,Mi Pueblito Orient Heights,964 Saratoga,,,
+1920,Mi Pueblito Restaurant,333 Border,,,
+1921,Mi Pulgarcito Mexican & Salvadorian Food,571 Washington,,,
+1922,MI RANCHO RESTAURANT,45 Meridian,colombian;fast_food,,
+1923,MISONO RESTAURANT,669 VFW,,,
+1924,MISSION BAR & GRILL,724 Huntington,american,10:00,02:00
+1925,Mister Q Cafe,283 Main,,,
+1926,MISTRAL,221 COLUMBUS,french,10:00,23:00
+1927,Mixsum Bakery,14 Beach,,,
+1928,Miyuki Sushi,547 Washington,japanese,,
+1929,Mizu Matcha,217 Newbury,,,
+1930,M.J. O'CONNOR'S,27 Columbus,,,
+1931,M & J Teriyaki,130 Jersey,,,
+1932,MJ Teriyaki,889 Dorchester,bubble_tea;sushi,11:30,24:00
+1933,M & M BBQ,1250 Massachusetts,,,
+1934,MM Boston Coffee Bar-17th Floor,10 Fan Pier,,,
+1935,MMMAC N' CHEESE,1 FANEUIL HALL MKT PL,,,
+1936,Mochi & Brew - K118,94 Shirley,,,
+1937,Mochiko Hawaiian,123 Guest,,,
+1938,Mochiko Hawaiian,123 Guest,,,
+1939,MODEL CAFE,7 Beacon,,18:00,02:00
+1940,Modern Pastry Shop I I,261 Hanover,,,
+1941,Mofongo Factory Restaurant,299 Hancock,,,
+1942,Moko,674 Broadway,,,
+1943,Molinari's,789 Adams,,,
+1944,Molly's Beachside,165 William J Day,,,
+1945,Molly Tea,67 Beach,bubble_tea,11:00,23:00
+1946,Molly Tea #4,122 Brighton,bubble_tea,11:00,23:00
+1947,Momo Masala,401 Centre,,,
+1948,Momosan Asian Restaurant,80 Causeway,,,
+1949,Mona Sweets,200 Faneuil Hall Marketplace,,,
+1950,Monica's Mercato,500 Terminal,pizza,,
+1951,MONICA'S RESTAURANT,143 Richmond,pizza,,
+1952,Monica's Trattoria,67 Prince,,,
+1953,Montecristo Mexican Grille,748A Huntington,mexican;latin_american;salvadoran,,
+1954,Montien Thai Restaurant,51 Stuart,thai,,
+1955,Monumental Market,34 South,,,
+1956,Monument Tavern,251 Main,,,
+1957,Mood,115 Salem,,,
+1958,MOOGY'S SANDWICH SHOP INC.,154 Chestnut Hill,,,
+1959,Mooncusser Fish House & Moon Bar,129 Columbus,seafood,,
+1960,MOONSHINE 152,152 Dorchester,,,
+1961,Mooo...,15 Beacon,steak_house,,
+1962,Mooo Seaport,49 Melcher,steak_house,,
+1963,More Coffee and Tea,40 Harrison,,,
+1964,MORGAN HALL COFFEE CART,117 Western,,,
+1965,Morgan Lewis & Bockius LLP,1 Federal,,,
+1966,Morgan Stanley Eaton Vance-19th FL,1 Post Office,,,
+1967,Morning Star Baptist Church,1257 Blue Hill,,,
+1968,Mo' Rockin Fusion,100 Hanover,,,
+1969,Morton's of Chicago,2 Seaport,,,
+1970,MORTON'S PIZZERIA,896 Morton,,,
+1971,Mother Juice,100 Hanover,juice;cold_press,07:30,18:00
+1972,Mother Juice,100 High,juice;cold_press,07:30,18:00
+1973,Mother Juice Inc.,291 Newbury,juice;cold_press,07:30,18:00
+1974,Mother's East Tavern,289 Dorchester,,,
+1975,HSI MCA BOS FB  LLC,300 Terminal,,,
+1976,MOTW Coffee and Pastries,45 Broad,arab,06:30,21:00
+1977,Mountain House,89 Brighton,,,
+1978,Moxies,899 Congress,bar_and_grill,,
+1979,Moxies - 2nd Floor Bar,899 Congress,,,
+1980,Moxy Hotel-Rooftop,240 Tremont,,,
+1981,MR. DOOLEYS BOSTON TAVERN,77 Broad,,,
+1982,Mr. H. Restaurant,225 Northern,,,
+1983,Mr. Tamole,100 Hanover,,,
+1984,Mr Tea,266 Newbury,,,
+1985,Ms. Clucks Deluxe Chicken & Dumplings,201 Brookline,,11:00,22:00
+1986,Mud House,389 Neponset,,,
+1987,Mumbai Spice,251 Massachusetts,indian,12:00,22:30
+1988,Mum-Mich,5 Bowdoin,,,
+1989,Murl's Kitchen,143 Washington,,,
+1990,MURPHY'S LAW,837 Summer,,,
+1991,Museum of Fine Arts - Bravo/465,465 Huntington,,,
+1992,Museum of Fine Arts - Garden Cafeteria,465 Huntington,,,
+1993,Museum of Fine Arts - New American Cafeteria,465 Huntington,,,
+1994,Museum of Fine Arts - TASTE,465 Huntington,,,
+1995,Museum Of Ice Cream,121 Seaport,,,
+1996,Museum of Science,10 Charles River,,,
+1997,M/V Asteria,1 Long,,,
+1998,M/V Aurora,1 Long,,,
+1999,M/V Brant Point,1 Long,,10:00,24:00
+2000,M/V Cetacea,1 Long,,,
+2001,M/V Champion,1 Long,,,
+2002,M/V Fort Independence,1A LONG WHARF,,,
+2003,M/V Frederick Nolan Jr.,1A LONG WHARF,,,
+2004,M/V Glory,1 Long,,,
+2005,M/V Regency,1A LONG WHARF,,,
+2006,M/V Rookie,1A LONG WHARF,,,
+2007,M/V Ruth Hughes,1 Long,,,
+2008,M/V Salacia,1 Long,,,
+2009,M/V Sanctuary,1 Long,,09:00,18:00
+2010,MY DINER,455 First,diner,06:00,14:00
+2011,Myers & Chang,1143 Washington,,,
+2012,My Happy Hunan Kitchen,1924 Beacon,chinese,,
+2013,My Mother's Cutlets,371 Hanover,,,
+2014,My Sister's Sandwich Cafe,1544 Dorchester,,,
+2015,My Thai Cafe Vegetarian & Bubble Tea Bristro,3 Beach,,,
+2016,Myung Dong 1st Ave,90 Harvard,korean,17:00,01:00
+2017,Nachlo,1443 Tremont,,,
+2018,Nagomi,636 Beacon,japanese,,
+2019,Nai Brother,40 Harrison,,,
+2020,Nakhon,296 Washington,thai,,
+2021,NaKSaN BBQ,1414 Commonwealth,korean,,
+2022,Namastay Boston,636 Beacon,,,
+2023,Nam Po,431 Cambridge,,,
+2024,Namu Distilling Co.,89 Heath,korean,,
+2025,Nana's Green Tea,175 Newbury,,,
+2026,Nando,393 Hanover,,,
+2027,Nan Xiang Express,52H Beach,chinese,11:00,22:00
+2028,Napoles,1233 Bennington,,,
+2029,Nathalie Wine Bar,186 Brookline,,,
+2030,Natural!,578 Huntington,,,
+2031,Naughty Waffle,200 Faneuil Hall Market,,,
+2032,NAYA,144 Brookline,middle_eastern,,
+2033,NAYA,500 Boylston,middle_eastern,,
+2034,NAYA,91 Summer,middle_eastern,,
+2035,Nebo Ristorante/Enoteca,520 Atlantic,,,
+2036,Ned Devine's,200 FANEUIL HALL MARKET,,,
+2037,N.E. Deaconess Hospital Cafe,1 Deaconess,,,
+2038,NEPTUNE RESTAURANT,63 Salem,seafood;american,11:00,23:00
+2039,NEW CHINA RESTAURANT,869 Harrison,chinese,16:00,01:00
+2040,NEW ENGLAND BAPTIST,125 PARKER HILL,,,
+2041,New England Center For Arts & Technology,23 Bradston,,,
+2042,New England College of Optometry,424 Beacon,,,
+2043,New England Wichcraft Co.,54 Salem,,,
+2044,NEW GOLDEN GATE RESTAURANT,66 Beach,,,
+2045,New Golden Kitchen,1495 Dorchester,,,
+2046,New Hong Kong,14 Tremont,chinese,,
+2047,New Ho Toy,746 Dudley,,,
+2048,New Market Pizza,850 Massachusetts,,,
+2049,New Moon Villa Restaurant,15 Edinboro,,,
+2050,New Oriental House,3704 Washington,chinese,14:00,23:30
+2051,New Saigon,985 Bennington,,,
+2052,News Room Cafe,7 Bulfinch,,,
+2053,New Wing's Kitchen,13 Hudson,,,
+2054,New York Fried Chicken,442 Blue Hill,,11:00,24:00
+2055,NEW YORK FRIED CHICKEN & PIZZA,531 Columbia,pizza,10:00,02:00
+2056,New York Pizza,224 Tremont,pizza,10:00,02:00
+2057,New York Pizza,433 MASSACHUSETTS,pizza,10:00,02:00
+2058,New York Shawarma Guys,83 Canal,,,
+2059,NexDine @ Catholic Memorial High School,235 Baker,,,
+2060,Nexdine Coffee Bar @ New Balance,100 Guest,,,
+2061,Nexdine @ New Balance,100 Guest,,,
+2062,Next Door Speakeasy,103 Porter,,,
+2063,Nfarra 2,127 Maverick,,,
+2064,Nhu Lan Fast Food,1155 Dorchester,,,
+2065,NICK'S,4590 Washington,pizza,,
+2066,Nick's Pizza and Seafood,1143 Blue Hill,seafood,12:00,21:00
+2067,Nicks/Venue,100 Warrenton,,,
+2068,Nicole's Jamaican Plain,367 Centre,,08:00,21:00
+2069,NICOLE'S PIZZA,639 Tremont,,,
+2070,Nico Restaurant,417 Hanover,,,
+2071,Night Shift Brewing,160 Washington,,,
+2072,Nine,9 Park,,11:30,22:30
+2073,Nino's Pizza,79 Charles,pizza,,
+2074,NIXON & PEABODY,53 State,,,
+2075,Noble Castella,100 High,,,
+2076,NOHRI,5 Tyler,japanese,,
+2077,Noodle Barn,707 Centre,vietnamese;thai,11:30,22:00
+2078,Noodledance Tech - K102,94 Shirley,,,
+2079,Noodle Lab,100 Hanover,,,
+2080,Noodle Lab - Space#9,122 Brighton,,,
+2081,NOODLE STREET RESTAURANT,627 Commonwealth,,,
+2082,Noon Mediterranean,168 Cambridge,mediterranean,11:00,23:00
+2083,Northeastern Univ/Curry Center,360 HUNTINGTON,,,
+2084,Northeastern University Belvidere,39 Dalton,,,
+2085,Northeastern University/Cafe Crossing,1175 Tremont,sandwich,,
+2086,Northeastern University Churchill Hall,380 Huntington,sandwich,,
+2087,Northeastern University Faculty Club,815 Columbus,,,
+2088,Northeastern University-Snell Library,376 Huntington,,,
+2089,Northeastern Univ./International Village,1155 Tremont,,,
+2090,NORTHEASTERN UNIV. RYDER HALL,11 Leon,,,
+2091,North East of the Boarder Taqueria,100 High,mexican,11:00,20:30
+2092,North End Creamery,121 Salem,,,
+2093,North End Lobster Co.,206 Hanover,,11:30,23:00
+2094,NORTH STREET GRILLE & CAFE,229 North,,,
+2095,Nos Casa Cafe,475 Dudley,,,
+2096,Notch Brighton Tap Room,1420 Soldiers Field,,,
+2097,Not Your Average Joe's,200 Terminal,,05:00,24:00
+2098,Nova Restaurant,131 Tremont,,,
+2099,Novo Lantern,1750 Washington,,,
+2100,Nowon Seaport,113 Seaport,,,
+2101,Nuba Cafe,742 Columbus,,,
+2102,Nu Flav Restaurant,1098 Blue Hill,,,
+2103,NumNum - K103,94 Shirley,,,
+2104,N.U. Stetson Hall East,11 Speare,,,
+2105,N.U. Stetson Hall West,11 Speare,,,
+2106,Nutter  McClennen & Fish LLP,155 SEAPORT,,,
+2107,NY Bagel & Coffee Co,111 Brighton,bagel,,
+2108,OASIS GUEST HOUSE,20 Edgerly,,,
+2109,Oasis Restaurant,33 Hancock,,,
+2110,Oba Bakery and Cafe,1103 Commonwealth,mediterranean,08:00,17:00
+2111,Obosa Foods,146 Belgrade,,,
+2112,O'Brien's Pub,3 Harvard,,,
+2113,Ocean Prime,100 Pier 4,,,
+2114,O'Cheese,261 North,sandwich,11:00,23:00
+2115,Oda Bar & Bites,3840 Washington,,07:00,18:00
+2116,ODYSSEY CRUISES,60 Rowes,,,
+2117,Ogawa Coffee,10 Milk,coffee_shop;japanese,08:00,16:30
+2118,Oh Canada Poutinerie - Lower Level,32 Cambridge,,,
+2119,OLD COLONY YACHT CLUB,235 Victory,,,
+2120,Old Friend,5272 Washington,,,
+2121,OLGA'S KAFE,206 Broadway,,06:30,16:00
+2122,Olitoki,66 Brighton,korean,11:00,23:00
+2123,Oliveiras Express - Tivoli Catering,204 Cambridge,,,
+2124,Oliveiras Restaurant,297 Chelsea,brazilian,,
+2125,Olive World - Lower Level,32 Cambridge,,,
+2126,Olympic House of Pizza,655 EAST BROADWAY,pizza,11:00,22:00
+2127,Olympic Pizza,187 Wolcott,,,
+2128,Omi Symphony,261 Huntington,,,
+2129,Omni Boston Seaport - Crescendo,450 Summer,,,
+2130,Omni Boston Seaport - Kestra,450 Summer,,,
+2131,Omni Boston Seaport - Lifted Pool Bar,450 Summer,,,
+2132,Omni Boston Seaport - Sporting Club,450 Summer,,,
+2133,OMNI PARKER HOUSE,56 School,,,
+2134,Omni Seaport Employee Kitchen,450 Summer,,,
+2135,Omni Seaport L3 Kitchen,450 Summer,,,
+2136,Omni Seaport Main BQ Kitchen,450 Summer,,,
+2137,One Beacon Cafe,1 Beacon,,,
+2138,One Family Diner,260 Bowdoin,,,
+2139,One Love Chimi,138 South,,,
+2140,ONLY ONE JAMAICAN RESTAURANT,1345 Hyde Park,,10:00,23:00
+2141,ONLY ONE JAMAICAN RESTAURANT,160 Norfolk,,10:00,23:00
+2142,OPPA SUSHI,185 Harvard,sushi,12:00,21:45
+2143,ORIENTAL HOUSE,560 Washington,chinese,14:00,23:30
+2144,O'Saraceno,284 Hanover,,,
+2145,Ostra,1 Charles Street South,seafood,17:30,23:00
+2146,Otto Pizza,345 Harrison,pizza,11:00,24:00
+2147,Otto Pizza,416 Broadway,pizza,11:00,24:00
+2148,Our Zone,1583 Commonwealth,,,
+2149,Overtime Eats,252 Friend,,,
+2150,O YA RESTAURANT,9 East,,,
+2151,Padduck Concession,525 William F McClellan,,,
+2152,PAD THAI CAFE,6 Hemenway,,,
+2153,Pagliuca's Restaurant,14 Parmenter,,,
+2154,Paku Katsuya,144 Tremont,,,
+2155,Palm  Restaurant  (1 International Place),90 Oliver,,11:30,22:00
+2156,PAN ASIA RESTAURANT,720 Broadway,,,
+2157,Panda Express,25 Jan Karski,chinese,11:00,20:00
+2158,Panera Bread,115 Stuart,sandwich;bakery,06:00,22:00
+2159,Panera Bread,17 Blackfan,sandwich;bakery,06:00,22:00
+2160,Panera Bread,200 High,sandwich;bakery,06:00,22:00
+2161,Panera Bread,289 Huntington,sandwich;bakery,06:00,22:00
+2162,Panera Bread,8 Allstate,sandwich;bakery,06:00,22:00
+2163,Panera Bread#9315,75 Francis,sandwich;bakery,06:00,22:00
+2164,Panera Bread Cafe 2137,364 Brookline,sandwich;bakery,06:00,22:00
+2165,Panera Bread Cafe #2143,121 Brookline,sandwich;bakery,06:00,22:00
+2166,Pantry Pizza,931 Dorchester,,11:00,22:30
+2167,Panza,326 Hanover,,,
+2168,PAPA GINO'S,748 Gallivan,pizza,10:30,22:00
+2169,Papa Johns,1493 Dorchester,pizza,,
+2170,PAPA JOHNS PIZZA,533 Washington,,,
+2171,PAPA RINO'S PIZZA,392 Geneva,,,
+2172,PAPA RINO'S PIZZA,392 Geneva,,,
+2173,Papa's Pizza Company,682 Huntington,,,
+2174,Pappare Ristorante,358 Hanover,,,
+2175,PARADISE,963 Commonwealth,japanese;hotpot,11:00,22:30
+2176,Para Maria (Envoy 1St. Fl),70 Sleeper,,,
+2177,PARAMOUNT,44 Charles,,,
+2178,Parish Cafe,359 Boylston,,,
+2179,Park 54 Restaurant and Lounge,81 Fairmount,,,
+2180,Park Bagelry & Cafe,280 Western,,,
+2181,Park City,383 Dorchester,seafood;poke,11:30,21:30
+2182,Park City - Pavilion Bar,383 Dorchester,,,
+2183,Park City - Sat. Bar Left,383 Dorchester,,,
+2184,Park City - Sat. Bar Right,383 Dorchester,,,
+2185,PARKWAY LITTLE LEAGUE STAND,2 Dow,,,
+2186,PARLA,230 Hanover,italian,,
+2187,Pasta Tana's - Lower Level,32 Cambridge,,,
+2188,Pasta Tana's - Upper Level,32 Cambridge,,,
+2189,Patient Dining @ Tufts Medical Center,750 Washington,,,
+2190,PATS PIZZA,2254 Dorchester,pizza,10:00,21:30
+2191,Pat's Place,60 Fenwood,,,
+2192,Pauli's,65 Salem,,08:00,21:00
+2193,PAV1A,4 Jersey,,,
+2194,PAVB1,4 Jersey,,,
+2195,PAVB3,4 Jersey,,,
+2196,PAVC1,4 Jersey,,,
+2197,PAVC3,4 Jersey,,,
+2198,Pavement,415 Western,coffee_shop,,
+2199,Pavement Coffeehouse,1096 Boylston,coffee_shop,,
+2200,Pavement Coffeehouse,1243 Commonwealth,coffee_shop,,
+2201,Pavement Coffeehouse,1330 Boylston,coffee_shop,,
+2202,Pavement Coffeehouse,44 Gainsborough,coffee_shop,,
+2203,Pavement Coffee House,286 Newbury,coffee_shop,07:00,19:00
+2204,Pazza on Porter,107 Porter,italian,,
+2205,Peach Farm,4 Tyler,chinese,,
+2206,Pedro's Kitchen,85 Glenville,,,
+2207,Peet's Coffee,500 Terminal,coffee_shop,07:00,19:30
+2208,Peet's Coffee & Tea(United Terminal BA A34),200 Terminal,coffee_shop,07:00,19:30
+2209,Peka,300 Washington,,,
+2210,PEKING HOUSE,160 Dudley,,,
+2211,Pelloma Nigerian Cuisine,924 Morton,,,
+2212,Pena Bani Restaurant,4541 Washington,,09:00,20:00
+2213,Penang,687 Washington,malaysian,,
+2214,Penguin Pizza,735 HUNTINGTON,pizza,10:00,24:00
+2215,PENNYPACKERS,100 High,sandwich,11:00,22:00
+2216,Pennyweight Hotel Boston,155 Portland,,,
+2217,Peregrine,170 Charles,italian;mediterranean,,
+2218,Perillas Food,123 Antwerp,,,
+2219,PERKIN'S SQ DELI,106 Dorchester,,,
+2220,Perla Del Sur Quintanilla,454 Hyde Park,,,
+2221,Perros Paisas,350 Bennington,hot_dog;colombian,,
+2222,Peruvian Taste Restaurant,78 Arlington,,,
+2223,Pete's A Pizza,482 Centre,pizza,11:00,21:00
+2224,Pete's Dockside,12 Channel,american;seafood,11:30,25:00
+2225,Pete's Seafood,267 Bowdoin,seafood,12:00,21:00
+2226,PETIT ROBERT BISTRO,480 COLUMBUS,french,,
+2227,Petula's,81 L,,10:00,22:00
+2228,P.F.CHANG'S CHINA BISTRO,8 Park,asian,11:00,22:00
+2229,Phin Coffee House,10 High,coffee_shop;vietnamese,,
+2230,Phin Coffee House,20 Western,coffee_shop;vietnamese,,
+2231,Phinista Cafe,1092 Commonwealth,crepe;vietnamese,09:30,18:00
+2232,Phinista Cafe,84 Peterborough,crepe;vietnamese,09:30,18:00
+2233,PHO 2000,198 Adams,,,
+2234,PHO BAR,1403 Dorchester,vietnamese,11:00,20:30
+2235,Pho Basil,177 MASSACHUSETTS,,,
+2236,Pho Hoa restaurant/Drink Lab,1370 Dorchester,,,
+2237,Pho Le,1356 Dorchester,,,
+2238,Pho Pasteur,682 Washington,vietnamese,,
+2239,Pho Que Restaurant,291 Adams,,,
+2240,Pho Town,89 Brighton,,,
+2241,Pho Zabb,1795 Commonwealth,,,
+2242,Phuket Thai  Restaurant,1852 Centre,thai,11:30,22:00
+2243,Piattini,226 Newbury,,,
+2244,Picco,513 Tremont,pizza;ice_cream;italian,11:00,22:00
+2245,Pick and Bite,700 Atlantic,,,
+2246,Pick N'Roll Sushi,134 Boylston,sushi,11:00,20:00
+2247,Pier 6 Restaurant,1 Eighth,seafood,,
+2248,Pig Beach BBQ,64 C,,,
+2249,Pikalo J.P.,360 Centre,,08:00,21:20
+2250,Pikalox,422 Geneva,,,
+2251,Pika Pollo,3160 Washington,,,
+2252,Pinch Bakery - Lower Level,32 Cambridge,,,
+2253,Pink Carrot,1001 Boylston,,,
+2254,Pink Carrot,115 Salem,,,
+2255,Pin Ming Bubble Tea,5 Beach,,,
+2256,Pino's Pizza House,1918 Beacon,pizza,,
+2257,Pita Thyme,112 Water,mediterranean,,
+2258,Pixlcat Coffee - Lower Level,32 Cambridge,,,
+2259,Pixlcat Coffee - Upper Level,32 Cambridge,,,
+2260,Pizza 10,4 Jersey,,,
+2261,Pizza Bar - Kitchen 126,94 Shirley,,,
+2262,Pizza Project,525 Western,pizza,12:00,21:00
+2263,Pizza Stop,851 Harrison,pizza,,
+2264,Pizzatalia,618 Shawmut,,,
+2265,Pizzeria 260,260 Broadway,pizza,11:00,22:00
+2266,Pizzeria Regina,11H Thacher,pizza,11:00,23:30
+2267,Pizzeria Regina Of South Station,700 Atlantic,pizza,11:00,23:30
+2268,Pizzeria Rustico,85 Canal,italian,,
+2269,PB Husky  LLC,277 Huntington,,,
+2270,Playa Bowls,2193 Commonwealth,açaí,,
+2271,Playa Bowls,471 Broadway,açaí,,
+2272,Plaza Cafe,274 Tremont,,,
+2273,Pleasant Cafe,4511 Washington,,,
+2274,PLNT Burger,348 Harrison,burger,10:00,23:00
+2275,Aramark Corporation,4 Jersey,,,
+2276,POCKETS BILLIARD CLUB,981 Bennington,,19:00,02:00
+2277,POE-Lenta Italian Cafe,201 Brookline,italian,,
+2278,POE-Lenta italian Cafe - Kiosk#31,80 Causeway,italian,,
+2279,Poke Bar & Kitchen,309 Huntington,,00:00,22:30
+2280,Poke By Love Art,97 Beverly,,,
+2281,Poke City,63 Broad,seafood;poke,11:30,21:30
+2282,Poke Works,200 Faneuil Hall Marketplace,poke;hawaiian,,
+2283,Pollo Campero,188 Border,chicken,,
+2284,Pollo Centro,223 Bowdoin,,,
+2285,Pollos A La Brasa Beto's,294 Bennington,chicken,,
+2286,Pomona,18 Meridian,,,
+2287,Popeyes,1630 VFW,chicken,00:00,24:00
+2288,Popeyes,300 Martin Luther King Jr,chicken,00:00,24:00
+2289,Popeyes,710 American Legion,chicken,00:00,24:00
+2290,Porrazzo Skating Rink,199 Coleridge,,,
+2291,PORTER BELLY'S,338 Washington,,,
+2292,Porto,780 Boylston,,,
+2293,Posto,1357 Washington,italian,,
+2294,Potbelly Sandwich Shop,1 Federal,sandwich,05:00,20:00
+2295,Potbelly Sandwich Shop,200 Terminal,sandwich,05:00,20:00
+2296,Potbelly Sandwich Shop,300 Terminal,sandwich,05:00,20:00
+2297,Potluck Cafe,7 Knapp,chinese,11:00,20:00
+2298,POYOS - Lower Level,32 Cambridge,,,
+2299,Premium Market,100 Legends,,,
+2300,PRESIDENT'S SUITE,21 ST THOMAS MOORE,,,
+2301,Press Bar,135 William T Morrissey,juice,08:00,18:00
+2302,Pressed Cafe,800 Boylston,breakfast;brunch;coffee_shop,,
+2303,Pressed Cafe Seaport,43-61 Pier 4,breakfast;brunch;coffee_shop,,
+2304,Press Room @ Alamo Drafthouse,23 Northern,,,
+2305,PREZZA,24 Fleet,,,
+2306,P & R ICE CREAM,1284 BLUE HILL,,,
+2307,Prietos Empanadas,196 Humboldt,,,
+2308,Prima,12 Park,,,
+2309,Prime Shoppe,104-112 Faneuil Hall Mkt,,,
+2310,PRIMO'S RESTAURANT,28 Myrtle,,,
+2311,Professor Pizza - Lower Level,32 Cambridge,,,
+2312,Professor Pizza - Upper Level,32 Cambridge,,,
+2313,Proof Pizzeria,1304 Commonwealth,pizza,,
+2314,Proper Fare,700 Atlantic,,,
+2315,PROVIDENCE HOUSE SENIOR COMM.,180 COREY,,,
+2316,Prow/Max Cafe @Emerson,150 Boylston,,,
+2317,P & R Restaurant & Ice Cream Parlor,208 Dudley,,,
+2318,PS Coffee,4252 Washington,coffee_shop,06:00,22:00
+2319,PS Gourmet Coffee,782 Adams,coffee_shop,06:00,22:00
+2320,Publico Street Bistro,11 Dorchester,,10:00,24:00
+2321,PuddingStone Tavern,1592 Tremont,,,
+2322,Pueblo Viejo,309 Bennington,salvadoran,,
+2323,Pueblo Viejo Pupuseria & Mexican Grill,170 Marion,salvadoran,,
+2324,Pueblo Viejo's Cafe,300 Saratoga,salvadoran,,
+2325,PunJab Palace,109 Brighton,indian,11:15,22:30
+2326,PUNTO ROJO,16 Bennington,colombian,,
+2327,Pu Pu Restaurant,2060 Centre,,,
+2328,Pure Green Boston,1135 Harrison,,,
+2329,Puritan Restaurant,735 William T Morrissey,,10:30,22:00
+2330,Puro,264 Newbury,latin_american;wine;seafood,,
+2331,PURPLE CACTUS,674 Centre,mexican,,
+2332,Puttshack,131 Seaport,,,
+2333,Qdoba Mexican Eats,189 Massachusetts,mexican,10:30,22:00
+2334,Qdoba Mexican Eats #2592,101 Causeway,mexican,10:30,22:00
+2335,Qiao Lin Hotpot,392 Cambridge,,,
+2336,QUATTRO RISTORANTE  GRILL & PIZZERIA,264 Hanover,italian;panini;sandwich;pizza;calzone;zuppe,,
+2337,Que Arepa En Tertulias Cafe,26 Porter,venezuelan,,
+2338,Raffles Boston-Blind Duck 17th Fl.,40 Trinity,,,
+2339,Raffles Boston-Blind Duck 18th Fl.,40 Trinity,,,
+2340,Raffles Boston-Cafe Pastel - 1st Floor,40 Trinity,,,
+2341,Raffles Boston-Cafeteria,40 Trinity,,,
+2342,Raffles Boston-Long Bar 17th Floor,40 Trinity,,,
+2343,Rail Stop,94 Guest,,10:00,22:00
+2344,Raising Cane's Chicken Fingers,101 Arch,chicken,,
+2345,Raising Cane's Chicken Fingers,755 Boylston,chicken,,
+2346,Raising Cane's Chicken Fingers,949 Commonwealth,chicken,,
+2347,Rally Upcycle Kitchen - Lower Level,32 Cambridge,,,
+2348,Ralphs Coffee,131 Seaport,,,
+2349,RAMADA INN,800 WM T MORRISSEY,,,
+2350,Ramsay's Kitchen,774 Boylston,,,
+2351,Raphael's Restaurant,487 Washington,,,
+2352,Rapid 7,120 Causeway,,,
+2353,Ray & Joan Krok Community Center,650 Dudley,,,
+2354,Rebecca's Cafe,255 Saint Botolph,,,
+2355,Rebel's Guild,196 Stuart,,,
+2356,Red Line Pizza and Grill,582 Dorchester,pizza,10:00,02:00
+2357,Red Red & Poppa B's,2306 Washington,bubble_tea;sushi,,
+2358,HSI MCA BOS FB  LLC,300 Terminal,,,
+2359,Red White,294 Newbury,,,
+2360,Reelhouse Oyster Bar,10 Waterside,,,
+2361,Reelhouse Restaurant,10 New,,,
+2362,Regina's (up),1 FANEUIL HALL MKT PL,,,
+2363,Reis Bakery @ BPM,100 Hanover,,,
+2364,Renaissance Hotel (Club Lounge),606 Congress,,,
+2365,Renaissance Hotel (Employee Cafe),606 Congress,,,
+2366,Renaissance Hotel (Lobby Lounge/Capiz),606 Congress,,,
+2367,Renaissance Hotel (Main Kitchen),606 Congress,,,
+2368,Renaissance Hotel (Starbucks),606 Congress,coffee_shop,,
+2369,Renegades Pub,1004 Bennington,,,
+2370,Residence Inn,2001 Washington,,,
+2371,Residence Inn by Marriott,370 Congress,,,
+2372,RESIDENCE INN BY MARRIOTT BOS,34 CHARLES RIVER,,,
+2373,Residence Inn Fenway - Boston,121 Brookline,,,
+2374,Restaurant Associates @ Amazon,253 Summer,,,
+2375,Restaurante Cesaria,266 Bowdoin,,,
+2376,RESTAURANT MONTECRISTO,35 WM C KELLY,mexican;latin_american;salvadoran,,
+2377,Restday - Lower Level,32 Cambridge,,,
+2378,Reunion,71 Broadway,,,
+2379,Reunion BBQ,439 Tremont,,,
+2380,Revival,1 Post Office,coffee_shop;sandwich,07:30,15:00
+2381,Revival Cafe & Kitchen,15 Necco,coffee_shop;sandwich,07:30,15:00
+2382,Revival Cafe & Kitchen,30 Western,coffee_shop;sandwich,07:30,15:00
+2383,Revival Cafe & Kitchen,50 Milk,coffee_shop;sandwich,07:30,15:00
+2384,RHYTHM 'N WRAPS,1092 Commonwealth,american;sandwich,11:00,20:00
+2385,RICCARDO'S RISTORANTE,175 North,italian,,
+2386,Richy's,1461 River,,,
+2387,Rico Sazon,130 Newmarket,,,
+2388,Right Field Inseat,4 Jersey,,,
+2389,Right Field Pantry,4 Jersey,,,
+2390,Right Taste Jamaican Restaurant,522 RIVER,jamaican,08:00,22:00
+2391,Rincon Caribeno Restaurant,18 Fairmount,,,
+2392,Rinconcito Salvadoreno,313 Meridian,,,
+2393,RINCON LIMENO,409 Chelsea,peruvian,,
+2394,RINO'S PIZZA,730 Blue Hill,pizza,,
+2395,RINO'S PLACE,256 SARATOGA,italian,,
+2396,Ripple Cafe,1906 Dorchester,,07:00,17:00
+2397,RISTORANTE EUNO,119 Salem,,,
+2398,Ristorante Toscano Inc.,41 Charles,italian;wine;seafood,12:00,21:30
+2399,Rite: Tea & Espresso Bar,525 Western,,,
+2400,RITZ-CARLTON BOSTON COMMON,10 Avery,,,
+2401,RIVERSIDE CAFE-LEV1,32 Fruit,,,
+2402,RIVER STREET GRILL,73 River,,,
+2403,RIZZO'S PIZZA,347 Centre,pizza,,
+2404,Roadrunner,89 Guest,,,
+2405,Rocco's Cucina & Bar,450 Commercial,italian,01:30,14:00
+2406,Rocco's Sports and Recreation,131 Seaport,,,
+2407,Hynes Fine Dining  LLC,880 Boylston,,,
+2408,ROCHE BROS. SUPERMARKET,1800 Centre,,,
+2409,Roche Brothers Supermarket,10 Summer,,,
+2410,Rock Bottom Brewery,115 Stuart,burger,,
+2411,Rock City Pizza,568 Cambridge,pizza,11:00,23:00
+2412,Rock & Rye,57 Stuart,,,
+2413,Rod Thai Family Taste,94 Peterborough,,,
+2414,Rogers Fish Co.,100 Terminal,,,
+2415,Rolls Sushi,21 Dry Dock,japanese,,
+2416,Roma Pizza & Company,410 Tremont,pizza,,
+2417,Rondo's Sub Shop,134 Broadway,,,
+2418,Roof Top Pool at The Colonnade Hotel,120 Huntington,,,
+2419,Rooftop @ Revere Hotel,200 Stuart,,,
+2420,Ropes & Gray L L P,800 BOYLSTON,,,
+2421,Rosa Mexicano,155 SEAPORT,,,
+2422,Rosa's Kitchen - K111,94 Shirley,,,
+2423,Rosa y Marigold,1001 Boylston,,,
+2424,Rose,387 Chelsea,irish,,
+2425,Rose & G Restaurant,630 Hyde Park,,,
+2426,ROSLINDALE HOUSE OF PIZZA,4168 Washington,pizza,11:00,22:00
+2427,Roundhead Brewing Company,1 Westinghouse,,,
+2428,Round Two Pizza and Subs,10 Walk Hill,pizza,,
+2429,Routin Nutrition,114 Chelsea,,,
+2430,Row 34,381 Congress,oyster;fish,11:30,22:00
+2431,Row 34,498 Commonwealth,oyster;fish,11:30,22:00
+2432,Rox Diner,1881 Centre,,,
+2433,Royale,279 Tremont,pizza;american,10:00,21:00
+2434,Royal Fried Chicken,2360A Washington,pizza;american,10:00,21:00
+2435,ROYAL ROAST BEEF & SEAFOOD,752 Bennington,pizza;american,10:00,21:00
+2436,Royal Rooters,4 Jersey,pizza;american,10:00,21:00
+2437,Roza Lyons,709 Broadway,,,
+2438,R&S Jamaican Restaurant,36 Norfolk,,08:00,21:00
+2439,Ruka Restobar Nikkei,505 Washington,peruvian;japanese;chinese,17:00,23:00
+2440,Russ & Mimi's,16 Birch,,,
+2441,Rutchada Thai Cuisine,153 Belgrade,,,
+2442,Ruthie's Juice Cafe,1 First,,,
+2443,Ruth Mulan Chu Chao Center,49 Harvard,,,
+2444,Ruth's Chris Steak House,45 School,american;steak_house,,
+2445,Sabina,253 Newbury,,,
+2446,Sabor do Brasil,174 Brighton,brazilian,,
+2447,Sabroso Taqueria,2 Oliver,mexican,11:00,20:30
+2448,Sabroso Taqueria,3 CENTER PLAZA,mexican,11:00,20:30
+2449,Safari African Restaurant,950 American Legion,,,
+2450,Saigon Chicken House,223 Adams,,,
+2451,Saigon Fusion,201 Massachusetts,vietnamese,11:30,20:00
+2452,Saigon Hut,305 Meridian,vietnamese,,
+2453,Saigon One Restaurant,1331 Dorchester,,,
+2454,Saigon Seafood Restaurant,270 Adams,seafood,12:00,21:00
+2455,Sakabayashi Sushi Tavern by Sushiro,665 Boylston,sushi,11:30,22:30
+2456,Sakura Japan,350 Longwood,asian,11:30,22:30
+2457,Sally's Apizza,25 Jan Karski,pizza,11:00,22:00
+2458,Saloniki,132 Brookline,greek,11:00,21:00
+2459,Saloniki Greek,1330 Boylston,greek,11:00,21:00
+2460,Saloniki Greek,180 Brighton,greek,11:00,21:00
+2461,Saloniki Greek,1928 Beacon,greek,11:00,21:00
+2462,Saloniki Greek,1 Beacon,greek,11:00,21:00
+2463,Saloniki Greek,316 Newbury,greek,11:00,21:00
+2464,SALSAS MEXICAN GRILL,417 Washington,,,
+2465,SAL'S PIZZA,1 Court,pizza,11:00,22:00
+2466,SAL'S PIZZA,500 Terminal E,pizza,11:00,22:00
+2467,SAL'S PIZZA,51 Brookline,pizza,11:00,22:00
+2468,Sal's Pizza/Bakery,150 Tremont,pizza,11:00,22:00
+2469,Saltie Girl,277 Dartmouth,seafood,11:30,23:00
+2470,Salt & Straw,200 Seaport,,,
+2471,Salty Pig,130 Dartmouth,,,
+2472,Salty Shucker Oyster Co. - Lower Level,32 Cambridge,,,
+2473,Sam Adams Deck/RF ROOF,4 Jersey,,,
+2474,Sam Adams Tap Room,60 State,,,
+2475,Sam Adams Tap Room Extension & Eats,200 Terminal,,,
+2476,SAME OLD PLACE INC.,662 CENTRE,italian;pizza,11:00,22:25
+2477,Samia Cafe-Res Dining,20 Somerset,,,
+2478,Sam LaGrassa's,44 Province,deli;sandwich,,
+2479,Sammy Carlo's Delicatessan,567 Bennington,,,
+2480,Sammys On Third/GEB,4 Jersey,,,
+2481,Sammy's Pizza and Fried Chicken,1443 Commonwealth,pizza,,
+2482,Sam's Southern Food - Lower Level,32 Cambridge,,,
+2483,Samuel Adams Boston Brewery,30 Germania,,11:00,21:00
+2484,Sanbada/Jinjee,161 Brighton,,,
+2485,Sando Table,71 Broad,,,
+2486,Santa Fe Burrito Grill,303 Sumner,mexican,,
+2487,FJS INC.,111 Chelsea,,,
+2488,Santarpios Restaurant,1 Harborside,,,
+2489,Santo Domingo Restaurant,179 Washington,,,
+2490,Santouka,66 Hereford,ramen,11:00,21:30
+2491,Sargent Cafe,120 Tremont,,,
+2492,Sarku Japan,417 Washington,,,
+2493,SARVA,279 Newbury,,,
+2494,Sauce Burgers- K12,80 Causeway,,,
+2495,Sauce on Bowdoin,203 Bowdoin,,,
+2496,Savenors RF,4 Jersey,,,
+2497,Savin Bar And Kitchen,112 Savin Hill,,,
+2498,Savin Hill Yacht Club,400 William T Morrissey,,,
+2499,SAVR,150 Seaport,american,,
+2500,Savvor Restaurant & Lounge,174 Lincoln,,,
+2501,Saxbys - 1st Floor,665 Commonwealth,,,
+2502,Saxbys Northeastern,815 Columbus,,,
+2503,SBARRO RESTAURANT,100 Terminal,pizza,09:30,19:00
+2504,Scali Deli Cafe,147 Pearl,,,
+2505,Scampo,215 Charles,italian,,
+2506,Scholars,23 School,,,
+2507,Schrafft's Center,529 Main,,,
+2508,Schrafft's Center Coffee Bar,529 Main,,,
+2509,SCOLA'S CAFE,88 Black Falcon,,,
+2510,Scores,164 Canal,,,
+2511,Scorpion Bar/ Grand Seaport Square,23 Northern,mexican,,
+2512,Scrappie's Pizzeria,42 Charles,pizza;burger;italian;american;chicken,11:00,21:00
+2513,SEAPOINT RESTAURANT,367 EAST EIGHTH,,,
+2514,SEAPORT ELITE I I,200 Seaport,,,
+2515,Seaport Hotel,1 Seaport,,,
+2516,Seaport West - BAMCO 10th Fl.,155 Seaport,,,
+2517,Sebastians Cafe,1 Harborside,,,
+2518,Sebastians Cafe @ RCC,1234 Columbus,,,
+2519,SEC Cafe / Kitchen,140 Western,,,
+2520,Segafredo Cafe - Terminal E,1 Harborside,,,
+2521,Select Oyster Bar,50 Gloucester,seafood;oyster,,
+2522,Sen Yai,563 Washington,,,
+2523,Seoul,156 Cambridge,korean,11:30,21:30
+2524,Seoul Jangteo,145 Brighton,korean,,
+2525,Seoul Soulongtang,1243 Commonwealth,korean,11:30,21:30
+2526,Seoul Tteokbokki,166 Harvard,korean,,
+2527,Serafina,11 Fan Pier,,,
+2528,Serafina,237 Newbury,,,
+2529,Servia,126 State,,,
+2530,Seven Hills Pasta - Lower Level,32 Cambridge,,,
+2531,Seven's Ale House,77 Charles,,,
+2532,Shabu-Zen,14 Tyler,japanese,11:00,23:00
+2533,Shabu-Zen,78 Brighton,japanese,11:00,23:00
+2534,Shah's Halal Food,106 Cambridge,,,
+2535,Shah's Halal Food,1124 Boylston,,,
+2536,Shake Shack,234 Newbury,burger,11:00,23:00
+2537,Shake Shack,300 Terminal C,burger,11:00,23:00
+2538,Shake Shack,332 Washington,burger,11:00,23:00
+2539,Shake Shack,77 Seaport,burger,11:00,23:00
+2540,Shake Shack#1431,800 Boylston,burger,11:00,23:00
+2541,Shaking Crab,140 Boylston,seafood,,
+2542,Shaking Seafood,1616 Dorchester,seafood,12:00,21:00
+2543,Shaking Seafood,19 Poplar,seafood,12:00,21:00
+2544,SHALOH HOUSE,29 CHESTNUT HILL,,,
+2545,Shamrock Pub,501 Eighth,,00:00,23:59
+2546,Shannon's Tavern Inc,558 EAST THIRD,,,
+2547,Shanti Boston,4197 Washington,indian,12:00,22:00
+2548,Shanti Express,49 Warren,indian,12:00,22:00
+2549,Shanti Taste of India,1111 DORCHESTER,indian,12:00,22:00
+2550,Sharon Korean Kitchen,1727 Centre,korean,11:00,20:00
+2551,Shaw's Supermarkets #602,53 Huntington,,,
+2552,Shea Butter Smoothies,617 Centre,juice,08:00,20:00
+2553,SHEA'S TAVERN,222 Broadway,,,
+2554,Sheesha Lounge,417 CAMBRIDGE,,,
+2555,Sheraton Boston Hotel - Club Lounge,39 Dalton,,,
+2556,Sheraton Boston Hotel - Henderson & More,39 Dalton,,,
+2557,Sheraton Boston Hotel - Room Services & Cafeteria,39 Dalton,,,
+2558,Shojo,11 Tyler,asian,11:30,23:00
+2559,Shore Leave / No Relation,345 Harrison,,13:00,23:00
+2560,Showa Womens Institution,414 Pond,,,
+2561,Show Malatang,16 Tyler,,,
+2562,ShoYu Boston,36 Harrison,,,
+2563,SHRINERS' HOSP. FOR CHILDREN,51 Blossom,,,
+2564,Shubhi's Foods - Lower Level,32 Cambridge,,,
+2565,ShuDaXia Hotpot,580 Commonwealth,,,
+2566,Shy Bird,12 Old Colony,,,
+2567,Shy Bird - Fenway,201 Brookline,,,
+2568,Siam Bistro Thai Cuisine,149 Pearl,,,
+2569,Si Cara,400 Broadway,,,
+2570,SideBar Food & Spirits,14 Bromfield,,11:00,01:00
+2571,Side Chick,692 Columbia,,,
+2572,SIDEWALK CAFE,764 Fourth,,,
+2573,Silhouette Lounge,200 Brighton,,14:00,01:00
+2574,Silver Dove Afternoon Tea,18 Tremont,,,
+2575,Silver Slipper,2387 Washington,,,
+2576,Silvio O. Conte Forum East Roof 2A,2597 Beacon,,,
+2577,Silvio O. Conte Forum East Roof 2B,2597 Beacon,,,
+2578,Silvio O. Conte Forum East Roof 2C,2597 Beacon,,,
+2579,Silvio O. Conte Forum East Roof 3A,2597 Beacon,,,
+2580,Silvio O. Conte Forum East Roof 3B,2597 Beacon,,,
+2581,Silvio O. Conte Forum Yawkey 4th Fl.,2597 Beacon,,,
+2582,SIMCO'S RESTAURANT,1509 Blue Hill,,,
+2583,Simmons College-Bartol,84 PILGRIM,,,
+2584,SIMMONS COLLEGE-THE FENS,300 Fenway,,,
+2585,Simons IMAX Theater,250 Atlantic,,,
+2586,Singhs Roti,554 Columbia,,,
+2587,SIP Cafe,0 Post Office,,12:00,23:00
+2588,Sip of Joy Cafe & Bakery,661 Tremont,,,
+2589,Sip Wine Bar & Kitchen,1 Avery,,12:00,23:00
+2590,SISSY K'S,6 COMMERCIAL,,,
+2591,SJ's,745 Atlantic,,,
+2592,Slade's Bar & Grill,950 Tremont,,,
+2593,Sloane's,197 Harvard,american,10:00,24:00
+2594,Slush King,211 Bennington,,,
+2595,Small Batch Cookery Co.-Lower Level,32 Cambridge,,,
+2596,Small Victories,388 Dorchester,,12:00,01:00
+2597,Smashburger #1725,545 Boylston,burger,,
+2598,SMFA Cafe,230 Fenway,,,
+2599,Smith & Wollensky Atlantic Wharf,280 Congress,american,,
+2600,Smoke Shop BBQ,343 Congress,barbecue,11:00,22:00
+2601,Society On High,99 High,,,
+2602,Sodexo at British Airways BOS,500 Terminal,,,
+2603,Sodexo @ BU Fenway/Res. Dining,150 Riverway,,,
+2604,Sodexo @ Dunkin,550 Huntington,donut;coffee_shop,05:00,18:00
+2605,Sodexo @ FMI Coffee Bar,370 Summer,,,
+2606,Sodexo @ FMI Main Kitchen (6th FL.),370 Summer,,,
+2607,Sodexo@John Hancock 16th Fl.,200 Berkeley,,,
+2608,Sodexo @ Liberty Mutual Fl. 2,157 Berkeley,,,
+2609,SodexoMagic @ Merck Boston Cafe,33 Avenue Louis Pasteur,,,
+2610,Sodexo @ The Lounge Trmnl C,300 Terminal,,,
+2611,SODEXO U MASS FACULTY CLUB,100 WM T MORRISSEY,,,
+2612,SODEXO U MASS FOOD COURT,100 WM T MORRISSEY,,,
+2613,Sofra Bakery & Cafe,210 Harvard,tea;turkish;breakfast;bagel;coffee_shop;local,08:00,17:00
+2614,SoJu Ba,1265 Boylston,,,
+2615,Sol Azteca,914 Beacon,mexican,16:00,22:00
+2616,Solid Ground Cafe,742 Huntington,,06:00,15:00
+2617,Somaek Temple Records,11 Temple,,,
+2618,Somenya Restaurant,23 Hudson,,,
+2619,Somerset Club,42 Beacon,,,
+2620,Somerset Club Ground Floor,42 Beacon,,,
+2621,SONSIE,327 Newbury,,08:00,24:00
+2622,SOPHIA'S GROTTO,18 Corinth,,,
+2623,Sorelle Cafe,280 Congress,,06:30,18:00
+2624,SORELLINA RESTAURANT,1 Huntington,,,
+2625,Sotano People Corp.,196 Quincy,,,
+2626,Soul On Shawmut,722 Shawmut,,,
+2627,Souper Siam,190 High,,,
+2628,Soup Shack,779 Centre,japanese;vietnamese;thai,11:30,22:00
+2629,SOUTH BOSTON YACHT CLUB,1849 Columbia,,,
+2630,South End Buttery(314 Shawmut Ave.),314 Shawmut,,06:30,20:00
+2631,South End Pita,471 Albany,mediterranean,,
+2632,South End Pizza & Grill,772 Tremont,mediterranean;moroccan,08:30,21:30
+2633,South St. Diner,178 Kneeland,,00:00,23:59
+2634,Spagnoulos,240 Hanover,,,
+2635,SPANGLER STUDENT CENTER,1 SOLDIERS FIELD,,,
+2636,Spangler Student Center Coffee Bar,117 Western,,,
+2637,Spaulding Rehabilitation Hospital,300 First,,,
+2638,SPiN,273 Summer,,,
+2639,Spirit of Boston,200 Seaport,,,
+2640,SPORTS CONNECTION BAR & GRILL,560 Dorchester,,,
+2641,Spring,90 Peterborough,japanese;hotpot,11:30,22:00
+2642,Springhouse,44 Allandale,,,
+2643,Spring Shabu-Shabu,304 Western,japanese;hotpot,11:30,22:00
+2644,Spy Bar,40 Berkeley,,,
+2645,Squeeze Juice Co.,25 Dry Dock,juice,,
+2646,Squeeze Juice Co.,401 Park,juice,,
+2647,SRV,434 Massachusetts,italian,17:00,23:00
+2648,Stack & Schmear,100 High,,,
+2649,Stage Karaoke X Studios,138 Brighton,,,
+2650,Stand #301 - Draft Picks,100 Legends,,,
+2651,Stand #401 - On Tap,100 Legends,,,
+2652,Stand #403-Hub Hot Dog,100 Legends,,,
+2653,Stand 405-Lucky's Chicken,100 Legends,,,
+2654,Stand 406-Sal's Pizza,100 Legends,pizza,11:00,22:00
+2655,Stand 407-North End Butcher,100 Legends,,,
+2656,Stand 408- Big Bad Burger,100 Legends,,,
+2657,Stand #409-Boston Commons,100 Legends,,,
+2658,Stand #412-On Tap,100 Legends,,,
+2659,Stand #414-Hub Hot Dog,100 Legends,,,
+2660,Stand #415-Frito Lay Test Kitchen,100 Legends,,,
+2661,Stand #416-Causeway Carvery,100 Legends,,,
+2662,Stand 418-Backbay BBQ,100 Legends,,,
+2663,Stand #419-Lucky's Chicken,100 Legends,,,
+2664,Stand 420-Taqueria,100 Legends,mexican,11:00,20:30
+2665,Stand #421-North End Butcher,100 Legends,,,
+2666,Stand 489-Garden Grill,100 Legends,,,
+2667,Stand #702-Hub Hot Dog,100 Legends,,,
+2668,Stand #705-Hub Hot Dog,100 Legends,,,
+2669,Stand 707-Sal's Pizza,100 Legends,pizza,11:00,22:00
+2670,Stand #708-Hub Hot Dog,100 Legends,,,
+2671,Stand #709-Causeway Carvery,100 Legends,,,
+2672,Stand #710-Lucky's Chicken,100 Legends,,,
+2673,Stand 711-Big Bad Burger,100 Legends,,,
+2674,Stand #712-Bullfinch Bar,100 Legends,,,
+2675,Stand 713-Nachos and Beer,100 Legends,,,
+2676,Stand #715-North End Butcher,100 Legends,,,
+2677,Stand #717-Hub Hot Dog,100 Legends,,,
+2678,Stand #720-Bullfinch Bar,100 Legends,,,
+2679,Stand #721-Haymarket,100 Legends,,,
+2680,Stand # 722-Lucky's Chicken,100 Legends,,,
+2681,Stand #723-Backbay BBQ,100 Legends,,,
+2682,Stand # 724-Hub Hot Dog,100 Legends,,,
+2683,Stand 725-Sal's Pizza,100 Legends,pizza,11:00,22:00
+2684,Stand 727-Hub Hot Dog,100 Legends,,,
+2685,Stand 730-North End Butcher,100 Legends,,,
+2686,Standard Italian,771 Beacon,,,
+2687,Stanza Dei Sigari,294 Hanover,,12:00,25:00
+2688,Starbucks,100 LOGAN AIRPORT TRMNL A,coffee_shop,,
+2689,Starbucks,1341 Boylston,coffee_shop,,
+2690,Starbucks,200 Terminal,coffee_shop,,
+2691,Starbucks,45 Transportation,coffee_shop,,
+2692,Starbucks,700 Atlantic,coffee_shop,,
+2693,Starbucks,700 COMMONWEALTH,coffee_shop,,
+2694,Starbucks,99 Seaport,coffee_shop,,
+2695,Starbucks at Cafe 73,73 Tremont,coffee_shop,,
+2696,Starbucks - B18,200 Terminal,coffee_shop,,
+2697,Starbucks B1-B3 Pre-Security,200 Terminal,coffee_shop,,
+2698,Starbucks - B27,200 Terminal,coffee_shop,,
+2699,Starbucks Bike,300 Longwood,coffee_shop,,
+2700,Starbucks@Boston Children's Hospital,300 Longwood,coffee_shop,,
+2701,Starbucks @ Boston Logan Wharf Marriott,296 State,coffee_shop,,
+2702,Starbucks Coffee,110 Huntington,coffee_shop,,
+2703,Starbucks Coffee,140 Brookline,coffee_shop,,
+2704,Starbucks Coffee,1 Thompson,coffee_shop,,
+2705,Starbucks Coffee,2 Park,coffee_shop,,
+2706,Starbucks Coffee,300 Faneuil Hall Marketplace,coffee_shop,,
+2707,Starbucks Coffee,440 William F McClellan,coffee_shop,,
+2708,Starbucks Coffee,500 Boylston,coffee_shop,,
+2709,Starbucks Coffee,50 Park,coffee_shop,,
+2710,Starbucks Coffee,749 Broadway,coffee_shop,,
+2711,Starbucks Coffee # 10599,125 Summer,coffee_shop,,
+2712,Starbucks Coffee #22253,1304 Commonwealth,coffee_shop,,
+2713,Starbucks Coffee #22566,48 Northern,coffee_shop,,
+2714,Starbucks Coffee #50497,20 District,coffee_shop,,
+2715,Starbucks Coffee # 7224,364 Brookline,coffee_shop,,
+2716,Starbucks Coffee #7550,2 ATLANTIC,coffee_shop,,
+2717,Starbucks Coffee # 7804,283 Longwood,coffee_shop,,
+2718,Starbucks Coffee # 7805,90 Oliver,coffee_shop,,
+2719,STARBUCKS COFFEE # 7823,470 Washington,coffee_shop,,
+2720,Starbucks Coffee # 801,1 CHARLES ST,coffee_shop,,
+2721,Starbucks Coffee # 822,435 STUART ST,coffee_shop,,
+2722,Starbucks Coffee #9463,84 State,coffee_shop,,
+2723,Starbucks Coffee-C10,300 Terminal,coffee_shop,,
+2724,Starbucks Coffee-C28,300 Terminal,coffee_shop,,
+2725,Starbucks Coffee Co.,1 Financial,coffee_shop,,
+2726,STARBUCKS COFFEE CO.,222 Cambridge,coffee_shop,,
+2727,Starbucks Coffee Co. #7808,1804 Centre,coffee_shop,,
+2728,Starbucks Coffee Co. #872,350 Newbury,coffee_shop,,
+2729,Stardust,1753 Centre,,,
+2730,Star Market #3588,1065 COMMONWEALTH,,,
+2731,Star Market #4572,370 Western,,,
+2732,Star Markets #2576,33 Kilmarnock,,,
+2733,Starry Bakery,128 Harvard,,,
+2734,STASH'S PIZZA,612 Blue Hill,pizza; subs; calzones,10:00,25:00
+2735,State Street Financial-12th Floor,1 Congress,,,
+2736,State Street Provisions,255 State,,09:00,01:00
+2737,Station Bistro & KTV,20 Hudson,,,
+2738,Stats,80 Causeway,american,,
+2739,St Botolph Club Inc,199 Commonwealth,,,
+2740,St. Cecilia Parish,18 Belvidere,,,
+2741,STEPHANIE'S,200 Terminal,,10:00,19:00
+2742,STEPHANIE'S,500 Terminal,,10:00,19:00
+2743,STEPHANIE'S ON NEWBURY,190 Newbury,,10:00,19:00
+2744,Steve's Greek Cuisine,1 Faneuil Hall Marketplace,,,
+2745,St. George Orthodox Church,55 Emmonsdale,,,
+2746,Stillwater,120 Kingston,,11:00,22:00
+2747,St. John's Seminary,127 Lake,,,
+2748,STK Steakhouse,222 Berkeley,steak_house,,
+2749,St. Mary's Ctr. for Women & Children,90 Cushing,,,
+2750,Stockyard,135 Market,steak_house,,
+2751,Stop and Taste Pizza Grill,239 Dudley,pizza,,
+2752,Stop & Shop #412,1622 Tremont,,,
+2753,Stop & Shop #413,1025 Truman,,,
+2754,Stop & Shop/Dunkin Donuts #18,535 Freeport,donut;coffee_shop,05:00,18:00
+2755,Stop & Shop Supermarket #075,301 Centre,,,
+2756,Stratus - 51th Floor,800 Boylston,,,
+2757,STREGA,379 Hanover,,,
+2758,Stubbys Seaport,43 Northern,,,
+2759,Subway,1281 Hyde Park,sandwich,07:00,22:00
+2760,Subway,13 William C Kelly,sandwich,07:00,22:00
+2761,Subway,1576 Dorchester,sandwich,07:00,22:00
+2762,Subway,1578 Tremont,sandwich,07:00,22:00
+2763,Subway,2195 Commonwealth,sandwich,07:00,22:00
+2764,Subway,340 Longwood,sandwich,07:00,22:00
+2765,Subway,393 Massachusetts,sandwich,07:00,22:00
+2766,Subway,413 Washington,sandwich,07:00,22:00
+2767,Subway,4238 Washington,sandwich,07:00,22:00
+2768,Subway,875 William T Morrissey,sandwich,07:00,22:00
+2769,Subway,904 Huntington,sandwich,07:00,22:00
+2770,Subway,944 Bennington,sandwich,07:00,22:00
+2771,Subway,981 Tremont,sandwich,07:00,22:00
+2772,Suffolk Construction,65 Allerton,,,
+2773,Sufra,52 Queensberry,,,
+2774,Sugar Baking,1884 Centre,,,
+2775,Sugar Bowl Cafe LLC,857 Dorchester,ice_cream,06:00,15:00
+2776,Sugar Factory,100-199 Faneuil Hall Market,,,
+2777,Sugar's Hot Pizza,29 Northern,,,
+2778,Sullivan's,2080 WM J DAY,,12:00,01:00
+2779,Sullivan's Public House,85 Main,burger;chicken;ice_cream,,
+2780,Sullivan's Tap,168 Canal,,12:00,01:00
+2781,sultana's bakery & cafe,1585 Commonwealth,,,
+2782,Summit Partners,222 Berkeley,,,
+2783,Sunday Bakery,418 Market,,,
+2784,Sunny Cafe,1000 Bennington,,,
+2785,Sunny Girl,252 Commercial,,,
+2786,Sunny Girl,38B Fleet,,,
+2787,SUN PIZZA,46 Washington,,,
+2788,SUN PIZZA.,870 BLUE HILL,,,
+2789,Sunrise Cafe Bagels & Diner,1270 River,,,
+2790,Superstar Cuisine,1156 River,,,
+2791,Super Stop & Shop,1100 Massachusetts,,,
+2792,Supreme Pizza,177 Massachusetts,pizza,,
+2793,SUSAN BAILIS ASSISTED LIVING,352 Massachusetts,,,
+2794,Sushi By Bosso Ramen Tavern,163 Newbury,japanese,,
+2795,Sushi Today,1562 Tremont,japanese,,
+2796,Su Su Gourmet,70 Tyler,coffee_shop,06:00,22:00
+2797,Suya Joint,185 Dudley,american,,
+2798,Sweeney's on Boylston,61 Exeter,,,
+2799,Sweet Boba,9 William C Kelly,bubble_tea,,
+2800,Sweet Cheeks,144 Brookline,barbecue,,
+2801,Sweet Cheeks/Fool's Errand,144 Brookline,,,
+2802,Sweetgreen,132 Brookline,salad,09:30,22:00
+2803,Sweetgreen,15 School,salad,09:30,22:00
+2804,Sweetgreen,225 Franklin,salad,09:30,22:00
+2805,Sweetgreen,23 Northern,salad,09:30,22:00
+2806,Sweetgreen,296 Cambridge,salad,09:30,22:00
+2807,Sweetgreen,350 Harrison,salad,09:30,22:00
+2808,Sweetgreen,354 Longwood,salad,09:30,22:00
+2809,Sweetgreen,60 State,salad,09:30,22:00
+2810,Sweetgreen,659 Boylston,salad,09:30,22:00
+2811,Sweetgreen,800 Boylston,salad,09:30,22:00
+2812,Sweetgreen,87 Summer,salad,09:30,22:00
+2813,Sweeties,48 Corinth,,12:00,21:00
+2814,Sweet Kingdom,15 Beach,chinese;dessert,,
+2815,Sweet Life Bakery and Cafe,2243 Dorchester,,,
+2816,Sweet Rice,695 Centre,,11:30,22:00
+2817,Sweet Rice Thai Sushi,187 Main,,11:30,22:00
+2818,Sweet Sip,285 Adams,,,
+2819,Sweet Spoon,2 Chestnut Hill,,,
+2820,Sweet Teez Bakery,1211 Dorchester,,,
+2821,Swingers The Crazy Golf Club,777 Boylston,,,
+2822,Swiss Bakers,168 Western,breakfast;coffee_shop;sandwich,07:00,14:00
+2823,SYMPHONY SUSHI,45 Gainsborough,japanese,,
+2824,Tabla Express - Space#11,122 Brighton,indian,11:00,22:00
+2825,Table Caffe,396 Hanover,,,
+2826,Table/Table Mercato,445 Hanover,,,
+2827,Taco Azul,21 Beacon,,,
+2828,Taco Bell,1084 Boylston,tex-mex,07:00,27:30
+2829,Taco Bell,1560 VFW,tex-mex,07:00,27:30
+2830,Taco Bell,202 Harvard,tex-mex,07:00,27:30
+2831,Taco Bell,288 Washington,tex-mex,07:00,27:30
+2832,Taco Bell,2 Maverick,tex-mex,07:00,27:30
+2833,Taco Bell,449 Broadway,tex-mex,07:00,27:30
+2834,Taco Bell,74 Summer,tex-mex,07:00,27:30
+2835,Taco John's,71 Summer,,,
+2836,TACO MEX,65 Maverick,mexican,,
+2837,Tacos Mejor,80 Causeway,,,
+2838,TAIWAN CAFE,34 Oxford,chinese,11:00,01:00
+2839,Taiyaki NYC,121 Seaport,,,
+2840,TALK AND WOK CAFE,1277 River,chinese,11:00,23:30
+2841,Tall Ship Restaurant,,seafood,,
+2842,Tall Ship Restaurant- #1,,seafood,,
+2843,Tall Ship Restaurant #2,,seafood,,
+2844,Tall Ship Restaurant- #5,1 East Pier,seafood,,
+2845,Tall Ship Restaurant- #7,,seafood,,
+2846,Tall Ship Restaurant Container #3,1 East Pier,seafood,,
+2847,Tall Ship Restaurant Trailer #1,1 East Pier,seafood,,
+2848,Tall Ship Restaurant Trailer #2,1 East Pier,seafood,,
+2849,Tall Ship Restaurant Trailer #3,1 East Pier,seafood,,
+2850,Tamarind Heads,196 Quincy,,,
+2851,TandoorTales,1035 Tremont,,,
+2852,TANGIERINO/The Boston Cigar Club,83 Main,moroccan,,
+2853,Taqueria El Barrio,201 Brookline,mexican;tacos,12:00,22:00
+2854,TAQUERIA EL CARRIZAL,248 Brighton,mexican,11:00,22:00
+2855,Taqueria El Mexicano,382 Chelsea,mexican,11:00,20:30
+2856,TAQUERIA JALISCO,291 Bennington,mexican,,
+2857,Taqueria Jalisco Orient Heights,980 Saratoga,mexican,11:00,20:30
+2858,Taqueria Los Compadres Mexican Food,315 Washington,mexican,11:00,20:30
+2859,Tarboosh Pizza & Grill,2 Brighton,mediterranean,,
+2860,Target Pizza,5200 Washington,,,
+2861,Target Store T-1898,7 ALLSTATE,,,
+2862,TASCA RESTAURANT,1612 Commonwealth,tapas,,
+2863,Tasty BBQ,417 Washington,,,
+2864,Tasty Burger,86 Van Ness,burger,11:00,24:00
+2865,Tasty Burger Back Bay,145 Dartmouth,burger,11:00,24:00
+2866,Tasty Kabob and Curry,679 Canterbury,,,
+2867,Tasya's Kitchen #14,122 Brighton,indonesian,,
+2868,Tatte Bakery & Cafe,125 High,bakery;coffee_shop,07:00,20:00
+2869,Tatte Bakery & Cafe,125 Summer,bakery;coffee_shop,07:00,20:00
+2870,Tatte Bakery & Cafe,1350 Boylston,bakery;coffee_shop,07:00,20:00
+2871,Tatte Bakery & Cafe,160 Massachusetts,bakery;coffee_shop,07:00,20:00
+2872,Tatte Bakery & Cafe,200 Clarendon,bakery;coffee_shop,07:00,20:00
+2873,Tatte Bakery & Cafe,200 Pier 4,bakery;coffee_shop,07:00,20:00
+2874,Tatte Bakery & Cafe,201 Washington,bakery;coffee_shop,07:00,20:00
+2875,Tatte Bakery & Cafe,345 Harrison,bakery;coffee_shop,07:00,20:00
+2876,Tatte Bakery & Cafe,359 Huntington,bakery;coffee_shop,07:00,20:00
+2877,Tatte Bakery & Cafe,399 Boylston,bakery;coffee_shop,07:00,20:00
+2878,Tatte Bakery & Cafe,40 Warren,bakery;coffee_shop,07:00,20:00
+2879,Tatte Bakery & Cafe,60 Old Colony,bakery;coffee_shop,07:00,20:00
+2880,Tatte Bakery & Cafe,70 Charles,bakery;coffee_shop,07:00,20:00
+2881,Tatte Bakery & Cafe,80 Boylston,bakery;coffee_shop,07:00,20:00
+2882,Tatte Bakery & Cafe 2nd Fl.,201 Washington,bakery;coffee_shop,07:00,20:00
+2883,Tavern Club,4 Boylston,,,
+2884,Tavern In The Square Restaurant (North Station),96 Beverly,,,
+2885,Tavern In The Square Restaurant (So. Station),640 Atlantic,,,
+2886,Tavern of Tales,1478 Tremont,,10:00,22:00
+2887,Tavolo,1917 DORCHESTER,italian,,
+2888,TBaar,754 Huntington,bubble_tea,,
+2889,TD Garden - 19 Pantry (Concession) #SW905,100 Legends,,,
+2890,T D Garden Banner Restaurant,100 Legends,,,
+2891,T D Garden Executive Suites Kitchen,100 Legends,,,
+2892,TD Garden L3 Dining Lounge #SE-328,100 Legends,,,
+2893,TD Garden L3 Pantry Rm. #SE-325,100 Legends,,,
+2894,TD Garden L5 Bar Room #SE-524,100 Legends,,,
+2895,TD Garden L5 Gelato Cafe #SE-525,100 Legends,,,
+2896,TD Garden L9 Bar room  #NE-918,100 Legends,,,
+2897,TD Garden L9 Bar Room #SW-909,100 Legends,,,
+2898,TD Garden L9 Concession #SE-905,100 Legends,,,
+2899,TD Garden L9 Concession #SW-914,100 Legends,,,
+2900,T D Garden Legends Club,100 Legends,,,
+2901,TD Garden Lev 4 Bar Room SW-417,100 Legends,,,
+2902,TD Garden Lev 4 Concession SW-418,100 Legends,,,
+2903,TD Garden Lev 4 Grab & Go SW-420,100 Legends,,,
+2904,TD Garden Lev 5 Bar Room So. Club SW-523,100 Legends,,,
+2905,TD Garden Lev 5 Kitchen SW-524,100 Legends,,,
+2906,TD Garden Lev 7 Bar Room SW-720,100 Legends,,,
+2907,TD Garden Lev 7 Concession SW-721,100 Legends,,,
+2908,TD Garden Lev7 Grab & Go SW-723,100 Legends,,,
+2909,TD Garden Lev 8 Bar Room SW-809,100 Legends,,,
+2910,T D Garden Premium Club,100 Legends,,,
+2911,Tea by the Sea,99 Sumner,bubble_tea,,
+2912,Tea Do,333 Huntington,bubble_tea,10:30,23:00
+2913,Tea Do/ Ice Age,8 Tyler,bubble_tea,10:30,23:00
+2914,Tea Station Coffee,1041 Saratoga,,,
+2915,Teazzi Tea Shop - Boston,31 Harrison,bubble_tea,,
+2916,Teddys on the Hill/Red Hat,9 Bowdoin,,,
+2917,Temazcal,300 Terminal,,,
+2918,Tenderonis,100 High,,,
+2919,Tenoch Mexican,3 Lewis,mexican,11:00,21:00
+2920,Ten One Tea House,1325 Boylston,bubble_tea,12:00,22:00
+2921,Ten One Tea House,279 Newbury,bubble_tea,12:00,22:00
+2922,Ten Second Noodles,60 Beach,noodle,,
+2923,Tepeyac Cocina Mexicana,1244 Washington,,,
+2924,Teranga Grill,150 Dudley,,,
+2925,Teriyaki House,32 Broadway,bubble_tea;sushi,11:30,24:00
+2926,TERRAMIA RISTORANTE,98 Salem,,,
+2927,Terra Restaurant,800 Boylston,italian,11:00,22:00
+2928,Tex Mex Eats - Lower Level,32 Cambridge,,,
+2929,THAI BASIL,132 Newbury,,,
+2930,THAI DISH RESTAURANT,270 Babcock,thai,,
+2931,Thai North Restaurant,433 Faneuil,thai,,
+2932,Thai Oishi,203 Adams,thai,,
+2933,Thai Place Restaurant,184 Brighton,thai,,
+2934,Thai Spice,1745 Centre,,,
+2935,Thaitation,129 Jersey,,,
+2936,That Fat Duck,32 Cambridge,,,
+2937,Thazia,21 Dry Dock,,,
+2938,The Allandale Grill - 4th Fl.,44 Allandale,,,
+2939,The Alley Bar,275 Washington,,14:00,02:00
+2940,The Anchor,36 First,,,
+2941,The Ancient Bakers,1199 Tremont,,,
+2942,The Atrium Cafe@Brigham & Womens Faulkner Hosp.,1153 Centre,,,
+2943,The Avenue Bar & Grill,1249 Commonwealth,,11:00,02:00
+2944,The Avenue Grille,856 Dorchester,,11:00,02:00
+2945,The Backstage Cafe @Emerson,2 Boylston,,,
+2946,The Bagel Table,80 Guest,bagel,07:00,14:00
+2947,The Banks Seafood & Steak,406 Stuart,seafood;steak_house,,
+2948,THE BANSHEE,934 DORCHESTER,,,
+2949,THE BARKING CRAB,88 Sleeper,seafood,,
+2950,The Baupost Group/Cafe Services,10 ST JAMES,,,
+2951,The BBQ Joint,888A Morton,american,,
+2952,The Bebop,1116 Boylston,,09:00,01:00
+2953,The Beehive,537 Tremont,american,,
+2954,THE BELVEDERE CONDOMINIUM,100 Belvidere,,,
+2955,The Berkeley,154 Berkeley,breakfast,06:30,16:30
+2956,The Berry Twist,200 Faneuil Hall Marketplace,,,
+2957,The Best Sausage Co.  Inc.,78 BROOKLINE,,,
+2958,The Bittersweet Shoppe on Newbury,257 Newbury,,,
+2959,The Blue Caboose,43 Bremen,coffee_shop,,
+2960,The Bostonian Boston - A Millennium Hotel,20 North,,,
+2961,The Bosworth,90 Tremont,coffee_shop,,
+2962,The Bowery,2261 Dorchester,,,
+2963,The Bridge Cafe,145 Harrison,,,
+2964,The Broadway Restaurant,732 Broadway,coffee_shop,07:00,19:00
+2965,The Bullpen,19 Jersey,,,
+2966,THE CAFE ON NEW CHARDON ST.,25 New Chardon,,,
+2967,THE CATERED AFFAIR @ BOS. PUBLIC LIBRARY(T.O.),700 Boylston,,,
+2968,The Causeway,65 Causeway,,,
+2969,THE CHARLES PLAYHOUSE,74 Warrenton,,,
+2970,The Cheesecake Factory,115 Huntington,american,00:00,20:00
+2971,The Chemist,218 Congress,,,
+2972,The Chester Tavern,1121 Dorchester,,,
+2973,The Circle Pizza & Tavern,354 Chestnut Hill,,,
+2974,The Corner Pub of Chinatown,162 Lincoln,,12:00,22:00
+2975,The Corner Restaurant,156 Bunker Hill,,12:00,22:00
+2976,The Corner Tavern,421 Marlborough,,12:00,02:00
+2977,The Daily Catch,331 Hanover,italian;seafood,,
+2978,The Daily Catch,65 Atlantic,italian;seafood,,
+2979,The Delux Cafe,100 Chandler,,17:00,23:00
+2980,The Dubliner,2 Center,,10:00,26:00
+2981,THE ELEPHANT WALK,1415 Washington,,,
+2982,The Empanada's,21 Kilmarnock,,11:00,21:00
+2983,The Fed,250 Franklin,,14:00,23:00
+2984,The Flamingo,266 Commercial,,,
+2985,The Fourth Wall,228 Tremont,,,
+2986,The Frenchman's Goods (Lower),32 Cambridge,,,
+2987,The Friendly Toast,35 Stanhope,breakfast,,
+2988,The Fusion,686 Morton,sushi,,
+2989,THE GALLEY DINER,11 P STREET,diner,07:00,13:00
+2990,The Godfrey Hotel Boston,505 Washington,,,
+2991,The Next Place LLC,262 Friend,,,
+2992,The Greek Gyro,84 Peterborough,,,
+2993,The Halal Fusion,427 Faneuil,,,
+2994,The Halal Guys,1260 Boylston,chicken;falafel;gyros,10:30,24:00
+2995,The Halal Guys,137 Stuart,chicken;falafel;gyros,10:30,24:00
+2996,The Halal Guys,241 Washington,chicken;falafel;gyros,10:30,24:00
+2997,The Halal Guys,4 Lucy,chicken;falafel;gyros,10:30,24:00
+2998,The Halal Shack,775 Commonwealth,middle_eastern,,
+2999,THE HARP,85 Causeway,,,
+3000,The Haven at the Brewery,284 Amory,scottish;burger;pizza;fish_and_chips,11:00,23:00
+3001,THE HILL TAVERN,228 Cambridge,,,
+3002,The Hopewell Bar & Kitchen,1277 Commonwealth,,10:00,02:00
+3003,THE HUB PUB,18 Province,,11:00,02:00
+3004,The Hummus Shop Beacon Hill,37 Charles,mediterranean,11:00,19:30
+3005,The Ice Creamsmith,2295 Dorchester,,,
+3006,The Inn @ St. Botolph,99 Saint Botolph,,,
+3007,The Irving @ The Lenox,61 Exeter,,,
+3008,The Joint,605 Centre,american,,
+3009,The Juicery,58 Salem,,,
+3010,The Juicery,700 Commonwealth,,,
+3011,The Kenmore,476 Commonwealth,,10:00,02:00
+3012,The Koji Club,525 Western,japanese,,
+3013,The Landing,6 Long,,10:00,02:00
+3014,The Langham Club,250 Franklin,,,
+3015,The Langham Hotel/Grana,250 Franklin,,07:00,14:00
+3016,The Lansdowne,9 Lansdowne,,,
+3017,THE LAST DROP,596 WASHINGTON,,12:00,02:00
+3018,The Liberty Hotel,215 Charles,,,
+3019,Thelo Mediterranean Cuisine,856 Dorchester,turkish,11:00,22:00
+3020,The Longwood Grille & Bar,342 Longwood,,,
+3021,THE MASTER MCGRATH,1152 River,,,
+3022,The Merchant,60 Franklin,american,,
+3023,The Mix,555 Talbot,caribbean;american,11:00,23:00
+3024,The Monkey Bar,200 Faneuil Hall Market,,12:00,26:00
+3025,The Moseley,700 Atlantic,,,
+3026,The Munchie Station,990 Dorchester,,11:00,23:00
+3027,The Nautilus,300 Pier 4,,,
+3028,The Newbury- Banquet & Room Service 2nd Floor,15 Arlington,,,
+3029,The Newbury Street Bar,15 Arlington,,,
+3030,The Newman School,300 Newbury,,,
+3031,The Oceanaire Seafood Room,40 Court,,,
+3032,The Olive Garden Italian Restaurant # 1674,1118 Massachusetts,italian,11:00,23:00
+3033,THEO'S COZY CORNER RESTAURANT,162 Salem,american,,
+3034,The Oyster Bar,200 Faneuil Hall Marketplace,,11:00,22:00
+3035,The Paramount,667 Broadway,,,
+3036,The Pearl Seafood Grill & Raw Bar,20 District,seafood,,
+3037,The Pine Bar,100 Hanover,,,
+3038,The Playwright,654 Broadway,,,
+3039,THE POINT,145 Hanover,seafood,08:00,23:30
+3040,The Popover Lady,100 Hanover,,,
+3041,The Porter Cafe,1723 Centre,japanese,11:30,23:00
+3042,The Q,640 Washington,korean;chicken,11:00,22:00
+3043,The Quiet Few,331 Sumner,,,
+3044,The Quin,217 Commonwealth,,,
+3045,The Quin Bondo Restaurant,217 Commonwealth,,,
+3046,The Real Chai @ BPM,100 Hanover,,,
+3047,The Real Deal,1882 Centre,sandwich;salad;pizza;burger,11:00,20:00
+3048,The Real Deal,728 Centre,sandwich;salad;pizza;burger,11:00,20:00
+3049,The Red Fox,326 Commercial,italian,17:00,23:00
+3050,The Rootastes,196 Quincy,,,
+3051,THE SALTY DOG,100-199 Faneuil Hall Market,seafood,11:30,20:00
+3052,The Scoop N Scootery,73 Linden,,,
+3053,The Shames Cafe,100 Newton,,,
+3054,The Shawmut Inn,477 Shawmut,new_american,11:00,23:00
+3055,The Spur Bar,32 Maverick,,,
+3056,The Square Root,2 Corinth,,,
+3057,The Substation,4228 Washington,,,
+3058,The Sushi Guys,283 Old Colony,japanese,,
+3059,THE TAM,222 Tremont,,,
+3060,The Tavern At The End Of The World,108 Cambridge,irish,10:00,02:00
+3061,The Temp Agency,100 High,,,
+3062,The Track @ New Balance,67 Guest,,,
+3063,The Trophy Room,26 Chandler,,,
+3064,THE UNION LOUNGE,180 Mount Vernon,diner,07:00,17:00
+3065,THE UNITED CLUB,200 Terminal,,,
+3066,The Upper Crust,683 Tremont,pizza,11:00,23:00
+3067,The Well Coffee House,78 Tremont,,07:00,18:00
+3068,The Well Coffee House Boston,62 William C Kelly,,07:00,18:00
+3069,The Westin Boston Waterfront,425 Summer,,,
+3070,The Westin Boston Waterfront/Starbucks,425 Summer,coffee_shop,,
+3071,The Westland,8 Westland,,10:00,02:00
+3072,The White Bull,1 Union,,,
+3073,The Wild Rover Tavern,61 Chatham,,,
+3074,Thinking Cup,234 Hanover,,07:00,19:00
+3075,Thinking Cup L L C,165 Tremont,,07:00,19:00
+3076,Thinking Cup Newbury,85 Newbury,,07:00,19:00
+3077,Third Cliff Bakery,3521 Washington,,,
+3078,Thomas H. Lee Partners  L.P. 36th Fl.,100 Federal,,,
+3079,Thompson Island Outward Bound,1 Citywide,,,
+3080,Thonglor,559 Washington,thai,,
+3081,Thornton's Restaurant,150 Huntington,american,10:00,22:00
+3082,TIA'S WATERFRONT,200 Atlantic,,,
+3083,TICO,200 Terminal,mexican,12:00,24:00
+3084,Tiger Baby,100 High,,,
+3085,Tiki Cove,19 Union,,,
+3086,Tikki Masala Indian Restaurant,3706 Washington,indian,12:00,23:00
+3087,Time Out Market - Bar 1,201 Brookline,,,
+3088,Time Out Market - Bar 2,201 Brookline,,,
+3089,Tin Tin Buffet,200 Beacon,american;chinese,09:15,21:30
+3090,Tip Tap Room,138 Cambridge,american,11:30,02:00
+3091,Toasted Flats,53 Chelsea,sandwich,,
+3092,Tofu Story,75 Harvard,,,
+3093,Tom English Cottage,112 Emerson,,,
+3094,Tonino,669A Centre,italian,17:00,22:30
+3095,Tony & Elaine's,111 Washington,,,
+3096,Tony's Place,186 Baker,,,
+3097,Topacio Restaurant,88 Chelsea,salvadoran;latin_american,,
+3098,Top Griyo Restaurant,994 Blue Hill,,,
+3099,Top Mix Bar & Kitchen,257 Norfolk,caribbean;american,11:00,23:00
+3100,Top Mix Bar & Kitchen,365 Centre,caribbean;american,11:00,23:00
+3101,Top of the Hill Seafood & Subs,1357 Blue Hill,seafood,12:00,21:00
+3102,Top of the Hill Seafood and Subs,1357 Blue Hill,seafood,12:00,21:00
+3103,Top Shelf Cookies,516 Gallivan,,,
+3104,Tora Japanese Restaurant,20 Tyler,,,
+3105,Tora Ramen,99 Harrison,ramen,11:30,21:00
+3106,Tori Japan,1110 Boylston,sushi,,
+3107,Tori Japan,315 Centre,sushi,,
+3108,Tori Japan,62 William C Kelly,sushi,,
+3109,Tori Japan,950 Hyde Park,sushi,,
+3110,Tori Japan,961 Commonwealth,sushi,,
+3111,TORO,1704 Washington,,,
+3112,Tostado,300 Centre,,,
+3113,Tostado LLC,3878 WASHINGTON,,,
+3114,Totto Ramen,20A District,,11:00,22:30
+3115,Tous Les Jours,152 Harvard,,,
+3116,Toutwel Restaurant,643 River,,,
+3117,Trade,520 Atlantic,american,,
+3118,Trader Joe's #566,44 Thomson,,,
+3119,Tradesman,89 Broad,coffee_shop,,
+3120,Tradesman 100 Federal,100 Federal,coffee_shop,,
+3121,Tradesman Brighton,60 Guest,coffee_shop,,
+3122,Tradesman Charlestown,100 Hood Park,coffee_shop,,
+3123,Tradesman Coffee Shop - Bridge,470 Atlantic,coffee_shop,,
+3124,Tradesman Greenway,176 Federal,coffee_shop,,
+3125,Tradesman State Street,43 State,coffee_shop,,
+3126,Trattoria IL Panino,278 Hanover,,,
+3127,Tremonte Restaurant,76 Salem,,,
+3128,TREMONT HOUSE OF PIZZA,1590 Tremont,pizza,11:00,22:00
+3129,TRESCA,233 HANOVER,diner,06:00,15:00
+3130,Tres Gatos Cafe,470 Centre,tapas,10:30,22:00
+3131,Triangle Coffee,200 Pier 4,,08:00,16:00
+3132,TRIDENT BOOKSELLERS AND CAFE,338 Newbury,breakfast;brunch,08:00,24:00
+3133,Trifecta,1 Dalton,,,
+3134,Trillium at Farnsworth,47 Farnsworth,,,
+3135,Trillium Fenway,201 Brookline,,,
+3136,Trio Cafe,212 Northern,,,
+3137,Triple Eatery,77 Cummins,,,
+3138,Tropical Smoothie Cafe,470 Washington,,,
+3139,Tropical Smoothie & Cafe,1122 Boylston,,,
+3140,Troquet On South,107 South,french,,
+3141,Tsaocaa Tea,10 Tyler,,,
+3142,Tu Metapan Restaurant,295 Bennington,mexican,,
+3143,Turkish Lazuri Bakery,3 Beacon,,,
+3144,Turkish Lazuri Cafe,1 Beacon,,,
+3145,Tuscan Kitchen,28 Northern,,,
+3146,Tuscan Kitchen Bar,64 Seaport,,,
+3147,Tutti Frutti,382 Chelsea,,,
+3148,Twelve Bens,315 Adams,,,
+3149,Typhoon Restaurant,725 Boylston,asian,,
+3150,Ueno Sushi,1 FANEUIL HALL MKT PL,japanese,,
+3151,UGIS SUBS,62 Warren,,,
+3152,Ula Cafe,284 Amory,breakfast;sandwich;coffee_shop,08:00,14:00
+3153,Umai Japanese Restaurant,224 Newbury,sushi,,
+3154,Umami Crudo,78 Salem,japanese;omakase,17:30,22:00
+3155,Umami Sushi,417 Washington,japanese;omakase,17:30,22:00
+3156,Umami Sushi,417 Washington,japanese;omakase,17:30,22:00
+3157,Umami Tsunami,400 Neponset,japanese;omakase,17:30,22:00
+3158,UMass Boston Dining Commons,100 William T Morrissey,,,
+3159,UMass Club,1 Beacon,,,
+3160,UMBRIA,250 Hanover,,,
+3161,Uncle Tetsu,23 Hudson,,,
+3162,Uncommon Ice Cream,537 Columbus,,,
+3163,Unconventional Cafe,415 Summer,,,
+3164,Underdog Hot Chicken,160 Brighton,chicken,,
+3165,UNI,370 Commonwealth,japanese,18:00,22:00
+3166,Unidine Cafe @ RSM,80 City,,,
+3167,Union Club of Boston,8 Park,diner,07:00,17:00
+3168,UNION OYSTER HOUSE,41 Union,,11:00,22:00
+3169,Union Park Pizza,244 Newbury,diner,07:00,17:00
+3170,Union Square Donuts,201 Brookline,donut,07:00,18:00
+3171,UNITED HOUSE OF PRAYER FOR ALL PEOPLE,206 Seaver,,,
+3172,Unity Sports Cultural club,10 Dunbar,,,
+3173,University Club of Boston,426 Stuart,,,
+3174,University Club of Boston-Catering Kitchen,426 Stuart,,,
+3175,University Club of Boston-Rooftop Bar,426 Stuart,,,
+3176,UNIVERSITY GRILL & PIZZA,712 COMMONWEALTH,pizza,10:30,22:00
+3177,UNIVERSITY HOUSE OF PIZZA,452 Huntington,pizza,10:30,22:00
+3178,Uphams House of Pizza,566A Columbia,pizza,11:00,22:00
+3179,Urban Pharm - Lower Level,32 Cambridge,,,
+3180,Urban Wild,100 Hood Park,,,
+3181,Aramark Corporation,4 Jersey,,,
+3182,Vaanga,102 Water,,,
+3183,Vaisakhi Indian Kitchen,157 Sutherland,indian,,
+3184,Van Leeuwen Ice Cream,1001 Boylston,,,
+3185,Van Leeuwen Ice Cream,131 Seaport,,,
+3186,Van Leeuwen Ice Cream,1321 Boylston,,,
+3187,Vasquez Restaurant,258 Dudley,,,
+3188,VAUGHN'S FISH N CHIPS,1 Erie,,,
+3189,Veeva Systems,100 Summer,,,
+3190,Vee Vee,763 Centre,american,17:30,21:00
+3191,Vejigantes Restaurant,57 Dedham,,,
+3192,Venchi,123 Newbury,,,
+3193,VENEZIA RESTAURANT (HARBOR LIGHTS),20R Ericsson,,,
+3194,Verid Foods - Lower Level,32 Cambridge,,,
+3195,Verily Cafe & Barista - Floor 24,100 Causeway,,,
+3196,Verily Cafe & Barista - Floor 25,100 Causeway,,,
+3197,Verily Cafe & Barista - Floor 26,100 Causeway,breakfast,07:00,20:00
+3198,Vermillion,115 Federal,,,
+3199,Versus,42 Province,,15:00,24:00
+3200,Vertex Coffee Bar,11 Fan Pier,,,
+3201,Vertex Pharmaceuticals Cafe,11 Fan Pier,,,
+3202,Vester,105 First,,07:00,18:00
+3203,VHP,4 Jersey,,,
+3204,Via Cannuccia,1739 Dorchester,italian,,
+3205,Victoria's Diner,1024 Massachusetts,diner,,
+3206,Victoria Seafood,1029 Commonwealth,seafood,12:00,21:00
+3207,Viga,140 Clarendon,,,
+3208,Viga Italian Eatery,275 Washington,,,
+3209,VIGA/PAVIA,133 Pearl,,,
+3210,Vikos Pizza & Ribs,847 River,,,
+3211,Villa Francesca,150 Richmond,,,
+3212,Village Pizza & Grill,56 L,italian,10:00,21:45
+3213,Village Sushi & Grill,10 Corinth,japanese,,
+3214,Villa Mexico Cafe,41 Broad,mexican,11:00,17:00
+3215,Villa Sombrero Restaurant,11 Blue Hill,,,
+3216,Vineyard Grille,500 Terminal,,,
+3217,Vintage Lounge,72 Broad,american,,
+3218,VIP Dillion Fieldhouse,65 Harvard,,,
+3219,Virtual Food Court,313 Old Colony,,,
+3220,Viva Burrito,274 Franklin,mexican,10:00,21:00
+3221,Viva Karaoke,60 Boylston,,,
+3222,VIVA MI AREPA,270 Centre,regional,09:00,21:00
+3223,Viva Taco,378A Centre,,,
+3224,Viva Victory Den,100 Legends,,,
+3225,Vivi Bubble Tea,100 Faneuil Hall Marketplace,bubble_tea,,
+3226,Vi Vi Bubble Tea Brighton,364 Washington,,,
+3227,Vivi Bubble Tea Tremont,230 Tremont,bubble_tea,,
+3228,Viza Cafe,112 South,,07:00,17:00
+3229,VRF,4 Jersey,,,
+3230,Wagamama,800 BOYLSTON,asian,11:00,22:30
+3231,Wahlburgers,132 Brookline,burger;bar_and_grill,,
+3232,Wahlburgers,300 Terminal,burger;bar_and_grill,,
+3233,Wahlburgers,500 Terminal,burger;bar_and_grill,,
+3234,Waku Waku,2 Tyler,ramen,11:00,00:00
+3235,WALLY'S,427 Massachusetts,,,
+3236,Walter Brown Arena#1,285 Babcock,,,
+3237,Walter Brown Arena#2,285 Babcock,,,
+3238,Walter Brown Arena#3,285 Babcock,,,
+3239,Wander Cat Cola - Lower Level,32 Cambridge,,,
+3240,Wang Mei Li Food-Lower Level,32 Cambridge,,,
+3241,Ward 8,90 Washington,,,
+3242,Warehouse Bar & Grille,40 Broad,,,
+3243,WARREN TAVERN,2 Pleasant,,,
+3244,Warrior Ice Arena,50 Guest,,,
+3245,Washin,212 Stuart,,,
+3246,Waterstone at The Circle,385 Chestnut Hill,,,
+3247,Waverly,231 Bunker Hill,,08:00,24:00
+3248,W Boston Banquets Main Kitchen,100 Stuart,,,
+3249,W Boston The Gallery Restaurant,100 Stuart,,,
+3250,W Boston The Library Bar,100 Stuart,,,
+3251,Wei's Yunnan Rice Noodles,412 Market,chinese,,
+3252,Well Coffee House Boston,1A State,,07:00,18:00
+3253,Wellington Management (24th Fl.),278 Congress,,,
+3254,Wellington Management (31st Fl.),278 Congress,,,
+3255,Wendy's,153 Massachusetts,burger,07:00,22:00
+3256,Wendy's,71 Summer,burger,07:00,22:00
+3257,WENDY'S PROPERTIES,530 AMER LEGION,burger,07:00,22:00
+3258,Wens Rice Noodle & Ramen,247 Newbury,,,
+3259,WEST,1732 CENTRE,,,
+3260,WESTBURY RESTAURANT,1836 Centre,,,
+3261,WEST END STROLLERS,300 FANEUIL HALL MARKET,,,
+3262,West Garden,1890 Centre,,,
+3263,Westin Copley Place,10 HUNTINGTON,,,
+3264,WESTIN COPLEY Place -BAR 10,10 HUNTINGTON,,,
+3265,Westin Copley Place - Cantina,10 HUNTINGTON,,,
+3266,Westin Copley Place Ingredients,10 Huntington,,,
+3267,West Napoli Pizza,1946 Centre,american;italian;italian_pizza,11:00,21:00
+3268,Wheelhouse,100 High,breakfast;sandwich;burger,07:00,20:30
+3269,WHOLE FOODS MARKET,15 Westland,,,
+3270,WHOLE FOODS MARKET,310 Harrison,,,
+3271,WHOLE FOODS MARKET(Cambridge St.),181 Cambridge,,,
+3272,Wicked Lobsta,200 Faneuil Hall Market,,,
+3273,Widowmaker Taproom & Kitchen,190 Beacon,,,
+3274,Willow & Ivy,61 Exeter,,,
+3275,Windy City Pizza  LLC,960 William T Morrissey,,,
+3276,Wings Over Boston,325 Huntington,wings,,
+3277,Wing Stop,173 Border,,17:00,26:00
+3278,Wing Stop,950 American Legion,,17:00,26:00
+3279,Wingz To Perfection,312 Bowdoin,,,
+3280,Wink & Nod,3 Appleton,,,
+3281,Winnie's,115 Federal,,,
+3282,Winsor DimSum Cafe,10 Tyler,,09:00,22:00
+3283,Winthrop Food Hall,115 Federal,,,
+3284,Wishing Cup,45 Court,,,
+3285,WIT Beatty Cafe,550 Huntington,,,
+3286,Wm. E. Carter Ameri. Legion Post 16,1531 Blue Hill,,,
+3287,Wok N Talk,525 Washington,asian,,
+3288,Wolfgang Puck Pizza,1 Harborside,,,
+3289,Wong's of Boston,417 Washington,,,
+3290,Wonton Cafe,112 South,,,
+3291,Woodshill Table,130 Northern,,,
+3292,Woodys Pizza EF Inc.,1035 Saratoga,,,
+3293,Wow Bao,500 Terminal,chinese,,
+3294,Wow Tikka,350 Longwood,indian,11:00,22:00
+3295,Wow Tikka,84 Peterborough,indian,11:00,22:00
+3296,Wyndham Boston Beacon Hill-The Archives,5 Blossom,,,
+3297,Xi'an Famous Foods,255 Washington,,,
+3298,XI CHA,350 Longwood,,,
+3299,Xin Chao Cafe,418 Market,,,
+3300,Y5,4 Jersey,,,
+3301,Yaba Sushi,106 Cambridge,japanese,,
+3302,Yale Appliance,296 Freeport,,,
+3303,Yamato II,545 Boylston,japanese,,
+3304,Yamato Japanese Cuisine,111 Chiswick,sushi;japanese,11:30,11:00
+3305,Yanes Burrito's,3492 Washington,,,
+3306,Yang Guo Fu Malatang,135 Massachusetts,,,
+3307,Yard House,122 Brookline,american,,
+3308,Yard House #8391,110 Huntington,american,,
+3309,Yawkey Cafe,850 Harrison,,,
+3310,"YAWKEY CENTER ""COFFEE SOUTH""",32 Fruit,,,
+3311,YAWKEY CLUB OF ROXBURY,115 Warren,,,
+3312,Yaz's House Of Pizza,661 Warren,pizza,10:00,22:00
+3313,Yeanie's,1761 Centre,american;burger,,
+3314,Yeanie's Burger & Social,33 Savin Hill,american;burger,,
+3315,Yellow Door Taqueria,2297 Dorchester,mexican;tex-mex;tacos,,
+3316,Yellow Door Taqueria,354 Harrison,mexican;tex-mex;tacos,,
+3317,Yely's Coffee Shop,284 Centre,,,
+3318,Yely's Restaurant,830 Blue Hill,,,
+3319,Yi Fang Taiwan Fruit Tea,14 Brighton,chinese,11:00,01:00
+3320,YiFang Taiwan Fruit Tea,215 Newbury,chinese,11:00,01:00
+3321,YOMA,5 NORTH BEACON,burmese,12:00,21:00
+3322,Yoshida,51A Massachusetts,,,
+3323,Yotel Boston - First Floor,65 Seaport,,,
+3324,Yotel Boston - Penthouse,65 Seaport,,,
+3325,You & I Bowl Kitchen - K104,94 Shirley,,,
+3326,Youji's Washoku Renaissance-Lower Level,32 Cambridge,,,
+3327,Youji's Washoku Renaissance-Upper level,32 Cambridge,,,
+3328,Young Family Cafe,111 Francis,,,
+3329,Golden Rice Bowl,300 Centre,,,
+3330,YUCATAN TACOS,1419 CENTRE,mexican,08:00,20:00
+3331,Yucoo,23 Tyler,,,
+3332,Yucoo,577 Washington,,,
+3333,Yuen Barbeque Restaurant,1458 DORCHESTER,,,
+3334,YUM! by Kaju,54 Harvard,,,
+3335,Yume Ga Arukara,70 Pier 4,japanese,11:00,20:45
+3336,Yummy Yummy,2360 Washington,,,
+3337,Yunnan Kitchen,1721 Washington,,,
+3338,Yvonnes/Zebra Room,3 Winter,,,
+3339,Zaaki,1143 Commonwealth,mediterranean,,
+3340,Zaku,520 Columbus,,,
+3341,Zaz @ George Island,,,,
+3342,Zaz Restaurant,1230 River,,,
+3343,Zaz @ Spectacle Island,5 spectacle island,,,
+3344,Zen Restaurant,21 Beacon,japanese,11:00,23:00
+3345,Zero&,222 Newbury,,,
+3346,ZESTO'S PIZZA,460 Centre,pizza,11:00,22:00
+3347,Zheng Xin Chicken Steak - Stall#2,122 Brighton,,,
+3348,Zhi Wei Cafe,102 South,,,
+3349,ZHU,903 Boylston,,,
+3350,Ziggy's,583 Washington,pizza,,
+3351,Zino's2Go,140 Norfolk,,,
+3352,Zo,92 State,greek,11:00,15:00
+3353,Zo Greek,225 Franklin,greek,11:00,15:00
+3354,Zuma Restaurant,1 Dalton,japanese,17:30,22:00
+3355,Zurito/Willie's,26 Charles,basque,12:00,23:00
