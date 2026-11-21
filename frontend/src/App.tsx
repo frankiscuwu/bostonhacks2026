@@ -171,7 +171,11 @@ function ReelCard({
     const [showHeartBurst, setShowHeartBurst] = useState(false);
     // Real video player, loaded on tap. Cards remount when they become
     // active/inactive, so this resets (and the iframe unloads) on scroll.
-    const [isPlaying, setIsPlaying] = useState(false);
+    // The active card loads its creator video right away (cards remount when they
+    // become active/inactive, so only one player is ever loaded at a time).
+    const [isPlaying, setIsPlaying] = useState(
+        () => isActive && Boolean(restaurant.video),
+    );
     const lastTapRef = useRef<number>(0);
     const video = restaurant.video;
     const showPlayer = Boolean(video && isActive && isPlaying);
@@ -1432,7 +1436,8 @@ const DEFAULT_FILTERS: FilterState = {
     openNow: false,
 };
 
-const FEED_WINDOW = 30;
+// Only the active card loads a player, so the reel can hold every video spot.
+const FEED_WINDOW = 100;
 const FILTER_SAVE_DELAY_MS = 400;
 
 function errorMessage(error: unknown) {
@@ -1872,12 +1877,14 @@ export default function App() {
     );
 
     // The feed previews restaurants matching everyone, with the pick pinned first.
+    // The reel is built from the videos table: spots with a creator video that
+    // match everyone's filters. If none match, fall back to plain restaurant
+    // cards so the reel is never empty. The group's pick is always pinned first.
     const feedRestaurants = useMemo(() => {
         const picked = restaurants.find((r) => r.id === pickedId);
-        // Spots with a creator video first (stable sort keeps ID order otherwise).
-        const rest = groupMatches
-            .filter((r) => r.id !== pickedId)
-            .sort((a, b) => Number(Boolean(b.video)) - Number(Boolean(a.video)));
+        const others = groupMatches.filter((r) => r.id !== pickedId);
+        const withVideos = others.filter((r) => r.video);
+        const rest = withVideos.length > 0 ? withVideos : others;
         return (picked ? [picked, ...rest] : rest).slice(0, FEED_WINDOW);
     }, [restaurants, groupMatches, pickedId]);
 
