@@ -72,6 +72,14 @@ No enrichment model or migration has been created. Today the serializer explicit
 returns null prices/ratings and empty video/image URLs. Price/rating API filters
 return 400 until supported; they do not silently claim to filter unknown values.
 
+## Exception: cuisine backfill
+
+`manage.py enrich_cuisine` is the one command that writes to the shared table. It
+fills `cuisine` only where it is NULL/blank (re-checked at write time) and never
+overwrites a value. It is a dry run unless `--apply` is passed, and writes a review
+CSV recording the source of each inferred value (keyword, osm, institution, places,
+llm). Apply a reviewed CSV with `--from-report <file> --apply`.
+
 ## Remaining data integrity considerations
 
 The current active query only checks status and non-null coordinates. It does not
