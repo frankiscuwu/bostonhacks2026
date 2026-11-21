@@ -32,10 +32,12 @@ import {
     Clock,
     SlidersHorizontal,
     Shuffle,
+    Play,
+    ExternalLink,
 } from "lucide-react";
 
 import { MAX_DISTANCE_MILES } from "./data.ts";
-import type { FilterState, Restaurant } from "./data.ts";
+import type { FilterState, Restaurant, RestaurantVideo } from "./data.ts";
 import type { RealtimeChannel } from "@supabase/supabase-js";
 import {
     isRealtimeConfigured,
@@ -138,6 +140,24 @@ type WinnerModalProps = {
     onPickAgain: () => void;
 };
 
+const PLATFORM_LABELS: Record<RestaurantVideo["platform"], string> = {
+    tiktok: "TikTok",
+    instagram: "Instagram",
+    youtube: "YouTube",
+};
+
+// iframe URL that starts playing as soon as it loads (it's only loaded after a tap).
+function videoPlayerUrl(video: RestaurantVideo) {
+    switch (video.platform) {
+        case "tiktok":
+            return `${video.embedUrl}?autoplay=1&loop=1&rel=0&description=0&music_info=0`;
+        case "youtube":
+            return `${video.embedUrl}?autoplay=1&playsinline=1&loop=1&playlist=${video.embedId}&rel=0`;
+        default:
+            return video.embedUrl;
+    }
+}
+
 // ============================================================================
 // COMPONENT 1: REEL CARD (Simulated Vertical Video Card with Double-Tap & Motion)
 // ============================================================================
@@ -149,10 +169,21 @@ function ReelCard({
 }: ReelCardProps) {
     const [isPaused, setIsPaused] = useState(false);
     const [showHeartBurst, setShowHeartBurst] = useState(false);
+    // Real video player, loaded on tap. Cards remount when they become
+    // active/inactive, so this resets (and the iframe unloads) on scroll.
+    const [isPlaying, setIsPlaying] = useState(false);
     const lastTapRef = useRef<number>(0);
+    const video = restaurant.video;
+    const showPlayer = Boolean(video && isActive && isPlaying);
 
     const handleSurfaceTap = () => {
         const now = Date.now();
+        if (video && isActive && !isPlaying && now - lastTapRef.current >= 280) {
+            // A single tap on a card with a real video starts it.
+            setIsPlaying(true);
+            lastTapRef.current = now;
+            return;
+        }
         if (now - lastTapRef.current < 280) {
             // Double-tap triggers heart burst + adds to your shortlist
             setShowHeartBurst(true);
@@ -173,8 +204,18 @@ function ReelCard({
             onClick={handleSurfaceTap}
             className="reel-card w-full h-full snap-start relative overflow-hidden flex flex-col justify-end cursor-pointer select-none"
         >
-            {/* Simulated Looping Video Backdrop with Ken Burns Motion */}
+            {/* Creator video (after tap) or image backdrop with Ken Burns motion */}
             <div className="absolute inset-0 overflow-hidden bg-[#101010]">
+                {showPlayer && video ? (
+                    <iframe
+                        src={videoPlayerUrl(video)}
+                        title={`${restaurant.name} on ${PLATFORM_LABELS[video.platform]}`}
+                        className="absolute inset-0 w-full h-full border-0 z-10"
+                        allow="autoplay; encrypted-media; fullscreen; picture-in-picture; clipboard-write"
+                        allowFullScreen
+                        referrerPolicy="strict-origin-when-cross-origin"
+                    />
+                ) : (
                 <img
                     src={restaurant.image}
                     alt={restaurant.name}
@@ -190,10 +231,11 @@ function ReelCard({
                             : "scale-105"
                     }`}
                 />
+                )}
 
                 {/* Deep Readability Gradient & Accent Vignette */}
                 <div
-                    className="absolute inset-0"
+                    className={`absolute inset-0 pointer-events-none ${showPlayer ? "z-10 top-1/2" : ""}`}
                     style={{
                         background:
                             "linear-gradient(180deg, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0.08) 38%, rgba(12,12,12,0.92) 78%, rgba(12,12,12,0.99) 100%)",
@@ -201,7 +243,7 @@ function ReelCard({
                 />
 
                 {/* Ambient Floating Steam / Sparkle Particles */}
-                {!isPaused && (
+                {!isPaused && !showPlayer && (
                     <>
                         <div className="absolute bottom-48 left-12 w-3 h-3 rounded-full bg-white/30 blur-[2px] particle-1 pointer-events-none" />
                         <div className="absolute bottom-52 left-28 w-4 h-4 rounded-full bg-[#1DB954]/30 blur-[3px] particle-2 pointer-events-none" />
@@ -219,7 +261,27 @@ function ReelCard({
                 </div>
             )}
 
-            {isPaused && !showHeartBurst && (
+            {/* Tap-to-play for cards with a real creator video */}
+            {video && isActive && !isPlaying && !showHeartBurst && (
+                <button
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setIsPlaying(true);
+                    }}
+                    className="absolute inset-x-0 top-1/3 z-20 mx-auto w-fit flex flex-col items-center gap-2 group"
+                    aria-label={`Play video on ${PLATFORM_LABELS[video.platform]}`}
+                >
+                    <span className="w-16 h-16 rounded-full bg-black/60 backdrop-blur-md border border-white/30 flex items-center justify-center shadow-2xl group-hover:bg-[#1DB954] group-hover:text-black transition">
+                        <Play className="w-7 h-7 fill-current ml-1" />
+                    </span>
+                    <span className="px-3 py-1 rounded-full bg-black/60 text-[11px] font-bold text-white">
+                        Watch on {PLATFORM_LABELS[video.platform]}
+                        {video.author && ` • @${video.author.replace(/^@/, "")}`}
+                    </span>
+                </button>
+            )}
+
+            {isPaused && !showHeartBurst && !video && (
                 <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none">
                     <div className="px-4 py-2.5 rounded-full bg-black/65 backdrop-blur-md border border-white/20 flex items-center gap-2 text-xs font-bold text-white shadow-xl">
                         <Pause className="w-4 h-4 text-[#1DB954]" />
@@ -307,6 +369,22 @@ function ReelCard({
                             <Clock className="w-3 h-3 text-sky-400" /> Walk-in
                             Friendly
                         </span>
+                    )}
+                    {video && (
+                        <a
+                            href={video.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="px-2 py-0.5 rounded-md bg-white/5 border border-white/10 flex items-center gap-1 hover:text-white"
+                        >
+                            <ExternalLink className="w-3 h-3 text-[#1DB954]" />
+                            {video.author
+                                ? `@${video.author.replace(/^@/, "")}`
+                                : "Original post"}{" "}
+                            on {PLATFORM_LABELS[video.platform]}
+                            {restaurant.videoCount > 1 &&
+                                ` (+${restaurant.videoCount - 1} more)`}
+                        </a>
                     )}
                     <span className="px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-white/55">
                         Double-tap to save to your queue
@@ -1796,7 +1874,10 @@ export default function App() {
     // The feed previews restaurants matching everyone, with the pick pinned first.
     const feedRestaurants = useMemo(() => {
         const picked = restaurants.find((r) => r.id === pickedId);
-        const rest = groupMatches.filter((r) => r.id !== pickedId);
+        // Spots with a creator video first (stable sort keeps ID order otherwise).
+        const rest = groupMatches
+            .filter((r) => r.id !== pickedId)
+            .sort((a, b) => Number(Boolean(b.video)) - Number(Boolean(a.video)));
         return (picked ? [picked, ...rest] : rest).slice(0, FEED_WINDOW);
     }, [restaurants, groupMatches, pickedId]);
 

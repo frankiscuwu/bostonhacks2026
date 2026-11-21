@@ -1,4 +1,15 @@
-import type { Restaurant } from "./data.ts";
+import type { Restaurant, RestaurantVideo } from "./data.ts";
+
+export type ApiVideo = {
+    id: number;
+    platform: RestaurantVideo["platform"];
+    url: string;
+    embed_id: string;
+    embed_url: string;
+    thumbnail_url: string;
+    author: string;
+    caption: string;
+};
 
 export type ApiRestaurant = {
     id: number;
@@ -12,6 +23,7 @@ export type ApiRestaurant = {
     latitude: number | string;
     longitude: number | string;
     creator_video_url: string;
+    videos?: ApiVideo[];
     image_url: string;
     description: string | null;
     open_time?: string | null;
@@ -153,6 +165,17 @@ export function mapApiRestaurant(row: ApiRestaurant): Restaurant {
         image:
             row.image_url ||
             `https://placehold.co/600x900/181818/1DB954?text=${encodeURIComponent(row.name)}`,
+        video: row.videos?.[0]
+            ? {
+                  platform: row.videos[0].platform,
+                  url: row.videos[0].url,
+                  embedId: row.videos[0].embed_id,
+                  embedUrl: row.videos[0].embed_url,
+                  author: row.videos[0].author,
+                  caption: row.videos[0].caption,
+              }
+            : null,
+        videoCount: row.videos?.length ?? 0,
     };
 }
 

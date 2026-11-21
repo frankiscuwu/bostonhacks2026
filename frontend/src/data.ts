@@ -1,3 +1,14 @@
+export type RestaurantVideo = {
+    platform: "tiktok" | "instagram" | "youtube";
+    // Link to the post on the platform.
+    url: string;
+    embedId: string;
+    // iframe player URL.
+    embedUrl: string;
+    author: string;
+    caption: string;
+};
+
 export type Restaurant = {
     // Django restaurant primary key.
     id: number;
@@ -23,6 +34,9 @@ export type Restaurant = {
     longitude: number;
     dishHighlight: string;
     image: string;
+    // First attached TikTok / Instagram / YouTube video, if any.
+    video: RestaurantVideo | null;
+    videoCount: number;
 };
 
 // One participant's filters as edited in the UI. Saved to Django per participant;
