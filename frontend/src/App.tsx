@@ -182,7 +182,12 @@ function ReelCard({
 
     const handleSurfaceTap = () => {
         const now = Date.now();
-        if (video && isActive && !isPlaying && now - lastTapRef.current >= 280) {
+        if (
+            video &&
+            isActive &&
+            !isPlaying &&
+            now - lastTapRef.current >= 280
+        ) {
             // A single tap on a card with a real video starts it.
             setIsPlaying(true);
             lastTapRef.current = now;
@@ -220,21 +225,21 @@ function ReelCard({
                         referrerPolicy="strict-origin-when-cross-origin"
                     />
                 ) : (
-                <img
-                    src={restaurant.image}
-                    alt={restaurant.name}
-                    loading="lazy"
-                    onError={(e) => {
-                        e.currentTarget.src = `https://placehold.co/600x900/181818/1DB954?text=${encodeURIComponent(
-                            restaurant.name,
-                        )}`;
-                    }}
-                    className={`w-full h-full object-cover opacity-90 transition-transform duration-700 ${
-                        isActive && !isPaused
-                            ? "animate-ken-burns"
-                            : "scale-105"
-                    }`}
-                />
+                    <img
+                        src={restaurant.image}
+                        alt={restaurant.name}
+                        loading="lazy"
+                        onError={(e) => {
+                            e.currentTarget.src = `https://placehold.co/600x900/181818/1DB954?text=${encodeURIComponent(
+                                restaurant.name,
+                            )}`;
+                        }}
+                        className={`w-full h-full object-cover opacity-90 transition-transform duration-700 ${
+                            isActive && !isPaused
+                                ? "animate-ken-burns"
+                                : "scale-105"
+                        }`}
+                    />
                 )}
 
                 {/* Deep Readability Gradient & Accent Vignette */}
@@ -280,7 +285,8 @@ function ReelCard({
                     </span>
                     <span className="px-3 py-1 rounded-full bg-black/60 text-[11px] font-bold text-white">
                         Watch on {PLATFORM_LABELS[video.platform]}
-                        {video.author && ` • @${video.author.replace(/^@/, "")}`}
+                        {video.author &&
+                            ` • @${video.author.replace(/^@/, "")}`}
                     </span>
                 </button>
             )}
@@ -655,7 +661,9 @@ function VideoScroller({
 // ============================================================================
 function describeFilters(filters: ApiFilters, hasLocation: boolean) {
     return [
-        filters.cuisines.length > 0 ? filters.cuisines.join(", ") : "Any cuisine",
+        filters.cuisines.length > 0
+            ? filters.cuisines.join(", ")
+            : "Any cuisine",
         filters.max_distance_miles !== null
             ? `≤ ${filters.max_distance_miles} mi ${hasLocation ? "from them" : "of Boston Common"}`
             : "Any distance",
@@ -820,7 +828,10 @@ function FilterPanel({
     const cuisineCounts = useMemo(() => {
         const counts = new Map<string, number>();
         for (const restaurant of allRestaurants) {
-            counts.set(restaurant.cuisine, (counts.get(restaurant.cuisine) ?? 0) + 1);
+            counts.set(
+                restaurant.cuisine,
+                (counts.get(restaurant.cuisine) ?? 0) + 1,
+            );
         }
         return [...counts.entries()].sort(
             ([a, countA], [b, countB]) =>
@@ -1696,7 +1707,10 @@ export default function App() {
                         "Room not found. Check the code and try again.",
                     );
                 } else if (error instanceof ApiError && error.status === 409) {
-                    addToast("This room is closed. You can only look around.", "#f59e0b");
+                    addToast(
+                        "This room is closed. You can only look around.",
+                        "#f59e0b",
+                    );
                 } else {
                     setRoomError(`Couldn't join room: ${errorMessage(error)}`);
                 }
@@ -1838,7 +1852,14 @@ export default function App() {
                 handleSeatLost(code);
             }
         }
-    }, [session, me, wantedLocation, wantedLocationKey, runRoomRequest, handleSeatLost]);
+    }, [
+        session,
+        me,
+        wantedLocation,
+        wantedLocationKey,
+        runRoomRequest,
+        handleSeatLost,
+    ]);
 
     useEffect(() => {
         if (!me || wantedLocationKey === null) return;
@@ -1938,7 +1959,9 @@ export default function App() {
                     id: p.id,
                     name: p.display_name,
                     filters:
-                        p.id === session?.participantId ? myApiFilters : p.filters,
+                        p.id === session?.participantId
+                            ? myApiFilters
+                            : p.filters,
                     hasLocation:
                         p.id === session?.participantId
                             ? geo.location !== null
@@ -1954,7 +1977,10 @@ export default function App() {
         const code = roomCodeRef.current;
         if (!code || picking) return;
         if (!session) {
-            addToast("You're viewing this room without a seat, so you can't pick.", "#94a3b8");
+            addToast(
+                "You're viewing this room without a seat, so you can't pick.",
+                "#94a3b8",
+            );
             return;
         }
         setPicking(true);
@@ -1971,7 +1997,10 @@ export default function App() {
             );
             void notifyRoomUpdated(roomChannelRef.current);
             if (state.selected_restaurant) {
-                addToast(`🎲 Picked ${state.selected_restaurant.name}!`, "#FF5E3A");
+                addToast(
+                    `🎲 Picked ${state.selected_restaurant.name}!`,
+                    "#FF5E3A",
+                );
             }
         } catch (error) {
             if (error instanceof ApiError && error.status === 409) {
@@ -2045,7 +2074,9 @@ export default function App() {
         : groupMatches.length === 0
           ? "No spot matches everyone's filters yet"
           : `${groupMatches.length} ${groupMatches.length === 1 ? "spot matches" : "spots match"} everyone${
-                pickedRestaurant ? ` • Current pick: ${pickedRestaurant.name}` : ""
+                pickedRestaurant
+                    ? ` • Current pick: ${pickedRestaurant.name}`
+                    : ""
             }${!session ? " • viewing only" : ""}`;
 
     if (!roomCode && profileComplete) {
