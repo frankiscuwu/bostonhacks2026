@@ -1179,18 +1179,19 @@ function FilterPanel({
 // ============================================================================
 function BostonMapViewport({
     activeSpot,
-    expanded,
     transitActive,
 }: {
     activeSpot: Restaurant | null;
-    expanded: boolean;
     transitActive: boolean;
 }) {
     const map = useMap();
+    // The box animates its size, so a fixed delay re-measures mid-transition
+    // and leaves blank tiles. Re-measure whenever the container actually resizes.
     useEffect(() => {
-        const timer = window.setTimeout(() => map.invalidateSize(), 50);
-        return () => window.clearTimeout(timer);
-    }, [expanded, map]);
+        const observer = new ResizeObserver(() => map.invalidateSize());
+        observer.observe(map.getContainer());
+        return () => observer.disconnect();
+    }, [map]);
     useEffect(() => {
         if (activeSpot && !transitActive) {
             map.panTo([activeSpot.latitude, activeSpot.longitude], {
@@ -1287,7 +1288,6 @@ function FloatingBostonMap({
                     />
                     <BostonMapViewport
                         activeSpot={activeSpot}
-                        expanded={expanded}
                         transitActive={Boolean(transitRoute)}
                     />
 
