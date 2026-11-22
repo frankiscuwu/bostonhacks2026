@@ -35,6 +35,7 @@ import {
     RefreshCw,
     Play,
     ExternalLink,
+    TrainFront,
 } from "lucide-react";
 
 import { MAX_DISTANCE_MILES } from "./data.ts";
@@ -70,6 +71,9 @@ import {
 } from "./roomsApi.ts";
 import type { ApiFilters, RoomSession, RoomState } from "./roomsApi.ts";
 import "./App.css";
+import { TransitDirectionsPanel } from "./TransitDirections.tsx";
+import { TransitRouteLayer } from "./TransitRouteLayer.tsx";
+import type { TransitDirections } from "./transitApi.ts";
 
 type ToggleRestaurantHandler = (id: number) => void;
 type Toast = { id: number; message: string; accent: string };
@@ -129,6 +133,8 @@ type FloatingBostonMapProps = {
     activeId: number | null;
     maxDistance: number;
     onSelectPin: (id: number) => void;
+    transitRoute: TransitDirections | null;
+    onClearTransit: () => void;
 };
 
 type JamQueueModalProps = {
@@ -147,6 +153,7 @@ type WinnerModalProps = {
     picking: boolean;
     onClose: () => void;
     onPickAgain: () => void;
+    onDirections: () => void;
 };
 
 const PLATFORM_LABELS: Record<RestaurantVideo["platform"], string> = {
@@ -1173,9 +1180,11 @@ function FilterPanel({
 function BostonMapViewport({
     activeSpot,
     expanded,
+    transitActive,
 }: {
     activeSpot: Restaurant | null;
     expanded: boolean;
+    transitActive: boolean;
 }) {
     const map = useMap();
     useEffect(() => {
@@ -1183,12 +1192,12 @@ function BostonMapViewport({
         return () => window.clearTimeout(timer);
     }, [expanded, map]);
     useEffect(() => {
-        if (activeSpot) {
+        if (activeSpot && !transitActive) {
             map.panTo([activeSpot.latitude, activeSpot.longitude], {
                 animate: true,
             });
         }
-    }, [activeSpot, map]);
+    }, [activeSpot, map, transitActive]);
     return null;
 }
 
@@ -1199,8 +1208,11 @@ function FloatingBostonMap({
     activeId,
     maxDistance,
     onSelectPin,
+    transitRoute,
+    onClearTransit,
 }: FloatingBostonMapProps) {
-    const [expanded, setExpanded] = useState(false);
+    const [manuallyExpanded, setExpanded] = useState(false);
+    const expanded = manuallyExpanded || Boolean(transitRoute);
 
     const activeSpot = useMemo(
         () =>
@@ -1210,7 +1222,9 @@ function FloatingBostonMap({
         [restaurants, activeId],
     );
 
-    const userPosition: LatLngExpression = [origin.latitude, origin.longitude];
+    const userPosition: LatLngExpression = transitRoute?.origin
+        ? [transitRoute.origin.latitude, transitRoute.origin.longitude]
+        : [origin.latitude, origin.longitude];
 
     const pinIcon = (selected: boolean) =>
         L.divIcon({
@@ -1234,17 +1248,17 @@ function FloatingBostonMap({
                 <div className="flex items-center gap-2 min-w-0">
                     <span className="w-2 h-2 rounded-full bg-[#1DB954] shrink-0" />
                     <span className="text-xs font-bold text-white truncate">
-                        {activeSpot
+                        {transitRoute ? "MBTA + pedestrian route" : activeSpot
                             ? `${activeSpot.name} • ${activeSpot.distance.toFixed(1)} mi`
                             : `Boston Radar • ${restaurants.length} pins`}
                     </span>
                 </div>
 
                 <button
-                    onClick={() => setExpanded((prev) => !prev)}
+                    onClick={() => transitRoute ? onClearTransit() : setExpanded((prev) => !prev)}
                     className="ml-2 px-2.5 py-1 rounded-lg bg-white/10 hover:bg-[#1DB954] text-white hover:text-black text-[11px] font-bold transition flex items-center gap-1 shrink-0"
                 >
-                    <span>{expanded ? "Minimize" : "Expand"}</span>
+                    <span>{transitRoute ? "Close route" : expanded ? "Minimize" : "Expand"}</span>
                     {expanded ? (
                         <Minimize2 className="w-3 h-3" />
                     ) : (
@@ -1274,9 +1288,11 @@ function FloatingBostonMap({
                     <BostonMapViewport
                         activeSpot={activeSpot}
                         expanded={expanded}
+                        transitActive={Boolean(transitRoute)}
                     />
 
-                    <Circle
+                    {transitRoute && <TransitRouteLayer route={transitRoute} expanded={expanded} />}
+                    {!transitRoute && <Circle
                         center={userPosition}
                         radius={Math.min(maxDistance, 20) * 1609.344}
                         pathOptions={{
@@ -1286,7 +1302,7 @@ function FloatingBostonMap({
                             opacity: 0.35,
                             dashArray: "5 5",
                         }}
-                    />
+                    />}
                     <Marker
                         position={userPosition}
                         icon={L.divIcon({
@@ -1297,7 +1313,7 @@ function FloatingBostonMap({
                         })}
                     />
 
-                    {restaurants.map((spot) => (
+                    {!transitRoute && restaurants.map((spot) => (
                         <Marker
                             key={spot.id}
                             position={[spot.latitude, spot.longitude]}
@@ -1335,7 +1351,7 @@ function FloatingBostonMap({
                 </MapContainer>
 
                 {/* Bottom Floating Info Card when Expanded */}
-                {expanded && activeSpot && (
+                {expanded && activeSpot && !transitRoute && (
                     <div className="absolute bottom-3 inset-x-3 bg-[#181818]/95 backdrop-blur-md border border-white/15 rounded-xl p-3 flex items-center justify-between gap-3 shadow-2xl">
                         <div className="min-w-0">
                             <div className="flex items-center gap-2">
@@ -1473,6 +1489,7 @@ function WinnerModal({
     picking,
     onClose,
     onPickAgain,
+    onDirections,
 }: WinnerModalProps) {
     if (!winner) return null;
 
@@ -1486,7 +1503,7 @@ function WinnerModal({
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
-            <div className="relative w-full max-w-md rounded-3xl bg-[#181818] border border-[#1DB954]/45 p-6 sm:p-7 text-center shadow-[0_25px_85px_rgba(29,185,84,0.35)] overflow-hidden">
+            <div className="relative w-full max-w-md max-h-[90dvh] overflow-y-auto rounded-3xl bg-[#181818] border border-[#1DB954]/45 p-6 sm:p-7 text-center shadow-[0_25px_85px_rgba(29,185,84,0.35)]">
                 {/* Confetti Particles */}
                 <div className="absolute inset-0 pointer-events-none">
                     {Array.from({ length: 28 }).map((_, i) => (
@@ -1539,6 +1556,9 @@ function WinnerModal({
                     </p>
                 </div>
 
+                <button className="transit-primary transit-launch" onClick={onDirections}>
+                    <TrainFront size={17} /> Get MBTA Directions
+                </button>
                 <div className="mt-6 flex gap-3">
                     <button
                         onClick={onPickAgain}
@@ -1684,6 +1704,8 @@ export default function App() {
     const [syncWithGroup, setSyncWithGroup] = useState(false);
     const [isQueueOpen, setIsQueueOpen] = useState(false);
     const [showPick, setShowPick] = useState(false);
+    const [transitOpen, setTransitOpen] = useState(false);
+    const [transitRoute, setTransitRoute] = useState<TransitDirections | null>(null);
     const [toasts, setToasts] = useState<Toast[]>([]);
 
     const feedRef = useRef<HTMLDivElement>(null);
@@ -1738,6 +1760,8 @@ export default function App() {
         setRoomError("");
         setOnlineIds(new Set());
         setShowPick(false);
+        setTransitOpen(false);
+        setTransitRoute(null);
         setFilters(DEFAULT_FILTERS);
     }, []);
 
@@ -2479,6 +2503,20 @@ export default function App() {
                         roomStatus={roomStatus}
                     />
 
+                    <section className="transit-destination" aria-label="Jam destination">
+                        {pickedRestaurant ? <>
+                            <p className="transit-eyebrow">YOUR JAM’S SELECTED RESTAURANT</p>
+                            <h2>{pickedRestaurant.name}</h2>
+                            <p>Same destination, your own route. Open directions anytime without picking again.</p>
+                            <button className="transit-launch" onClick={() => setTransitOpen(true)}>
+                                <TrainFront size={17} /> Get MBTA Directions
+                            </button>
+                        </> : <>
+                            <h2>Choose where your Jam eats</h2>
+                            <p>Set your preferences below, then press “Pick for us” above. Your selected restaurant and MBTA directions will appear here.</p>
+                        </>}
+                    </section>
+
                     <FilterPanel
                         allRestaurants={restaurants}
                         groupMatchCount={groupMatches.length}
@@ -2502,7 +2540,20 @@ export default function App() {
                 activeId={activeRestaurantId}
                 maxDistance={filters.maxDistance}
                 onSelectPin={handleJumpToRestaurant}
+                transitRoute={transitRoute?.destination.restaurant_id === pickedId ? transitRoute : null}
+                onClearTransit={() => setTransitRoute(null)}
             />
+
+            {transitOpen && pickedRestaurant && <TransitDirectionsPanel
+                key={`${roomCode}-${pickedRestaurant.id}-${session?.participantId ?? "viewer"}`}
+                restaurant={pickedRestaurant}
+                roomCode={roomCode}
+                session={session}
+                deviceLocation={geo.location}
+                onClose={() => setTransitOpen(false)}
+                onRoute={setTransitRoute}
+                onRefreshRoom={() => void refreshRoom()}
+            />}
 
             {/* SHARED JAM QUEUE MODAL */}
             <JamQueueModal
@@ -2522,6 +2573,7 @@ export default function App() {
                 picking={picking}
                 onClose={() => setShowPick(false)}
                 onPickAgain={() => void handlePick()}
+                onDirections={() => { setShowPick(false); setTransitOpen(true); }}
             />
         </div>
     );

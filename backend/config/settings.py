@@ -110,6 +110,19 @@ DATABASES = {
     )
 }
 
+# This cache contains public MBTA topology/responses only, never directions or
+# participant coordinates. A separate alias lets the warm command and web
+# workers share topology on one host without changing room/API throttle caching.
+CACHES = {
+    "default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"},
+    "transit": {
+        "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+        "LOCATION": os.getenv("MBTA_CACHE_LOCATION", "/tmp/reelhungry-mbta-cache"),
+        "TIMEOUT": 3600,
+        "OPTIONS": {"MAX_ENTRIES": 1000},
+    },
+}
+
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
