@@ -106,7 +106,10 @@ ASGI_APPLICATION = "config.asgi.application"
 DATABASES = {
     "default": dj_database_url.config(
         default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
-        conn_max_age=0,
+        # Reuse connections between requests: opening one to the remote
+        # database costs ~0.2s. Health checks drop connections that went stale.
+        conn_max_age=60,
+        conn_health_checks=True,
     )
 }
 

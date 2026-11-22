@@ -33,16 +33,25 @@ def active_criteria(room):
     return [(p.filters, p.origin) for p in room.participants.filter(is_active=True)]
 
 
+# Only the columns restaurants.matching reads; loading whole rows is slow over
+# a remote database.
+MATCHING_FIELDS = ("id", "cuisine", "latitude", "longitude", "open_time", "close_time")
+
+
 def matching_restaurants(room, now=None):
     criteria = active_criteria(room)
-    return [r for r in Restaurant.objects.active().order_by("id") if matches_everyone(r, criteria, now)]
+    restaurants = Restaurant.objects.active().only(*MATCHING_FIELDS).order_by("id")
+    return [r for r in restaurants if matches_everyone(r, criteria, now)]
 
 
-def room_state(room):
+def room_state(room, matches=None):
+    """``matches`` lets a caller that already ran matching_restaurants reuse it."""
     data = dict(RoomSerializer(room).data)
     # IDs rather than locations, so clients can preview matches without ever
     # seeing other participants' coordinates.
-    ids = [r.id for r in matching_restaurants(room)]
+    if matches is None:
+        matches = matching_restaurants(room)
+    ids = [r.id for r in matches]
     data["matching_count"] = len(ids)
     data["matching_restaurant_ids"] = ids
     return data
@@ -118,9 +127,11 @@ def pick_restaurant(code, token):
         candidates = matching_restaurants(room)
         if not candidates:
             raise Conflict("No restaurant matches everyone's filters. Loosen some filters and try again.")
-        room.selected_restaurant = _random.choice(candidates)
+        # Set the id, not the instance: candidates only have the matching
+        # columns, and serializing one would query each missing field separately.
+        room.selected_restaurant_id = _random.choice(candidates).id
         room.selected_at = timezone.now()
         room.selected_by = participant
         room.save(update_fields=["selected_restaurant", "selected_at", "selected_by"])
-        result = room_state(room)
+        result = room_state(room, candidates)
     return result

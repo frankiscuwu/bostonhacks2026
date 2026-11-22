@@ -633,7 +633,7 @@ function VideoScroller({
     return (
         <section
             aria-label="Boston Restaurant Video Reels"
-            className="w-full lg:w-[44%] xl:w-[42%] h-[80vh] lg:h-full bg-[#0c0c0c] border-b lg:border-b-0 lg:border-r border-white/10 relative flex items-center justify-center p-3 sm:p-5 select-none"
+            className="w-full lg:w-[40%] xl:w-[38%] h-[80vh] lg:h-full bg-[#0c0c0c] border-b lg:border-b-0 lg:border-r border-white/10 relative flex items-center justify-center p-3 sm:p-5 select-none"
         >
             {/* Dynamic Ambient Glow Behind Active Reel */}
             <div
@@ -992,7 +992,7 @@ function FilterPanel({
     const anyDistance = filters.maxDistance >= MAX_DISTANCE_MILES;
 
     return (
-        <div className="px-5 sm:px-8 py-6 space-y-6 max-w-4xl">
+        <div className="px-5 sm:px-8 py-6 space-y-6">
             {/* Group Match Counter & Reset Strip */}
             <div className="flex flex-wrap items-center justify-between gap-3 bg-[#181818] border border-white/10 rounded-2xl p-4">
                 <div className="flex items-center gap-3">
@@ -2489,7 +2489,7 @@ export default function App() {
                 {/* SEGMENT 2: RIGHT JAM HEADER & LIVE FILTER PANEL */}
                 <section
                     aria-label="Collaborative Jam Controls and Filters"
-                    className="w-full lg:w-[56%] xl:w-[58%] h-auto lg:h-full flex flex-col bg-[#121212] overflow-y-auto custom-scroll pb-56 lg:pb-48"
+                    className="w-full lg:w-[60%] xl:w-[62%] h-auto lg:h-full flex flex-col bg-[#121212] overflow-y-auto custom-scroll pb-56 lg:pb-48"
                 >
                     <JamHeader
                         queueCount={queuedRestaurants.length}

@@ -997,16 +997,16 @@ svg {
     [class~="lg:overflow-hidden"] { overflow: hidden; }
     [class~="lg:border-r"] { border-right-width: 1px; border-right-style: solid; }
     [class~="lg:border-b-0"] { border-bottom-width: 0; }
-    [class~="lg:w-[44%]"] { width: 44%; }
-    [class~="lg:w-[56%]"] { width: 56%; }
+    [class~="lg:w-[40%]"] { width: 40%; }
+    [class~="lg:w-[60%]"] { width: 60%; }
     [class~="lg:pb-48"] { padding-bottom: 12rem; }
 }
 
 @media (min-width: 1280px) {
     [class~="xl:flex"] { display: flex; }
     [class~="xl:grid-cols-3"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    [class~="xl:w-[42%]"] { width: 42%; }
-    [class~="xl:w-[58%]"] { width: 58%; }
+    [class~="xl:w-[38%]"] { width: 38%; }
+    [class~="xl:w-[62%]"] { width: 62%; }
 }
 
 /* Utilities used by the header, reel card overlay and Likes modal. */
