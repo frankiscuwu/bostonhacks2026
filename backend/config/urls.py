@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path
 from django.http import JsonResponse
-from restaurants.views import restaurant_list
+from restaurants.views import restaurant_list, restaurant_photo
 from rooms import views as room_views
 from transit.views import transit_directions, address_search
 
@@ -18,6 +18,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/health/", health_check),
     path("api/restaurants/", restaurant_list),
+    path("api/restaurants/<int:restaurant_id>/photo/", restaurant_photo),
     path("api/transit/directions/", transit_directions),
     path("api/transit/addresses/", address_search),
     path("api/rooms/", room_views.create_room),

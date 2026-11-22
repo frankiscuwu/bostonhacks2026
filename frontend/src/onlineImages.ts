@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import type { Restaurant } from "./data.ts";
+import { API_BASE_URL } from "./restaurantsApi.ts";
 
 // Photos for restaurants that have no creator video (and so no thumbnail).
-// Uses the Wikimedia Commons API: keyless and CORS-enabled (origin=*).
-// 1. A photo whose title names the restaurant (e.g. "Neptune Oyster, Boston.jpg").
-// 2. Otherwise a photo of the cuisine, picked per restaurant so cards differ.
+// 1. The restaurant's own photo from Google Places, via our backend (which
+//    keeps the API key, verifies the match by name + distance, and caches).
+// 2. Otherwise a Wikimedia Commons photo of the cuisine, picked per restaurant
+//    so cards differ (keyless and CORS-enabled via origin=*).
 
 const COMMONS_API = "https://commons.wikimedia.org/w/api.php";
 const THUMB_WIDTH = 720;
@@ -40,12 +42,13 @@ async function searchCommons(search: string, limit: number): Promise<string[]> {
         .filter((url): url is string => Boolean(url));
 }
 
-// "100 Federal Market & Barista- 10th Floor" -> "100 Federal Market"
-function searchableName(name: string) {
-    return name
-        .split(/\s[-–(]|[-–]\s|[,(@#&]/)[0]
-        .replace(/["]/g, "")
-        .trim();
+async function placesPhoto(restaurant: Restaurant): Promise<string | null> {
+    const response = await fetch(
+        `${API_BASE_URL}/api/restaurants/${restaurant.id}/photo/`,
+    );
+    if (!response.ok) return null;
+    const data = (await response.json()) as { url?: string | null };
+    return data.url || null;
 }
 
 const cuisineCache = new Map<string, Promise<string[]>>();
@@ -65,14 +68,8 @@ function cuisinePhotos(cuisine: string) {
 }
 
 async function lookUpImage(restaurant: Restaurant): Promise<string | null> {
-    const name = searchableName(restaurant.name);
-    // Very short names ("Bar", "Cafe 9") match unrelated photos.
-    if (name.length >= 5) {
-        const named = await searchCommons(`intitle:"${name}" Boston`, 1).catch(
-            () => [],
-        );
-        if (named[0]) return named[0];
-    }
+    const own = await placesPhoto(restaurant).catch(() => null);
+    if (own) return own;
     const photos = await cuisinePhotos(restaurant.cuisine);
     return photos.length > 0 ? photos[restaurant.id % photos.length] : null;
 }

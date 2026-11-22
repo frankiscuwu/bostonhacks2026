@@ -1,10 +1,12 @@
 import math
 
+from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from .models import Restaurant
+from .photos import restaurant_photo_url
 from .serializers import RestaurantFilterSerializer, RestaurantSerializer
 
 
@@ -30,3 +32,12 @@ def restaurant_list(request):
     if "max_distance_km" in values:
         restaurants = [r for r in restaurants if distance_km(values["latitude"], values["longitude"], r) <= values["max_distance_km"]]
     return Response(RestaurantSerializer(restaurants, many=True).data)
+
+
+@api_view(["GET"])
+@authentication_classes([])
+@permission_classes([AllowAny])
+def restaurant_photo(request, restaurant_id):
+    """``{"url": <photo url> | null}`` from Google Places; null when no confident match."""
+    restaurant = get_object_or_404(Restaurant.objects.active(), pk=restaurant_id)
+    return Response({"url": restaurant_photo_url(restaurant)})

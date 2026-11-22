@@ -124,6 +124,13 @@ CACHES = {
         "TIMEOUT": 3600,
         "OPTIONS": {"MAX_ENTRIES": 1000},
     },
+    # Google Places photo lookups (public place data), kept across restarts to save quota.
+    "photos": {
+        "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+        "LOCATION": os.getenv("PHOTO_CACHE_LOCATION", "/tmp/reelhungry-photo-cache"),
+        "TIMEOUT": 7 * 24 * 3600,
+        "OPTIONS": {"MAX_ENTRIES": 20000},
+    },
 }
 
 
